@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:xs ="http://www.w3.org/2001/XMLSchema"
+            attributeFormDefault="unqualified"
+            elementFormDefault="qualified"
+            xmlns="http://schemas.tempuri.org/ef/audit/1.0"
+            targetNamespace="http://schemas.tempuri.org/ef/audit/1.0">
+
+  <xs:element name="audit" type="AuditLog">
+    <xs:annotation>
+      <xs:documentation>The root of the audit log.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:complexType name="AuditLog">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="entity" type="AuditEntity" />
+    </xs:sequence>
+    <xs:attribute name="username" type="xs:string" use="optional" />
+    <xs:attribute name="date" type="xs:dateTime" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="AuditEntity">
+    <xs:sequence>
+      <xs:element name="key" type="AuditKey" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="property" type="AuditProperty" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="action" type="AuditAction" use="required" />
+    <xs:attribute name="type" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="AuditKey">
+    <xs:sequence minOccurs="0">
+      <xs:element minOccurs="0" name="value" />
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="type" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="AuditProperty">
+    <xs:sequence minOccurs="0">
+      <xs:element minOccurs="0" name="current" />
+      <xs:element minOccurs="0" name="original" />
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="type" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:simpleType name="AuditAction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Added"/>
+      <xs:enumeration value="Modified"/>
+      <xs:enumeration value="Deleted"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

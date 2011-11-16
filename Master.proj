@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <BuildConfiguration>Release</BuildConfiguration>
+    <BuildFolder>Build\$(BuildConfiguration)</BuildFolder>
+    <PackageFolder>Build\Package</PackageFolder>
+    <LibraryFolder>Libraries</LibraryFolder>
+    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\$(LibraryFolder)</MSBuildCommunityTasksPath>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets"/>
+
+  <PropertyGroup>
+    <Major>1</Major>
+    <Minor>1</Minor>
+
+    <Build>0</Build>
+    <BindBuild>0</BindBuild>
+
+    <Revision>0</Revision>
+    <BindRevision>0</BindRevision>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Year>2011</Year>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <DefaultExclude Include="**\.svn\**" />
+    <DefaultExclude Include="**\.git\**" />
+    <DefaultExclude Include="**\bin\**" />
+    <DefaultExclude Include="**\obj\**" />
+    <DefaultExclude Include="**\.gitignore" />
+    <DefaultExclude Include="**\_resharper*\**" />
+    <DefaultExclude Include="**\*.resharper" />
+    <DefaultExclude Include="**\*.dotCover" />
+    <DefaultExclude Include="**\*.user" />
+    <DefaultExclude Include="**\*.suo" />
+    <DefaultExclude Include="**\*.zip" />
+    <DefaultExclude Include="**\*.msi" />
+    <DefaultExclude Include="**\*.log" />
+  </ItemGroup>
+
+  <Target Name="Clean">
+    <DeleteTree Directories="**\obj\**;**\bin\**" />
+    <RemoveDir Directories="$(PackageFolder)" ContinueOnError="true" />
+  </Target>
+
+  <Target Name="Version">
+    <Time>
+      <Output TaskParameter="Year" PropertyName="Year" />
+    </Time>
+
+    <Version VersionFile="version.txt" RevisionType="Increment">
+      <Output TaskParameter="Major" PropertyName="Major" />
+      <Output TaskParameter="Minor" PropertyName="Minor" />
+      <Output TaskParameter="Build" PropertyName="Build" />
+      <Output TaskParameter="Revision" PropertyName="Revision" />
+    </Version>
+
+    <Message Text="Version: $(Major).$(Minor).$(Build).$(Revision)"/>
+
+    <AssemblyInfo CodeLanguage="CS"
+                  OutputFile="Source\GlobalAssemblyInfo.cs"
+                  AssemblyProduct="EntityFramework.Extended"
+                  AssemblyCompany="LoreSoft"
+                  AssemblyCopyright="Copyright © $(Year) LoreSoft"
+                  AssemblyVersion="$(Major).$(Minor).$(Build).$(Revision)"
+                  AssemblyFileVersion="$(Major).$(Minor).$(Build).$(Revision)"
+                  AssemblyInformationalVersion="$(Major).$(Minor).$(Build).$(Revision)"
+                  GenerateClass="true"
+                  Condition="$(Revision) != '0' "/>
+  </Target>
+
+  <Target Name="Compile" DependsOnTargets="Clean;Version">
+    <MSBuild Projects="Source\EntityFramework.Extended.sln"
+             Properties="Configuration=$(BuildConfiguration)"/>
+  </Target>
+
+  <Target Name="Zip" DependsOnTargets="Compile">
+    <CreateItem Include="**\*.*" Exclude="@(DefaultExclude)" >
+      <Output TaskParameter="Include" ItemName="ZipFiles" />
+    </CreateItem>
+
+    <Zip Files="@(ZipFiles)"
+         ZipFileName="EntityFramework.Extended.v$(Major).$(Minor).$(Build).$(Revision).zip" />
+  </Target>
+
+  <Target Name="Package" DependsOnTargets="Compile">
+    <MakeDir Directories="$(PackageFolder)" />
+    
+  </Target>
+
+  <Target Name="Build">
+    <CallTarget Targets="Zip" />
+  </Target>
+
+</Project>

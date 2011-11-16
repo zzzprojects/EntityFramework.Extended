@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<codeSmith useRelativePaths="false" xmlns="http://www.codesmithtools.com/schema/csp.xsd">
+  <variables>
+    <add key="TrackerConnectionString" value="Data Source=(local);Initial Catalog=Tracker;Integrated Security=True" />
+  </variables>
+  <propertySets>
+    <propertySet name="Entity" output="Entity.txt" template="D:\Projects\Google\CodeSmith\Templates\Frameworks\PLINQO-EF-DbContext\CSharp\Entity.cst">
+      <property name="ContextDirectory">.\</property>
+      <property name="EntityDirectory">.\Entities</property>
+      <property name="MappingDirectory">.\Mapping</property>
+      <property name="TableNaming">Singular</property>
+      <property name="EntityNaming">Singular</property>
+      <property name="RelationshipNaming">Plural</property>
+      <property name="ContextNaming">Plural</property>
+      <property name="IgnoreList">
+        <stringList>
+          <string>sysdiagrams$</string>
+        </stringList>
+      </property>
+      <property name="CleanExpressions">
+        <stringList>
+          <string>^(sp|tbl|udf|vw)_</string>
+        </stringList>
+      </property>
+      <property name="ContextNamespace">Tracker.SqlServer.CodeFirst</property>
+      <property name="SourceDatabase">
+        <connectionString>$(TrackerConnectionString)</connectionString>
+        <providerType>SchemaExplorer.SqlSchemaProvider,SchemaExplorer.SqlSchemaProvider</providerType>
+      </property>
+      <property name="MappingNamespace">Tracker.SqlServer.CodeFirst.Mapping</property>
+      <property name="EntityNamespace">Tracker.SqlServer.CodeFirst.Entities</property>
+    </propertySet>
+  </propertySets>
+</codeSmith>

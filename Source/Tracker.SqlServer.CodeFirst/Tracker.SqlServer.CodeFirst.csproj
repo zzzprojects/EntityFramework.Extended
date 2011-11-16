@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FA68FB7C-D87E-497B-A300-F2A7827FE92C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tracker.SqlServer.CodeFirst</RootNamespace>
+    <AssemblyName>Tracker.SqlServer.CodeFirst</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\..\Libraries\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Entities\Audit.cs" />
+    <Compile Include="Entities\Audit.Generated.cs">
+      <DependentUpon>Audit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Priority.cs" />
+    <Compile Include="Entities\Priority.Generated.cs">
+      <DependentUpon>Priority.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Role.cs" />
+    <Compile Include="Entities\Role.Generated.cs">
+      <DependentUpon>Role.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Status.cs" />
+    <Compile Include="Entities\Status.Generated.cs">
+      <DependentUpon>Status.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\Task.cs" />
+    <Compile Include="Entities\Task.Generated.cs">
+      <DependentUpon>Task.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\TaskExtended.cs" />
+    <Compile Include="Entities\TaskExtended.Generated.cs">
+      <DependentUpon>TaskExtended.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\User.Generated.cs">
+      <DependentUpon>User.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Mapping\AuditMap.cs" />
+    <Compile Include="Mapping\AuditMap.Generated.cs">
+      <DependentUpon>AuditMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Mapping\PriorityMap.cs" />
+    <Compile Include="Mapping\PriorityMap.Generated.cs">
+      <DependentUpon>PriorityMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Mapping\RoleMap.cs" />
+    <Compile Include="Mapping\RoleMap.Generated.cs">
+      <DependentUpon>RoleMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Mapping\StatusMap.cs" />
+    <Compile Include="Mapping\StatusMap.Generated.cs">
+      <DependentUpon>StatusMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Mapping\TaskExtendedMap.cs" />
+    <Compile Include="Mapping\TaskExtendedMap.Generated.cs">
+      <DependentUpon>TaskExtendedMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Mapping\TaskMap.cs" />
+    <Compile Include="Mapping\TaskMap.Generated.cs">
+      <DependentUpon>TaskMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Mapping\UserMap.cs" />
+    <Compile Include="Mapping\UserMap.Generated.cs">
+      <DependentUpon>UserMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TrackerContext.cs" />
+    <Compile Include="TrackerContext.Generated.cs">
+      <DependentUpon>TrackerContext.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Entity.csp" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
