@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using System.Text;
 using EntityFramework.Reflection;
 
-namespace EntityFramework.Extended
+namespace EntityFramework.Extensions
 {
   public static class ObjectQueryExtensions
   {

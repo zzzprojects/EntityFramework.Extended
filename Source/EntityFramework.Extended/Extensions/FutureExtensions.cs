@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using EntityFramework.Future;
 using EntityFramework.Reflection;
 
-namespace EntityFramework.Extended
+namespace EntityFramework.Extensions
 {
     /// <summary>
     /// Extension methods for future queries.

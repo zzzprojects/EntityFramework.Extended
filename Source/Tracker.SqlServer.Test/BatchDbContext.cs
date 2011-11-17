@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using EntityFramework.Extended;
+using EntityFramework.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Tracker.SqlServer.CodeFirst;
 using Tracker.SqlServer.CodeFirst.Entities;

@@ -1,5 +1,5 @@
 using System.Linq;
-using EntityFramework.Extended;
+using EntityFramework.Extensions;
 using EntityFramework.Future;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Tracker.SqlServer.CodeFirst;

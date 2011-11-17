@@ -15,7 +15,7 @@ using System.Text;
 using System.Data.Objects;
 using EntityFramework.Reflection;
 
-namespace EntityFramework.Extended
+namespace EntityFramework.Extensions
 {
     public static class BatchExtensions
     {

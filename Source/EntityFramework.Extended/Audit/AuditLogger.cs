@@ -10,7 +10,7 @@ using System.Data.Objects.DataClasses;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using EntityFramework.Extended;
+using EntityFramework.Extensions;
 using EntityFramework.Reflection;
 
 namespace EntityFramework.Audit

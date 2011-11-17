@@ -3,7 +3,7 @@ using System.Data.Entity;
 using System.Data.Objects;
 using EntityFramework.Audit;
 
-namespace EntityFramework.Extended
+namespace EntityFramework.Extensions
 {
     public static class AuditExtensions
     {

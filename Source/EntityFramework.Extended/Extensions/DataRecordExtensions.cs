@@ -5,7 +5,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 
-namespace EntityFramework.Extended
+namespace EntityFramework.Extensions
 {
     public static class DataRecordExtensions
     {
