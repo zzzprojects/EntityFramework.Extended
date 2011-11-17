@@ -5,6 +5,7 @@
     <BuildConfiguration>Release</BuildConfiguration>
     <BuildFolder>Build\$(BuildConfiguration)</BuildFolder>
     <PackageFolder>Build\Package</PackageFolder>
+    <TestFolder>Build\Test</TestFolder>
     <LibraryFolder>Libraries</LibraryFolder>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\$(LibraryFolder)</MSBuildCommunityTasksPath>
   </PropertyGroup>
@@ -13,13 +14,18 @@
 
   <PropertyGroup>
     <Major>1</Major>
-    <Minor>1</Minor>
+    <Minor>0</Minor>
 
     <Build>0</Build>
     <BindBuild>0</BindBuild>
 
     <Revision>0</Revision>
     <BindRevision>0</BindRevision>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(BUILD_NUMBER)' != '' ">
+    <!-- TeamCity Build Number -->
+    <Revision>$(BUILD_NUMBER)</Revision>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -52,13 +58,6 @@
       <Output TaskParameter="Year" PropertyName="Year" />
     </Time>
 
-    <Version VersionFile="version.txt" RevisionType="Increment">
-      <Output TaskParameter="Major" PropertyName="Major" />
-      <Output TaskParameter="Minor" PropertyName="Minor" />
-      <Output TaskParameter="Build" PropertyName="Build" />
-      <Output TaskParameter="Revision" PropertyName="Revision" />
-    </Version>
-
     <Message Text="Version: $(Major).$(Minor).$(Build).$(Revision)"/>
 
     <AssemblyInfo CodeLanguage="CS"
@@ -78,18 +77,64 @@
              Properties="Configuration=$(BuildConfiguration)"/>
   </Target>
 
-  <Target Name="Zip" DependsOnTargets="Compile">
-    <CreateItem Include="**\*.*" Exclude="@(DefaultExclude)" >
+  <Target Name="Zip" DependsOnTargets="Package">
+    <CreateItem Include="$(PackageFolder)\**\*.*" Exclude="@(DefaultExclude)" >
       <Output TaskParameter="Include" ItemName="ZipFiles" />
     </CreateItem>
 
     <Zip Files="@(ZipFiles)"
          ZipFileName="EntityFramework.Extended.v$(Major).$(Minor).$(Build).$(Revision).zip" />
   </Target>
+  
+  <Target Name="Publish">
+    
+    <RegistryRead KeyName="HKEY_CURRENT_USER\SOFTWARE\MSBuildTasks" ValueName="NuGetAPIKey">
+      <Output TaskParameter="Value" PropertyName="NuGetAPIKey" />
+    </RegistryRead>
+
+    <!-- Depends on TeamCity Artifacts -->
+    <NuGetPush ToolPath="Libraries"
+               File="Artifacts\EntityFramework.Extended.$(Major).$(Minor).$(Build).$(Revision).nupkg"
+               APIKey="$(NuGetAPIKey)" />
+
+    <NuGetPush ToolPath="Libraries"
+               File="Artifacts\EntityFramework.Extended.$(Major).$(Minor).$(Build).$(Revision).symbols.nupkg"
+               APIKey="$(NuGetAPIKey)" />
+
+    <CreateItem Include="*.nupkg">
+      <Output TaskParameter="Include" ItemName="DeleteFiles" />
+    </CreateItem>
+
+    <Delete Files="@(DeleteFiles)" />
+  </Target>
 
   <Target Name="Package" DependsOnTargets="Compile">
+    <!-- Clean Files -->
+    <CreateItem Include="Build\**\*.*">
+      <Output TaskParameter="Include" ItemName="DeleteFiles" />
+    </CreateItem>
+    <Delete Files="@(DeleteFiles)" />
+
+    <!-- Release Files -->
     <MakeDir Directories="$(PackageFolder)" />
-    
+    <CreateItem Include="Source\EntityFramework.Extended\bin\$(BuildConfiguration)\EntityFramework.Extended.*">
+      <Output TaskParameter="Include" ItemName="ReleaseFiles" />
+    </CreateItem>
+    <Copy SourceFiles="@(ReleaseFiles)" 
+          DestinationFolder="$(PackageFolder)" />
+
+    <!-- Test Files -->
+    <MakeDir Directories="$(TestFolder)" />
+    <CreateItem Include="Source\*.Test\bin\$(BuildConfiguration)\*.*">
+      <Output TaskParameter="Include" ItemName="TestFiles" />
+    </CreateItem>
+    <Copy SourceFiles="@(TestFiles)"
+          DestinationFolder="$(TestFolder)" />
+
+    <NuGetPack ToolPath="Libraries"
+           File="EntityFramework.Extended.nuspec"
+           Symbols="true"
+           Version="$(Major).$(Minor).$(Build).$(Revision)" />
   </Target>
 
   <Target Name="Build">

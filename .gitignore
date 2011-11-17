@@ -1,6 +1,7 @@
 bin/
 obj/
 _ReSharper.*/
+build/
 *.user
 *.suo
 *.pdb
@@ -18,3 +19,4 @@ _ReSharper.*/
 *.resharper
 *.Cache
 *.zip
+*.nupkg

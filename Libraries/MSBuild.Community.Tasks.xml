@@ -1688,6 +1688,127 @@
             Optional; the name of the file to write the response to.
             </summary>
         </member>
+        <member name="T:MSBuild.Community.Tasks.NuGet.NuGetBase">
+            <summary>
+            A base class for NuGet tasks.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.NuGet.NuGetBase.GenerateFullPathToTool">
+            <summary>
+            Returns the fully qualified path to the executable file.
+            </summary>
+            <returns>
+            The fully qualified path to the executable file.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.NuGet.NuGetBase.GetWorkingDirectory">
+            <summary>
+            Returns the directory in which to run the executable file.
+            </summary>
+            <returns>
+            The directory in which to run the executable file, or a null reference (Nothing in Visual Basic) if the executable file should be run in the current directory.
+            </returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetBase.WorkingDirectory">
+            <summary>
+            Gets or sets the working directory.
+            </summary>
+            <value>The working directory.</value>
+            <returns>
+            The directory in which to run the executable file, or a null reference (Nothing in Visual Basic) if the executable file should be run in the current directory.
+            </returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetBase.ToolName">
+            <summary>
+            Gets the name of the executable file to run.
+            </summary>
+            <value></value>
+            <returns>The name of the executable file to run.</returns>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.NuGet.NuGetPack">
+            <summary>
+            Creates a NuGet package based on the specified nuspec or project file.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.NuGet.NuGetPack.GenerateCommandLineCommands">
+            <summary>
+            Returns a string value containing the command line arguments to pass directly to the executable file.
+            </summary>
+            <returns>
+            A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetPack.File">
+            <summary>
+            The location of the nuspec or project file to create a package.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetPack.OutputDirectory">
+            <summary>
+            Specifies the directory for the created NuGet package.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetPack.Version">
+            <summary>
+            Overrides the version number from the nuspec file.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetPack.BasePath">
+            <summary>
+            The base path of the files defined in the nuspec file.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetPack.Verbose">
+            <summary>
+            Shows verbose output for package building.
+            </summary>
+            <value><c>true</c> if verbose; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetPack.Symbols">
+            <summary>
+            Determines if a package containing sources and symbols should be created. When specified with a nuspec, 
+            creates a regular NuGet package file and the corresponding symbols package.
+            </summary>
+            <value>
+              <c>true</c> if symbols; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.NuGet.NuGetPush">
+            <summary>
+            Pushes a package to the server and optionally publishes it.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.NuGet.NuGetPush.GenerateCommandLineCommands">
+            <summary>
+            Returns a string value containing the command line arguments to pass directly to the executable file.
+            </summary>
+            <returns>
+            A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetPush.File">
+            <summary>
+            The path to the package to push the package to the server.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetPush.APIKey">
+            <summary>
+            The API key to use for push to the server.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetPush.Source">
+            <summary>
+            Specifies the server URL.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetPush.CreateOnly">
+            <summary>
+            Specifies if the package should be created and uploaded to the server but not published to the server. False by default.
+            </summary>
+            <value>
+              <c>true</c> if create only; otherwise, <c>false</c>.
+            </value>
+        </member>
         <member name="M:MSBuild.Community.Tasks.PathUtil.RelativePathTo(System.String,System.String)">
             <summary>  
             Creates a relative path from one file  
@@ -4216,99 +4337,50 @@
             <value></value>
             <returns>The <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.</returns>
         </member>
-        <member name="T:MSBuild.Community.Tasks.Tfs.IServer">
+        <member name="M:MSBuild.Community.Tasks.Tfs.TfsClient.GenerateFullPathToTool">
             <summary>
-            Describes the behavior of a Team Foundation Server
-            </summary>
-            <exclude />
-        </member>
-        <member name="M:MSBuild.Community.Tasks.Tfs.IServer.GetLatestChangesetId(System.String,System.Net.ICredentials)">
-            <summary>
-            Retrieves the latest changeset ID associated with a path
-            </summary>
-            <param name="localPath">A path on the local filesystem</param>
-            <param name="credentials">Credentials used to authenticate against the serer</param>
-            <returns></returns>
-        </member>
-        <member name="T:MSBuild.Community.Tasks.Tfs.TeamFoundationServer">
-            <summary>
-            Handles all communication with the Team Foundation Server
-            </summary>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.Tfs.TeamFoundationServer.#ctor(System.String)">
-            <summary>
-            Creates an instace of the TeamFoundationServer class
-            </summary>
-            <param name="clientLocation">The local file path containing the TFS libraries. null if TFS is in the GAC.</param>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.Tfs.TeamFoundationServer.GetLatestChangesetId(System.String,System.Net.ICredentials)">
-            <summary>
-            Retrieves the latest changeset ID associated with a path
-            </summary>
-            <param name="localPath">A path on the local filesystem</param>
-            <param name="credentials">Credentials used to authenticate against the serer</param>
-            <returns></returns>
-        </member>
-        <member name="T:MSBuild.Community.Tasks.Tfs.TeamFoundationServerException">
-            <summary>
-            Exceptions returned by the Team Foundation Server
-            </summary>
-            <exclude />
-        </member>
-        <member name="M:MSBuild.Community.Tasks.Tfs.TeamFoundationServerException.#ctor">
-            <summary>
-            Creates a new instance of the exception
-            </summary>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.Tfs.TeamFoundationServerException.#ctor(System.String)">
-            <summary>
-            Creates a new instance of the exception
-            </summary>
-            <param name="message">A description of the exception</param>
-        </member>
-        <member name="T:MSBuild.Community.Tasks.Tfs.TfsVersion">
-            <summary>
-            Determines the changeset in a local Team Foundation Server workspace
-            </summary>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.Tfs.TfsVersion.Execute">
-            <summary>
-            Runs the exectuable file with the specified task parameters.
+            Returns the fully qualified path to the executable file.
             </summary>
             <returns>
-            true if the task runs successfully; otherwise, false.
+            The fully qualified path to the executable file.
             </returns>
         </member>
-        <member name="P:MSBuild.Community.Tasks.Tfs.TfsVersion.Username">
+        <member name="M:MSBuild.Community.Tasks.Tfs.TfsClient.LogToolCommand(System.String)">
             <summary>
-            The user to authenticate on the server
+            Logs the starting point of the run to all registered loggers.
             </summary>
-            <remarks>Leave empty to use the credentials of the current user.</remarks>
+            <param name="message">A descriptive message to provide loggers, usually the command line and switches.</param>
         </member>
-        <member name="P:MSBuild.Community.Tasks.Tfs.TfsVersion.Password">
+        <member name="M:MSBuild.Community.Tasks.Tfs.TfsClient.GenerateCommandLineCommands">
             <summary>
-            The password for the user to authenticate on the server
+            Returns a string value containing the command line arguments to pass directly to the executable file.
             </summary>
-            <remarks>Leave empty to use the credentials of the current user.</remarks>
+            <returns>
+            A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
         </member>
-        <member name="P:MSBuild.Community.Tasks.Tfs.TfsVersion.Domain">
+        <member name="M:MSBuild.Community.Tasks.Tfs.TfsClient.ValidateParameters">
             <summary>
-            The domain of the user to authenticate on the server
+            Indicates whether all task paratmeters are valid.
             </summary>
-            <remarks>Leave empty to use the credentials of the current user.</remarks>
+            <returns>
+            true if all task parameters are valid; otherwise, false.
+            </returns>
         </member>
-        <member name="P:MSBuild.Community.Tasks.Tfs.TfsVersion.LocalPath">
-            <summary>Path to local working copy.</summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.Tfs.TfsVersion.Changeset">
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.StandardOutputLoggingImportance">
             <summary>
-            The latest changeset ID in the local path
+            Gets the <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.
             </summary>
+            <value></value>
+            <returns>The <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.</returns>
         </member>
-        <member name="P:MSBuild.Community.Tasks.Tfs.TfsVersion.TfsLibraryLocation">
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.ToolName">
             <summary>
-            The location of the Team Foundation Server client assemblies. Leave empty when the client is installed in the Global Assembly Cache.
+            Gets the name of the executable file to run.
             </summary>
+            <returns>
+            The name of the executable file to run.
+            </returns>
         </member>
         <member name="T:MSBuild.Community.Tasks.Services.IRegistry">
             <summary>

@@ -17,9 +17,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("EntityFramework.Extended")]
 [assembly: AssemblyCompany("LoreSoft")]
 [assembly: AssemblyCopyright("Copyright © 2011 LoreSoft")]
-[assembly: AssemblyVersion("1.0.0.3")]
-[assembly: AssemblyFileVersion("1.0.0.3")]
-[assembly: AssemblyInformationalVersion("1.0.0.3")]
+[assembly: AssemblyVersion("1.0.0.5")]
+[assembly: AssemblyFileVersion("1.0.0.5")]
+[assembly: AssemblyInformationalVersion("1.0.0.5")]
 
 
 
@@ -31,11 +31,11 @@ internal sealed partial class ThisAssembly {
     
     internal const string AssemblyCopyright = "Copyright © 2011 LoreSoft";
     
-    internal const string AssemblyVersion = "1.0.0.3";
+    internal const string AssemblyVersion = "1.0.0.5";
     
-    internal const string AssemblyFileVersion = "1.0.0.3";
+    internal const string AssemblyFileVersion = "1.0.0.5";
     
-    internal const string AssemblyInformationalVersion = "1.0.0.3";
+    internal const string AssemblyInformationalVersion = "1.0.0.5";
     
     private ThisAssembly() {
     }
