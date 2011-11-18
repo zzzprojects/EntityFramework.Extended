@@ -94,11 +94,11 @@
 
     <!-- Depends on TeamCity Artifacts -->
     <NuGetPush ToolPath="Libraries"
-               File="Artifacts\EntityFramework.Extended.$(Major).$(Minor).$(Build).$(Revision).nupkg"
+               File="Artifacts\EntityFramework.Extended.nupkg"
                APIKey="$(NuGetAPIKey)" />
 
     <NuGetPush ToolPath="Libraries"
-               File="Artifacts\EntityFramework.Extended.$(Major).$(Minor).$(Build).$(Revision).symbols.nupkg"
+               File="Artifacts\EntityFramework.Extended.symbols.nupkg"
                APIKey="$(NuGetAPIKey)" />
 
     <CreateItem Include="*.nupkg">
@@ -135,6 +135,11 @@
            File="EntityFramework.Extended.nuspec"
            Symbols="true"
            Version="$(Major).$(Minor).$(Build).$(Revision)" />
+
+    <Move SourceFiles="EntityFramework.Extended.$(Major).$(Minor).$(Build).$(Revision).nupkg" 
+          DestinationFiles="EntityFramework.Extended.nupkg" />
+    <Move SourceFiles="EntityFramework.Extended.$(Major).$(Minor).$(Build).$(Revision).symbols.nupkg"
+          DestinationFiles="EntityFramework.Extended.symbols.nupkg" />
   </Target>
 
   <Target Name="Build">
