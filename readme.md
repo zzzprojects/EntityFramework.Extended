@@ -75,11 +75,14 @@ Future queries work by creating the appropriate IFutureQuery object that keeps t
 
 ### Audit Log
 
-TODO ...
+The Audit Log feature will capture the changes to entities anytime they are submitted to the database. The Audit Log captures only the entities that are changed and only the properties on those entities that were changed. The before and after values are recorded.  `AuditLogger.LastAudit` is where this information is held and there is a `ToXml()` method that makes it easy to turn the AuditLog into xml for easy storage. 
+
+The AuditLog can be customized via attributes on the entities or via a Fluent Configuration API.
 
 Fluent Configuration
     
-    var auditConfiguration = AuditConfiguration.Default;
+    // config audit when your application is starting up...
+	var auditConfiguration = AuditConfiguration.Default;
     
     auditConfiguration.IncludeRelationships = true;
     auditConfiguration.LoadRelationships = true;

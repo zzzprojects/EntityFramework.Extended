@@ -16,16 +16,19 @@ namespace Tracker.SqlServer.Test
         [TestMethod]
         public void CreateLog()
         {
-            AuditConfiguration.Default.IncludeRelationships = true;
-            AuditConfiguration.Default.LoadRelationships = true;
+            var auditConfiguration = AuditConfiguration.Default;
 
-            AuditConfiguration.Default.IsAuditable<Task>()
+            auditConfiguration.IncludeRelationships = true;
+            auditConfiguration.LoadRelationships = true;
+            auditConfiguration.DefaultAuditable = true;
+
+            // customize the audit for Task entity
+            auditConfiguration.IsAuditable<Task>()
               .NotAudited(t => t.TaskExtended)
               .FormatWith(t => t.Status, v => FormatStatus(v));
 
-            AuditConfiguration.Default.IsAuditable<User>();
-
-            AuditConfiguration.Default.IsAuditable<Status>()
+            // set name as the display member when status is a foreign key
+            auditConfiguration.IsAuditable<Status>()
               .DisplayMember(t => t.Name);
 
             var db = new TrackerContext();
