@@ -22,6 +22,7 @@
     <file src="Build\Package\EntityFramework.Extended.dll" target="lib\net40\EntityFramework.Extended.dll" />
     <file src="Build\Package\EntityFramework.Extended.pdb" target="lib\net40\EntityFramework.Extended.pdb" />
     <file src="Build\Package\EntityFramework.Extended.xml" target="lib\net40\EntityFramework.Extended.xml" />
+    <file src="Source\GlobalAssemblyInfo.cs" target="src" />
     <file src="Source\EntityFramework.Extended\**\*.cs" target="src" />
   </files>
 </package>
