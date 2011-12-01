@@ -13,6 +13,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Data.Objects;
+using EntityFramework.Mapping;
 using EntityFramework.Reflection;
 
 namespace EntityFramework.Extensions

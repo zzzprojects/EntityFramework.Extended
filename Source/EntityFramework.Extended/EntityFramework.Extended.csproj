@@ -69,9 +69,11 @@
     <Compile Include="Audit\NotAuditedAttribute.cs" />
     <Compile Include="Extensions\DataRecordExtensions.cs" />
     <Compile Include="Extensions\BatchExtensions.cs" />
+    <Compile Include="Mapping\EntityMap.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />
     <Compile Include="Extensions\ObjectQueryExtensions.cs" />
-    <Compile Include="Extensions\EntityMapExtensions.cs" />
+    <Compile Include="Mapping\MappingResolver.cs" />
+    <Compile Include="Mapping\PropertyMap.cs" />
     <Compile Include="Future\FutureCount.cs" />
     <Compile Include="Future\FutureException.cs" />
     <Compile Include="Extensions\FutureExtensions.cs" />
@@ -106,6 +108,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
