@@ -169,17 +169,22 @@ namespace EntityFramework.Mapping
 
             EntitySet storeSet = entityMap.StoreSet;
 
+            string schema = null;
             MetadataProperty schemaProperty;
+
             storeSet.MetadataProperties.TryGetValue("Schmea", true, out schemaProperty);
             if (schemaProperty == null)
                 storeSet.MetadataProperties.TryGetValue("http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator:Schema", true, out schemaProperty);
-            
+
             if (schemaProperty != null)
+                schema = schemaProperty.Value as string;
+
+            if (!string.IsNullOrWhiteSpace(schema))
             {
-                builder.Append(QuoteIdentifier(schemaProperty.Name));
+                builder.Append(QuoteIdentifier(schema));
                 builder.Append(".");
             }
-            
+
             builder.Append(QuoteIdentifier(storeSet.Name));
 
             entityMap.TableName = builder.ToString();
