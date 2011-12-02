@@ -248,7 +248,7 @@ namespace EntityFramework.Extensions
                 if (deleteTransaction != null)
                     deleteTransaction.Dispose();
                 if (deleteConnection != null)
-                    deleteConnection.Dispose();
+                    deleteConnection.Close();
             }
         }
 
@@ -356,7 +356,7 @@ namespace EntityFramework.Extensions
                 if (updateTransaction != null)
                     updateTransaction.Dispose();
                 if (updateConnection != null)
-                    updateConnection.Dispose();
+                    updateConnection.Close();
             }
         }
 
