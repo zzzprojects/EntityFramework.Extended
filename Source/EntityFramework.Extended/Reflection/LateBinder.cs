@@ -10,7 +10,13 @@ namespace EntityFramework.Reflection
   /// </summary>
   public static class LateBinder
   {
+      /// <summary>
+      /// Default Flags for pulic binding.
+      /// </summary>
     public const BindingFlags DefaultPublicFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
+    /// <summary>
+    /// Default Flags for nonpublic binding.
+    /// </summary>
     public const BindingFlags DefaultNonPublicFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
 
     /// <summary>

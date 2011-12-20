@@ -6,6 +6,9 @@ using System.Text;
 
 namespace EntityFramework.Reflection
 {
+    /// <summary>
+    /// An interface for method accessor
+    /// </summary>
   public interface IMethodAccessor
   {
     /// <summary>

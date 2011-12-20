@@ -17,10 +17,10 @@ namespace EntityFramework.Audit
     /// 
     /// public class CustomFormat
     /// {
-    ///     // signature can be either static object MethodName(MemberInfo memberInfo, object value) or static object MethodName(object value).
-    ///     public static object FormatPassword(MemberInfo memberInfo, object value)
+    ///     // signature can be static object MethodName(AuditPropertyContext).
+    ///     public static object FormatPassword(AuditPropertyContext auditProperty)
     ///     {
-    ///         string v = value as string;
+    ///         string v = auditProperty.Value as string;
     ///         if (string.IsNullOrEmpty(v))
     ///             return value;
     /// 
@@ -31,8 +31,7 @@ namespace EntityFramework.Audit
     /// </code>
     /// </example>
     /// <remarks>
-    /// The method signature can be either <c>static object MethodName(MemberInfo memberInfo, object value)</c>
-    ///  or <c>static object MethodName(object value)</c>.
+    /// The method signature must be <c>static object MethodName(AuditPropertyContext auditProperty)</c>.
     /// </remarks>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
     public class AuditPropertyFormatAttribute : Attribute
@@ -62,16 +61,27 @@ namespace EntityFramework.Audit
         /// </summary>
         /// <value>The name of the method to call to format the value.</value>
         /// <remarks>
-        /// The method signature can be either <c>static object MethodName(MemberInfo memberInfo, object value)</c>
-        ///  or <c>static object MethodName(object value)</c>.
+        /// The method signature must be <c>static object MethodName(AuditPropertyContext auditProperty)</c>.
         /// </remarks>
         public string MethodName { get; private set; }
     }
 
+    /// <summary>
+    /// The audit property context.
+    /// </summary>
     public class AuditPropertyContext
     {
+        /// <summary>
+        /// Gets or sets the entity.
+        /// </summary>
         public object Entity { get; set; }
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
         public object Value { get; set; }
+        /// <summary>
+        /// Gets or sets the type of the value.
+        /// </summary>
         public Type ValueType { get; set; }
     }
 }

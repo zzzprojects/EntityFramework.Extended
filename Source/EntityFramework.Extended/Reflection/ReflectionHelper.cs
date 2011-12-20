@@ -5,11 +5,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 
 namespace EntityFramework.Reflection
 {
+    /// <summary>
+    /// A class for reflection helper methods
+    /// </summary>
   public static class ReflectionHelper
   {
     private static readonly Type _stringType = typeof(string);
@@ -23,7 +25,7 @@ namespace EntityFramework.Reflection
     /// <summary>
     /// Extracts the property name from a property expression.
     /// </summary>
-    /// <typeparam name="TValue">The of the property value.</typeparam>
+    /// <typeparam name="TValue">The type of the property value.</typeparam>
     /// <param name="propertyExpression">The property expression (e.g. p => p.PropertyName)</param>
     /// <returns>The name of the property.</returns>
     /// <exception cref="ArgumentNullException">Thrown if the <paramref name="propertyExpression"/> is null.</exception>
@@ -89,6 +91,12 @@ namespace EntityFramework.Reflection
       return memberExpression.Member.Name;
     }
 
+    /// <summary>
+    /// Extracts the <see cref="PropertyInfo"/> from a property expression.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <param name="propertyExpression">The property expression.</param>
+    /// <returns>The <see cref="PropertyInfo"/> from the expression.</returns>
     public static PropertyInfo ExtractPropertyInfo<TValue>(Expression<Func<TValue>> propertyExpression)
     {
       if (propertyExpression == null)
@@ -96,7 +104,14 @@ namespace EntityFramework.Reflection
 
       return ExtractPropertyInfo(propertyExpression.Body as MemberExpression);
     }
-    
+
+    /// <summary>
+    /// Extracts the <see cref="PropertyInfo"/> from a property expression.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the source.</typeparam>
+    /// <typeparam name="TValue">The type of the value.</typeparam>
+    /// <param name="propertyExpression">The property expression.</param>
+    /// <returns>The <see cref="PropertyInfo"/> from the expression.</returns>
     public static PropertyInfo ExtractPropertyInfo<TSource, TValue>(Expression<Func<TSource, TValue>> propertyExpression)
     {
       if (propertyExpression == null)
@@ -105,6 +120,11 @@ namespace EntityFramework.Reflection
       return ExtractPropertyInfo(propertyExpression.Body as MemberExpression);
     }
 
+    /// <summary>
+    /// Extracts the property info.
+    /// </summary>
+    /// <param name="memberExpression">The member expression.</param>
+    /// <returns></returns>
     public static PropertyInfo ExtractPropertyInfo(MemberExpression memberExpression)
     {
       if (memberExpression == null)
@@ -132,6 +152,13 @@ namespace EntityFramework.Reflection
       return t;
     }
 
+    /// <summary>
+    /// Determines whether the specified type is a collection.
+    /// </summary>
+    /// <param name="type">The type to check.</param>
+    /// <returns>
+    ///   <c>true</c> if the specified type is collection; otherwise, <c>false</c>.
+    /// </returns>
     public static bool IsCollection(this Type type)
     {
       return type.GetInterfaces()
@@ -140,6 +167,13 @@ namespace EntityFramework.Reflection
           || x.GetType() == _collectionType);
     }
 
+    /// <summary>
+    /// Determines whether the specified type is a dictionary.
+    /// </summary>
+    /// <param name="type">The type to check.</param>
+    /// <returns>
+    ///   <c>true</c> if the specified type is dictionary; otherwise, <c>false</c>.
+    /// </returns>
     public static bool IsDictionary(this Type type)
     {
       return type.GetInterfaces()

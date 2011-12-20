@@ -82,7 +82,7 @@ The AuditLog can be customized via attributes on the entities or via a Fluent Co
 Fluent Configuration
     
     // config audit when your application is starting up...
-	var auditConfiguration = AuditConfiguration.Default;
+    var auditConfiguration = AuditConfiguration.Default;
     
     auditConfiguration.IncludeRelationships = true;
     auditConfiguration.LoadRelationships = true;

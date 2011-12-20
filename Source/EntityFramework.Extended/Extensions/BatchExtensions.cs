@@ -18,8 +18,23 @@ using EntityFramework.Reflection;
 
 namespace EntityFramework.Extensions
 {
+    /// <summary>
+    /// An extensions class for batch queries.
+    /// </summary>
     public static class BatchExtensions
     {
+        /// <summary>
+        /// Executes a delete statement using the query to filter the rows to be deleted.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="source">The source used to determine the table to delete from.</param>
+        /// <param name="query">The IQueryable used to generate the where clause for the delete statement.</param>
+        /// <returns>The number of row deleted.</returns>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
         public static int Delete<TEntity>(
             this ObjectSet<TEntity> source,
             IQueryable<TEntity> query)
@@ -46,6 +61,25 @@ namespace EntityFramework.Extensions
             return Delete(objectContext, entityMap, objectQuery);
         }
 
+        /// <summary>
+        /// Executes a delete statement using an expression to filter the rows to be deleted.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="source">The source used to determine the table to delete from.</param>
+        /// <param name="filterExpression">The filter expression used to generate the where clause for the delete statement.</param>
+        /// <returns>The number of row deleted.</returns>
+        /// <example>Delete all users with email domain @test.com.
+        /// <code><![CDATA[
+        /// var db = new TrackerEntities();
+        /// string emailDomain = "@test.com";
+        /// int count = db.Users.Delete(u => u.Email.EndsWith(emailDomain));
+        /// ]]></code>
+        /// </example>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
         public static int Delete<TEntity>(
             this ObjectSet<TEntity> source,
             Expression<Func<TEntity, bool>> filterExpression)
@@ -59,6 +93,18 @@ namespace EntityFramework.Extensions
             return source.Delete(source.Where(filterExpression));
         }
 
+        /// <summary>
+        /// Executes a delete statement using the query to filter the rows to be deleted.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="source">The source used to determine the table to delete from.</param>
+        /// <param name="query">The IQueryable used to generate the where clause for the delete statement.</param>
+        /// <returns>The number of row deleted.</returns>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
         public static int Delete<TEntity>(
            this DbSet<TEntity> source,
            IQueryable<TEntity> query)
@@ -88,6 +134,25 @@ namespace EntityFramework.Extensions
             return Delete(objectContext, entityMap, objectQuery);
         }
 
+        /// <summary>
+        /// Executes a delete statement using an expression to filter the rows to be deleted.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="source">The source used to determine the table to delete from.</param>
+        /// <param name="filterExpression">The filter expression used to generate the where clause for the delete statement.</param>
+        /// <returns>The number of row deleted.</returns>
+        /// <example>Delete all users with email domain @test.com.
+        /// <code><![CDATA[
+        /// var db = new TrackerContext();
+        /// string emailDomain = "@test.com";
+        /// int count = db.Users.Delete(u => u.Email.EndsWith(emailDomain));
+        /// ]]></code>
+        /// </example>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
         public static int Delete<TEntity>(
             this DbSet<TEntity> source,
             Expression<Func<TEntity, bool>> filterExpression)
@@ -102,6 +167,19 @@ namespace EntityFramework.Extensions
         }
 
 
+        /// <summary>
+        /// Executes an update statement using the query to filter the rows to be updated.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="source">The source used to determine the table to update.</param>
+        /// <param name="query">The query used to generate the where clause.</param>
+        /// <param name="updateExpression">The MemberInitExpression used to indicate what is updated.</param>
+        /// <returns>The number of row updated.</returns>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
         public static int Update<TEntity>(
             this ObjectSet<TEntity> source,
             IQueryable<TEntity> query,
@@ -130,6 +208,28 @@ namespace EntityFramework.Extensions
             return Update(objectContext, entityMap, objectQuery, updateExpression);
         }
 
+        /// <summary>
+        /// Executes an update statement using an expression to filter the rows that are updated.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="source">The source used to determine the table to update.</param>
+        /// <param name="filterExpression">The filter expression used to generate the where clause.</param>
+        /// <param name="updateExpression">The MemberInitExpression used to indicate what is updated.</param>
+        /// <returns>The number of row updated.</returns>
+        /// <example>Update all users in the test.com domain to be inactive.
+        /// <code><![CDATA[
+        /// var db = new TrackerEntities();
+        /// string emailDomain = "@test.com";
+        /// int count = db.Users.Update(
+        ///   u => u.Email.EndsWith(emailDomain),
+        ///   u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
+        /// ]]></code>
+        /// </example>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
         public static int Update<TEntity>(
             this ObjectSet<TEntity> source,
             Expression<Func<TEntity, bool>> filterExpression,
@@ -144,6 +244,19 @@ namespace EntityFramework.Extensions
             return source.Update(source.Where(filterExpression), updateExpression);
         }
 
+        /// <summary>
+        /// Executes an update statement using the query to filter the rows to be updated.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="source">The source used to determine the table to update.</param>
+        /// <param name="query">The query used to generate the where clause.</param>
+        /// <param name="updateExpression">The MemberInitExpression used to indicate what is updated.</param>
+        /// <returns>The number of row updated.</returns>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
         public static int Update<TEntity>(
             this DbSet<TEntity> source,
             IQueryable<TEntity> query,
@@ -176,6 +289,28 @@ namespace EntityFramework.Extensions
             return Update(objectContext, entityMap, objectQuery, updateExpression);
         }
 
+        /// <summary>
+        /// Executes an update statement using an expression to filter the rows that are updated.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="source">The source used to determine the table to update.</param>
+        /// <param name="filterExpression">The filter expression used to generate the where clause.</param>
+        /// <param name="updateExpression">The MemberInitExpression used to indicate what is updated.</param>
+        /// <returns>The number of row updated.</returns>
+        /// <example>Update all users in the test.com domain to be inactive.
+        /// <code><![CDATA[
+        /// var db = new TrackerContext();
+        /// string emailDomain = "@test.com";
+        /// int count = db.Users.Update(
+        ///   u => u.Email.EndsWith(emailDomain),
+        ///   u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
+        /// ]]></code>
+        /// </example>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
         public static int Update<TEntity>(
             this DbSet<TEntity> source,
             Expression<Func<TEntity, bool>> filterExpression,

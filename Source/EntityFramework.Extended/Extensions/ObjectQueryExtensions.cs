@@ -10,8 +10,17 @@ using EntityFramework.Reflection;
 
 namespace EntityFramework.Extensions
 {
+    /// <summary>
+    /// Extension methods for for ObjectQuery.
+    /// </summary>
   public static class ObjectQueryExtensions
   {
+      /// <summary>
+      /// Convert the query into an ObjectQuery.
+      /// </summary>
+      /// <typeparam name="TEntity">The type of the entity.</typeparam>
+      /// <param name="query">The query to convert.</param>
+      /// <returns>The converted ObjectQuery; otherwise null if it can't be converted.</returns>
       public static ObjectQuery<TEntity> ToObjectQuery<TEntity>(this IQueryable<TEntity> query) where TEntity : class
       {
           // first try direct cast
@@ -40,6 +49,11 @@ namespace EntityFramework.Extensions
           return objectQuery;
       }
 
+      /// <summary>
+      /// Convert the query into an ObjectQuery.
+      /// </summary>
+      /// <param name="query">The query to convert.</param>
+      /// <returns>The converted ObjectQuery; otherwise null if it can't be converted.</returns>
       public static ObjectQuery ToObjectQuery(this IQueryable query)
       {
           // first try direct cast
@@ -68,6 +82,13 @@ namespace EntityFramework.Extensions
           return objectQuery;
       }
 
+      /// <summary>
+      /// Creates an ObjectQuery from an expression.
+      /// </summary>
+      /// <param name="source">The source.</param>
+      /// <param name="expression">The expression.</param>
+      /// <param name="type">The type.</param>
+      /// <returns>An ObjectQuery created from the expression.</returns>
       public static ObjectQuery CreateQuery(this IQueryable source, Expression expression, Type type)
       {
           // first convet to object query to get the correct provider
@@ -88,6 +109,12 @@ namespace EntityFramework.Extensions
           return resultQuery;
       }
 
+      /// <summary>
+      /// Gets the ObjectContext for the specifed query.
+      /// </summary>
+      /// <typeparam name="TEntity">The type of the entity.</typeparam>
+      /// <param name="query">The query.</param>
+      /// <returns>The ObjectContext for the query.</returns>
       public static ObjectContext GetContext<TEntity>(this IQueryable<TEntity> query) where TEntity : class
       {
           var objectQuery = query.ToObjectQuery();

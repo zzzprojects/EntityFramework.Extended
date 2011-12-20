@@ -3,6 +3,9 @@ using System.Xml.Serialization;
 
 namespace EntityFramework.Audit
 {
+    /// <summary>
+    /// A class used to hold audit key values.
+    /// </summary>
     [XmlRoot(Namespace = AuditLog.AuditNamespace, ElementName = "key")]
     [DebuggerDisplay("Name: {Name}, Value: {Value}")]
     public class AuditKey

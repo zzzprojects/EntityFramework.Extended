@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlCompact", "SqlCompact", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlCompact.Entities", "Tracker.SqlCompact.Entities\Tracker.SqlCompact.Entities.csproj", "{673ABCFA-71ED-4907-8EAC-D0328DB01D8E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlCompact.Test", "Tracker.SqlCompact.Test\Tracker.SqlCompact.Test.csproj", "{9B3AA433-49DF-46AA-BE45-34CB3EE81173}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = EntityFramework.Extended.vsmdi
@@ -60,6 +62,10 @@ Global
 		{673ABCFA-71ED-4907-8EAC-D0328DB01D8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{673ABCFA-71ED-4907-8EAC-D0328DB01D8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{673ABCFA-71ED-4907-8EAC-D0328DB01D8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B3AA433-49DF-46AA-BE45-34CB3EE81173}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B3AA433-49DF-46AA-BE45-34CB3EE81173}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B3AA433-49DF-46AA-BE45-34CB3EE81173}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B3AA433-49DF-46AA-BE45-34CB3EE81173}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -69,5 +75,6 @@ Global
 		{ACB6E31F-C2B8-48BF-97C5-22FED0F6D6AC} = {14134A51-5696-4B7C-B257-40E06494C315}
 		{60743577-CDBD-4E89-AC63-F46CF914458D} = {14134A51-5696-4B7C-B257-40E06494C315}
 		{673ABCFA-71ED-4907-8EAC-D0328DB01D8E} = {155A9572-45F0-40F3-87AF-CBFC9D770EF6}
+		{9B3AA433-49DF-46AA-BE45-34CB3EE81173} = {155A9572-45F0-40F3-87AF-CBFC9D770EF6}
 	EndGlobalSection
 EndGlobal

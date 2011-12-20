@@ -15,16 +15,28 @@ using EntityFramework.Reflection;
 
 namespace EntityFramework.Audit
 {
+    /// <summary>
+    /// A class used to create an AuditLog.
+    /// </summary>
     public class AuditLogger : IDisposable
     {
         private static readonly Lazy<MethodInfo> _relatedAccessor = new Lazy<MethodInfo>(FindRelatedMethod);
         private const string _nullText = "{null}";
         private const string _errorText = "{error}";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuditLogger"/> class.
+        /// </summary>
+        /// <param name="objectContext">The ObjectContext to create the AuditLog from.</param>
         public AuditLogger(ObjectContext objectContext)
             : this(objectContext, null)
         { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuditLogger"/> class.
+        /// </summary>
+        /// <param name="objectContext">The ObjectContext to create the AuditLog from.</param>
+        /// <param name="configuration">The AuditConfiguration to use when creating the AuditLog.</param>
         public AuditLogger(ObjectContext objectContext, AuditConfiguration configuration)
         {
             if (objectContext == null)
@@ -36,10 +48,19 @@ namespace EntityFramework.Audit
             AttachEvents();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuditLogger"/> class.
+        /// </summary>
+        /// <param name="dbContext">The DbContext to create the AuditLog from.</param>
         public AuditLogger(DbContext dbContext)
             : this(dbContext, null)
         { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuditLogger"/> class.
+        /// </summary>
+        /// <param name="dbContext">The DbContext to create the AuditLog from.</param>
+        /// <param name="configuration">The AuditConfiguration to use when creating the AuditLog.</param>
         public AuditLogger(DbContext dbContext, AuditConfiguration configuration)
         {
             if (dbContext == null)
@@ -63,6 +84,11 @@ namespace EntityFramework.Audit
             _objectContext.SavingChanges -= OnSavingChanges;
         }
 
+        /// <summary>
+        /// Called when OjbectContext is saving changes.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         protected virtual void OnSavingChanges(object sender, EventArgs e)
         {
             LastLog = CreateLog();
@@ -70,20 +96,32 @@ namespace EntityFramework.Audit
         #endregion
 
         private readonly ObjectContext _objectContext;
+        /// <summary>
+        /// Gets the ObjectContext to create the AuditLog from.
+        /// </summary>
         public ObjectContext ObjectContext
         {
             get { return _objectContext; }
         }
 
         private readonly AuditConfiguration _configuration;
+        /// <summary>
+        /// Gets the AuditConfiguration to use when creating the AuditLog.
+        /// </summary>
         public AuditConfiguration Configuration
         {
             get { return _configuration; }
         }
 
+        /// <summary>
+        /// Gets the last AuditLog created.
+        /// </summary>
         public AuditLog LastLog { get; private set; }
-
-
+        
+        /// <summary>
+        /// Creates the AuditLog from the current ObjectContext.
+        /// </summary>
+        /// <returns></returns>
         public AuditLog CreateLog()
         {
             var auditLog = new AuditLog

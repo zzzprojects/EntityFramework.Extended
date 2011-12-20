@@ -7,7 +7,6 @@ namespace EntityFramework.Audit
     /// </summary>
     /// <seealso cref="AuditAttribute"/>
     /// <seealso cref="NotAuditedAttribute"/>
-    /// <seealso cref="AuditManager"/>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
     public class AlwaysAuditAttribute : Attribute
     { }

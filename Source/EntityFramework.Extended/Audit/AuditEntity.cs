@@ -20,12 +20,19 @@ namespace EntityFramework.Audit
         private WeakReference _current;
         private Type _entityType;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuditEntity"/> class.
+        /// </summary>
         public AuditEntity()
         {
             _keys = new AuditKeyCollection();
             _properties = new AuditPropertyCollection();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuditEntity"/> class.
+        /// </summary>
+        /// <param name="current">The current entity the AuditEntity is based on.</param>
         public AuditEntity(object current)
             : this()
         {

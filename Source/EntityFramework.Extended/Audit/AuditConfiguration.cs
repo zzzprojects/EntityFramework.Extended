@@ -232,7 +232,7 @@ namespace EntityFramework.Audit
 
         #region Fluent
         /// <summary>
-        /// Fluent method to set whether the entity is auditable.
+        /// Fluent method to set whether the entity class is auditable.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <param name="value">if set to <c>true</c> make the entity auditable.</param>

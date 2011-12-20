@@ -3,6 +3,9 @@ using System.Reflection;
 
 namespace EntityFramework.Reflection
 {
+    /// <summary>
+    /// An interface defining member information
+    /// </summary>
     public interface IMemberInfo
     {
         /// <summary>

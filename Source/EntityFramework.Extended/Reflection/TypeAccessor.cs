@@ -54,16 +54,40 @@ namespace EntityFramework.Reflection
 
 
     #region Method
+    /// <summary>
+    /// Searches for the public property with the specified name.
+    /// </summary>
+    /// <param name="name">The name of the property to find.</param>
+    /// <returns>
+    /// An <see cref="IMethodAccessor"/> instance for the method if found; otherwise <c>null</c>.
+    /// </returns>
     public IMethodAccessor FindMethod(string name)
     {
       return FindMethod(name, Type.EmptyTypes);
     }
 
+    /// <summary>
+    /// Searches for the public property with the specified name.
+    /// </summary>
+    /// <param name="name">The name of the property to find.</param>
+    /// <param name="parameterTypes">The parameter argument types.</param>
+    /// <returns>
+    /// An <see cref="IMethodAccessor"/> instance for the method if found; otherwise <c>null</c>.
+    /// </returns>
     public IMethodAccessor FindMethod(string name, params Type[] parameterTypes)
     {
       return FindMethod(name, parameterTypes, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
     }
 
+    /// <summary>
+    /// Searches for the specified method, using the specified binding constraints.
+    /// </summary>
+    /// <param name="name">The name of the property to find.</param>
+    /// <param name="parameterTypes">The parameter argument types.</param>
+    /// <param name="flags">A bitmask comprised of one or more <see cref="BindingFlags"/> that specify how the search is conducted.</param>
+    /// <returns>
+    /// An <see cref="IMethodAccessor"/> instance for the method if found; otherwise <c>null</c>.
+    /// </returns>
     public IMethodAccessor FindMethod(string name, Type[] parameterTypes, BindingFlags flags)
     {
       int key = MethodAccessor.GetKey(name, parameterTypes);
@@ -362,6 +386,13 @@ namespace EntityFramework.Reflection
       return _memberCache.GetOrAdd(name, n => CreateFieldAccessor(n, flags));
     }
 
+    /// <summary>
+    /// Gets the <see cref="IMemberAccessor"/> for the specified <see cref="FieldInfo"/>.
+    /// </summary>
+    /// <param name="fieldInfo">The <see cref="FieldInfo"/> to get the <see cref="IMemberAccessor"/> for.</param>
+    /// <returns>
+    /// An <see cref="IMemberAccessor"/> instance for the field.
+    /// </returns>
     public IMemberAccessor GetAccessor(FieldInfo fieldInfo)
     {
       return _memberCache.GetOrAdd(fieldInfo.Name, n => CreateAccessor(fieldInfo));
