@@ -10,7 +10,7 @@
     <description>Entity Framework extensions library.</description>
     <language>en-US</language>
     <dependencies>
-      <dependency id="EntityFramework" version="4.2.0.0" />
+      <dependency id="EntityFramework" version="4.3.0.0" />
     </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Data.Entity" targetFramework="" />
