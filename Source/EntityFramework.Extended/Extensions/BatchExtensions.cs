@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Data.Common.CommandTrees;
 using System.Data.Entity;
@@ -332,11 +333,17 @@ namespace EntityFramework.Extensions
             DbConnection deleteConnection = null;
             DbTransaction deleteTransaction = null;
             DbCommand deleteCommand = null;
+            bool ownConnection = false;
 
             try
             {
                 deleteConnection = GetStoreConnection(objectContext);
-                deleteConnection.Open();
+
+                if (deleteConnection.State != ConnectionState.Open)
+                {
+                    deleteConnection.Open();
+                    ownConnection = true;
+                }
 
                 deleteTransaction = deleteConnection.BeginTransaction();
 
@@ -382,7 +389,8 @@ namespace EntityFramework.Extensions
                     deleteCommand.Dispose();
                 if (deleteTransaction != null)
                     deleteTransaction.Dispose();
-                if (deleteConnection != null)
+
+                if (deleteConnection != null && ownConnection)
                     deleteConnection.Close();
             }
         }
@@ -393,11 +401,16 @@ namespace EntityFramework.Extensions
             DbConnection updateConnection = null;
             DbTransaction updateTransaction = null;
             DbCommand updateCommand = null;
+            bool ownConnection = false;
 
             try
             {
                 updateConnection = GetStoreConnection(objectContext);
-                updateConnection.Open();
+                if (updateConnection.State != ConnectionState.Open)
+                {
+                    updateConnection.Open();
+                    ownConnection = true;
+                }
 
                 updateTransaction = updateConnection.BeginTransaction();
 
@@ -490,7 +503,7 @@ namespace EntityFramework.Extensions
                     updateCommand.Dispose();
                 if (updateTransaction != null)
                     updateTransaction.Dispose();
-                if (updateConnection != null)
+                if (updateConnection != null && ownConnection)
                     updateConnection.Close();
             }
         }
