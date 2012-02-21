@@ -131,11 +131,17 @@
     <Copy SourceFiles="@(TestFiles)"
           DestinationFolder="$(TestFolder)" />
 
-    <NuGetPack ToolPath="Libraries"
-           File="EntityFramework.Extended.nuspec"
-           Symbols="true"
-           Version="$(Major).$(Minor).$(Build).$(Revision)" />
+    <!-- Clean NuGet Files -->
+    <CreateItem Include="*.nupkg">
+      <Output TaskParameter="Include" ItemName="NuGetFiles" />
+    </CreateItem>
+    <Delete Files="@(NuGetFiles)" />
 
+    <NuGetPack ToolPath="$(MSBuildProjectDirectory)\Libraries"
+               File="EntityFramework.Extended.nuspec"
+               Symbols="true"
+               Version="$(Major).$(Minor).$(Build).$(Revision)" />
+        
     <Move SourceFiles="EntityFramework.Extended.$(Major).$(Minor).$(Build).$(Revision).nupkg" 
           DestinationFiles="EntityFramework.Extended.nupkg" />
     <Move SourceFiles="EntityFramework.Extended.$(Major).$(Minor).$(Build).$(Revision).symbols.nupkg"
