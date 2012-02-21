@@ -11,7 +11,7 @@ namespace Tracker.SqlCompact.Test
   public class FutureObjectContext
   {
     
-    [TestMethod]
+    //[TestMethod]
     public void PageTest()
     {
       var db = new TrackerEntities();
@@ -32,7 +32,7 @@ namespace Tracker.SqlCompact.Test
       Assert.IsNotNull(tasks);
     }
 
-    [TestMethod]
+    //[TestMethod]
     public void SimpleTest()
     {
       var db = new TrackerEntities();
@@ -67,7 +67,7 @@ namespace Tracker.SqlCompact.Test
 
     }
 
-    [TestMethod]
+    //[TestMethod]
     public void FutureCountTest()
     {
       var db = new TrackerEntities();
@@ -101,7 +101,7 @@ namespace Tracker.SqlCompact.Test
       Assert.AreNotEqual(count, 0);
     }
 
-    [TestMethod]
+    //[TestMethod]
     public void FutureCountReverseTest()
     {
       var db = new TrackerEntities();
@@ -136,7 +136,7 @@ namespace Tracker.SqlCompact.Test
       Assert.IsNotNull(users);
     }
 
-    [TestMethod]
+    //[TestMethod]
     public void FutureValueTest()
     {
       var db = new TrackerEntities();
@@ -177,7 +177,7 @@ namespace Tracker.SqlCompact.Test
       Assert.IsNotNull(tasks);
     }
 
-    [TestMethod]
+    //[TestMethod]
     public void FutureValueReverseTest()
     {
       var db = new TrackerEntities();
