@@ -172,7 +172,7 @@ namespace EntityFramework.Mapping
             string schema = null;
             MetadataProperty schemaProperty;
 
-            storeSet.MetadataProperties.TryGetValue("Schmea", true, out schemaProperty);
+            storeSet.MetadataProperties.TryGetValue("Schema", true, out schemaProperty);
             if (schemaProperty == null)
                 storeSet.MetadataProperties.TryGetValue("http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator:Schema", true, out schemaProperty);
 
