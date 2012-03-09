@@ -466,7 +466,7 @@ namespace EntityFramework.Extensions
 
                     var parameter = updateCommand.CreateParameter();
                     parameter.ParameterName = parameterName;
-                    parameter.Value = value;
+                    parameter.Value = value ?? System.DBNull.Value;;
                     updateCommand.Parameters.Add(parameter);
 
                     sqlBuilder.AppendFormat("{0} = @{1}", columnName, parameterName);
