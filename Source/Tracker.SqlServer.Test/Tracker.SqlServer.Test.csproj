@@ -46,6 +46,7 @@
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -57,6 +58,7 @@
     <Compile Include="AuditTest.cs" />
     <Compile Include="BatchDbContext.cs" />
     <Compile Include="BatchObjectContext.cs" />
+    <Compile Include="ExtensionTest.cs" />
     <Compile Include="FutureDbContext.cs" />
     <Compile Include="FutureObjectContext.cs" />
     <Compile Include="MappingObjectContext.cs" />

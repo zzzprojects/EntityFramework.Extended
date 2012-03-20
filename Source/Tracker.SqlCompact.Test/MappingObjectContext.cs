@@ -12,6 +12,7 @@ namespace Tracker.SqlCompact.Test
     public class MappingObjectContext
     {
         [TestMethod]
+        [Ignore]
         public void GetEntityMap()
         {
             var db = new TrackerEntities();

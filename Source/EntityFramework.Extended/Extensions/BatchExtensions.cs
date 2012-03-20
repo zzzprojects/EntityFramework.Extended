@@ -334,10 +334,14 @@ namespace EntityFramework.Extensions
             DbTransaction deleteTransaction = null;
             DbCommand deleteCommand = null;
             bool ownConnection = false;
+            bool ownTransaction = false;
 
             try
             {
-                deleteConnection = GetStoreConnection(objectContext);
+                // get store connection and transaction
+                var store = GetStore(objectContext);
+                deleteConnection = store.Item1;
+                deleteTransaction = store.Item2;
 
                 if (deleteConnection.State != ConnectionState.Open)
                 {
@@ -345,7 +349,12 @@ namespace EntityFramework.Extensions
                     ownConnection = true;
                 }
 
-                deleteTransaction = deleteConnection.BeginTransaction();
+                if (deleteTransaction == null)
+                {
+                    deleteTransaction = deleteConnection.BeginTransaction();
+                    ownTransaction = true;
+                }
+
 
                 deleteCommand = deleteConnection.CreateCommand();
                 deleteCommand.Transaction = deleteTransaction;
@@ -379,7 +388,10 @@ namespace EntityFramework.Extensions
                 deleteCommand.CommandText = sqlBuilder.ToString();
 
                 int result = deleteCommand.ExecuteNonQuery();
-                deleteTransaction.Commit();
+
+                // only commit if created transaction
+                if (ownTransaction)
+                    deleteTransaction.Commit();
 
                 return result;
             }
@@ -387,7 +399,8 @@ namespace EntityFramework.Extensions
             {
                 if (deleteCommand != null)
                     deleteCommand.Dispose();
-                if (deleteTransaction != null)
+                
+                if (deleteTransaction != null && ownTransaction)
                     deleteTransaction.Dispose();
 
                 if (deleteConnection != null && ownConnection)
@@ -402,17 +415,27 @@ namespace EntityFramework.Extensions
             DbTransaction updateTransaction = null;
             DbCommand updateCommand = null;
             bool ownConnection = false;
+            bool ownTransaction = false;
 
             try
             {
-                updateConnection = GetStoreConnection(objectContext);
+                // get store connection and transaction
+                var store = GetStore(objectContext);
+                updateConnection = store.Item1;
+                updateTransaction = store.Item2;
+
                 if (updateConnection.State != ConnectionState.Open)
                 {
                     updateConnection.Open();
                     ownConnection = true;
                 }
 
-                updateTransaction = updateConnection.BeginTransaction();
+                // use existing transaction or create new
+                if (updateTransaction == null)
+                {
+                    updateTransaction = updateConnection.BeginTransaction();
+                    ownTransaction = true;
+                }
 
                 updateCommand = updateConnection.CreateCommand();
                 updateCommand.Transaction = updateTransaction;
@@ -493,7 +516,10 @@ namespace EntityFramework.Extensions
                 updateCommand.CommandText = sqlBuilder.ToString();
 
                 int result = updateCommand.ExecuteNonQuery();
-                updateTransaction.Commit();
+
+                // only commit if created transaction
+                if (ownTransaction)
+                    updateTransaction.Commit();
 
                 return result;
             }
@@ -501,24 +527,32 @@ namespace EntityFramework.Extensions
             {
                 if (updateCommand != null)
                     updateCommand.Dispose();
-                if (updateTransaction != null)
+                if (updateTransaction != null && ownTransaction)
                     updateTransaction.Dispose();
                 if (updateConnection != null && ownConnection)
                     updateConnection.Close();
             }
         }
 
-        private static DbConnection GetStoreConnection(ObjectContext objectContext)
+        private static Tuple<DbConnection, DbTransaction> GetStore(ObjectContext objectContext)
         {
             DbConnection dbConnection = objectContext.Connection;
             var entityConnection = dbConnection as EntityConnection;
 
             // by-pass entity connection
-            var connection = entityConnection == null
-                ? dbConnection
-                : entityConnection.StoreConnection;
+            if (entityConnection == null)
+                return new Tuple<DbConnection, DbTransaction>(dbConnection, null);
 
-            return connection;
+            DbConnection connection = entityConnection.StoreConnection;
+
+            // get internal transaction
+            dynamic connectionProxy = new DynamicProxy(entityConnection);
+            dynamic entityTransaction = connectionProxy.CurrentTransaction;
+            if (entityTransaction == null)
+                return new Tuple<DbConnection, DbTransaction>(connection, null);
+
+            DbTransaction transaction = entityTransaction.StoreTransaction;
+            return new Tuple<DbConnection, DbTransaction>(connection, transaction);
         }
 
         private static string GetSelectSql<TEntity>(ObjectQuery<TEntity> query, EntityMap entityMap, DbCommand command)
