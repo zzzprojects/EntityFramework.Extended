@@ -16,7 +16,7 @@ namespace EntityFramework.Mapping
     /// </summary>
     /// <remarks>
     /// This class uses a lot of reflection to get access to internal mapping data the Entity Framework 
-    /// does not provide access.  The maybe issues with this implementation as version of of Entity Framework change.
+    /// does not provide access.  There maybe issues with this implementation as version of of Entity Framework change.
     /// </remarks>
     public static class MappingResolver
     {
@@ -180,10 +180,24 @@ namespace EntityFramework.Mapping
         {
             var builder = new StringBuilder(50);
 
-            dynamic storeSet = new DynamicProxy(entityMap.StoreSet);
+            EntitySet storeSet = entityMap.StoreSet;
 
+            string table = null;
             string schema = null;
+
+            MetadataProperty tableProperty;
             MetadataProperty schemaProperty;
+
+            storeSet.MetadataProperties.TryGetValue("Table", true, out tableProperty);
+            if (tableProperty == null)
+                storeSet.MetadataProperties.TryGetValue("http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator:Table", true, out tableProperty);
+
+            if (tableProperty != null)
+                table = tableProperty.Value as string;
+
+            // Table will be null if its the same as Name
+            if (table == null)
+                table = storeSet.Name;
 
             storeSet.MetadataProperties.TryGetValue("Schema", true, out schemaProperty);
             if (schemaProperty == null)
@@ -198,7 +212,7 @@ namespace EntityFramework.Mapping
                 builder.Append(".");
             }
 
-            builder.Append(QuoteIdentifier((string)storeSet.Table));
+            builder.Append(QuoteIdentifier(table));
 
             entityMap.TableName = builder.ToString();
         }
