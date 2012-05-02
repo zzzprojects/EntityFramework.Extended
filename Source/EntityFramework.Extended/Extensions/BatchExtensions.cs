@@ -14,6 +14,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Data.Objects;
+using System.Text.RegularExpressions;
 using EntityFramework.Mapping;
 using EntityFramework.Reflection;
 
@@ -399,7 +400,7 @@ namespace EntityFramework.Extensions
             {
                 if (deleteCommand != null)
                     deleteCommand.Dispose();
-                
+
                 if (deleteTransaction != null && ownTransaction)
                     deleteTransaction.Dispose();
 
@@ -466,55 +467,102 @@ namespace EntityFramework.Extensions
                         .Select(p => p.ColumnName)
                         .FirstOrDefault();
 
-                    string parameterName = "p__update__" + nameCount++;
 
                     var memberAssignment = binding as MemberAssignment;
                     if (memberAssignment == null)
                         throw new ArgumentException("The update expression MemberBinding must only by type MemberAssignment.", "updateExpression");
 
-                    object value;
-                    if (memberAssignment.Expression.NodeType == ExpressionType.Constant)
-                    {
-                        var constantExpression = memberAssignment.Expression as ConstantExpression;
-                        if (constantExpression == null)
-                            throw new ArgumentException("The MemberAssignment expression is not a ConstantExpression.", "updateExpression");
+                    Expression memberExpression = memberAssignment.Expression;
 
-                        value = constantExpression.Value;
+                    ParameterExpression parameterExpression = null;                    
+                    memberExpression.Visit((ParameterExpression p) =>
+                    {
+                        if (p.Type == entityMap.EntityType)
+                            parameterExpression = p;
+
+                        return p;
+                    });
+
+
+                    if (parameterExpression == null)
+                    {
+                        object value;
+
+                        if (memberExpression.NodeType == ExpressionType.Constant)
+                        {
+                            var constantExpression = memberExpression as ConstantExpression;
+                            if (constantExpression == null)
+                                throw new ArgumentException(
+                                    "The MemberAssignment expression is not a ConstantExpression.", "updateExpression");
+
+                            value = constantExpression.Value;
+                        }
+                        else
+                        {
+                            LambdaExpression lambda = Expression.Lambda(memberExpression, null);
+                            value = lambda.Compile().DynamicInvoke();
+                        }
+
+                        if (value != null)
+                        {
+                            string parameterName = "p__update__" + nameCount++;
+                            var parameter = updateCommand.CreateParameter();                            
+                            parameter.ParameterName = parameterName;
+                            parameter.Value = value;
+                            updateCommand.Parameters.Add(parameter);
+
+                            sqlBuilder.AppendFormat("[{0}] = @{1}", columnName, parameterName);
+                        }
+                        else
+                        {
+                            sqlBuilder.AppendFormat("[{0}] = NULL", columnName);
+                        }
                     }
                     else
-                    {                        
-                        if (memberAssignment.Expression.NodeType == ExpressionType.MemberAccess)
-    				    {
-						    var memberExpression = memberAssignment.Expression as MemberExpression;
-							if (memberExpression == null)
-							    throw new ArgumentException("The MemberAssignment expression is not a MemberExpression.", "updateExpression");
-
-							if (memberExpression.Expression.Type == typeof(TEntity))
-							{
-							    string otherColumnName = entityMap.PropertyMaps
-								    .Where(p => p.PropertyName == memberExpression.Member.Name)
-									.Select(p => p.ColumnName)
-									.FirstOrDefault();
-
-							    if (string.IsNullOrWhiteSpace(otherColumnName))
-								    throw new ArgumentException("The source column for the MemberAssignment expression was not found", "updateExpression");
-
-								sqlBuilder.AppendFormat("{0} = {1}", columnName, otherColumnName);
-								wroteSet = true;
-								continue;
-							}
-						}
+                    {
+                        // create clean objectset to build query from
+                        var objectSet = objectContext.CreateObjectSet<TEntity>();
                         
-                        LambdaExpression lambda = Expression.Lambda(memberAssignment.Expression, null);
-                        value = lambda.Compile().DynamicInvoke();
+                        Type[] typeArguments = new[] { entityMap.EntityType, memberExpression.Type };
+
+                        ConstantExpression constantExpression = Expression.Constant(objectSet);
+                        LambdaExpression lambdaExpression = Expression.Lambda(memberExpression, parameterExpression);
+
+                        MethodCallExpression selectExpression = Expression.Call(
+                            typeof(Queryable),
+                            "Select",
+                            typeArguments,
+                            constantExpression,
+                            lambdaExpression);
+
+                        // create query from expression
+                        var selectQuery = objectSet.CreateQuery(selectExpression, entityMap.EntityType);
+                        string sql = selectQuery.ToTraceString();
+
+                        // parse select part of sql to use as update
+                        string regex = @"SELECT\s*\r\n(?<ColumnValue>.+)?\s*AS\s*(?<ColumnAlias>\[\w+\])\r\nFROM\s*(?<TableName>\[\w+\]\.\[\w+\]|\[\w+\])\s*AS\s*(?<TableAlias>\[\w+\])";
+                        Match match = Regex.Match(sql, regex);
+                        if (!match.Success)
+                            throw new ArgumentException("The MemberAssignment expression could not be processed.", "updateExpression");
+
+                        string value = match.Groups["ColumnValue"].Value;
+                        string alias = match.Groups["TableAlias"].Value;
+
+                        value = value.Replace(alias + ".", "");
+
+                        foreach (ObjectParameter objectParameter in selectQuery.Parameters)
+                        {
+                            string parameterName = "p__update__" + nameCount++;
+                            
+                            var parameter = updateCommand.CreateParameter();
+                            parameter.ParameterName = parameterName;
+                            parameter.Value = objectParameter.Value;
+                            updateCommand.Parameters.Add(parameter);
+
+                            value = value.Replace(objectParameter.Name, parameterName);
+                        }
+                        sqlBuilder.AppendFormat("[{0}] = {1}", columnName, value);
                     }
-
-                    var parameter = updateCommand.CreateParameter();
-                    parameter.ParameterName = parameterName;
-                    parameter.Value = value;
-                    updateCommand.Parameters.Add(parameter);
-
-                    sqlBuilder.AppendFormat("{0} = @{1}", columnName, parameterName);
                     wroteSet = true;
                 }
 
@@ -530,7 +578,7 @@ namespace EntityFramework.Extensions
                     if (wroteKey)
                         sqlBuilder.Append(" AND ");
 
-                    sqlBuilder.AppendFormat("j0.{0} = j1.{0}", keyMap.ColumnName);
+                    sqlBuilder.AppendFormat("j0.[{0}] = j1.[{0}]", keyMap.ColumnName);
                     wroteKey = true;
                 }
                 sqlBuilder.Append(")");

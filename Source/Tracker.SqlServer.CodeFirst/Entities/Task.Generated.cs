@@ -16,7 +16,7 @@ namespace Tracker.SqlServer.CodeFirst.Entities
     {
         public Task()
         {
-            Audits = new List<Audit>();
+            Audits = new List<AuditData>();
         }
 
         public int Id { get; set; }
@@ -34,7 +34,7 @@ namespace Tracker.SqlServer.CodeFirst.Entities
         public System.Byte[] RowVersion { get; set; }
         public string LastModifiedBy { get; set; }
 
-        public virtual ICollection<Audit> Audits { get; set; }
+        public virtual ICollection<AuditData> Audits { get; set; }
         public virtual Priority Priority { get; set; }
         public virtual Status Status { get; set; }
         public virtual User AssignedUser { get; set; }

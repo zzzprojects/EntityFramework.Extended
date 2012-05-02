@@ -13,5 +13,10 @@ namespace Tracker.SqlServer.CodeFirst
         {
 
         }
+
+        public override int SaveChanges()
+        {
+            return base.SaveChanges();
+        }
     }
 }

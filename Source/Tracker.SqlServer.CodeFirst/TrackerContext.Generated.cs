@@ -19,7 +19,7 @@ namespace Tracker.SqlServer.CodeFirst
             System.Data.Entity.Database.SetInitializer<TrackerContext>(null);
         }
 
-        public System.Data.Entity.DbSet<Tracker.SqlServer.CodeFirst.Entities.Audit> Audits { get; set; }
+        public System.Data.Entity.DbSet<Tracker.SqlServer.CodeFirst.Entities.AuditData> Audits { get; set; }
         public System.Data.Entity.DbSet<Tracker.SqlServer.CodeFirst.Entities.Task> Tasks { get; set; }
         public System.Data.Entity.DbSet<Tracker.SqlServer.CodeFirst.Entities.User> Users { get; set; }
         public System.Data.Entity.DbSet<Tracker.SqlServer.CodeFirst.Entities.Priority> Priorities { get; set; }

@@ -12,9 +12,9 @@ using System.Text;
 
 namespace Tracker.SqlServer.CodeFirst.Entities
 {
-    public partial class Audit
+    public partial class AuditData
     {
-        public Audit()
+        public AuditData()
         {
         }
 

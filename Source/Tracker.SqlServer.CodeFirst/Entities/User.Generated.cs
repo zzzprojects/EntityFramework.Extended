@@ -16,7 +16,7 @@ namespace Tracker.SqlServer.CodeFirst.Entities
     {
         public User()
         {
-            Audits = new List<Audit>();
+            Audits = new List<AuditData>();
             AssignedTasks = new List<Task>();
             CreatedTasks = new List<Task>();
             Roles = new List<Role>();
@@ -39,7 +39,7 @@ namespace Tracker.SqlServer.CodeFirst.Entities
         public System.DateTime? LastPasswordChangeDate { get; set; }
         public string AvatarType { get; set; }
 
-        public virtual ICollection<Audit> Audits { get; set; }
+        public virtual ICollection<AuditData> Audits { get; set; }
         public virtual ICollection<Task> AssignedTasks { get; set; }
         public virtual ICollection<Task> CreatedTasks { get; set; }
         public virtual ICollection<Role> Roles { get; set; }

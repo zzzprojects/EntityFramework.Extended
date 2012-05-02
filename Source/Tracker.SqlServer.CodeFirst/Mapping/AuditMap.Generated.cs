@@ -13,7 +13,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Tracker.SqlServer.CodeFirst.Mapping
 {
     public partial class AuditMap
-        : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Tracker.SqlServer.CodeFirst.Entities.Audit>
+        : System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<Tracker.SqlServer.CodeFirst.Entities.AuditData>
     {
         public AuditMap()
         {

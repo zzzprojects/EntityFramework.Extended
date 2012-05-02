@@ -129,7 +129,7 @@ namespace Tracker.SqlServer.Test
             AuditConfiguration.Default.LoadRelationships = true;
 
             AuditConfiguration.Default.IsAuditable<Task>();
-            AuditConfiguration.Default.IsAuditable<User>();
+            AuditConfiguration.Default.IsAuditable<User>().NotAudited(p=>p.Avatar);
 
             var db = new TrackerContext();
             var audit = db.BeginAudit();
