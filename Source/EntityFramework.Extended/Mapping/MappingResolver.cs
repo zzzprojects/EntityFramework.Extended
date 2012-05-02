@@ -167,7 +167,7 @@ namespace EntityFramework.Mapping
         {
             var builder = new StringBuilder(50);
 
-            EntitySet storeSet = entityMap.StoreSet;
+            dynamic storeSet = new DynamicProxy(entityMap.StoreSet);
 
             string schema = null;
             MetadataProperty schemaProperty;
@@ -185,7 +185,7 @@ namespace EntityFramework.Mapping
                 builder.Append(".");
             }
 
-            builder.Append(QuoteIdentifier(storeSet.Name));
+            builder.Append(QuoteIdentifier((string)storeSet.Table));
 
             entityMap.TableName = builder.ToString();
         }
