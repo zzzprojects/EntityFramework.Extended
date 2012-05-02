@@ -11,6 +11,13 @@ using EntityFramework.Reflection;
 
 namespace EntityFramework.Mapping
 {
+    /// <summary>
+    /// Static class to resolve Entity Framework mapping.
+    /// </summary>
+    /// <remarks>
+    /// This class uses a lot of reflection to get access to internal mapping data the Entity Framework 
+    /// does not provide access.  The maybe issues with this implementation as version of of Entity Framework change.
+    /// </remarks>
     public static class MappingResolver
     {
         private static readonly ConcurrentDictionary<string, Dictionary<Type, EntitySet>> _entitySetMappings;
@@ -22,6 +29,12 @@ namespace EntityFramework.Mapping
             _entityMapping = new ConcurrentDictionary<Type, EntityMap>();
         }
 
+        /// <summary>
+        /// Gets an <see cref="EntityMap"/> for the entity type used in the specified <paramref name="query"/>.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="query">The query used to create the <see cref="EntityMap"/> from.</param>
+        /// <returns>An <see cref="EntityMap"/> for the specified <paramref name="query"/>.</returns>
         public static EntityMap GetEntityMap<TEntity>(this ObjectQuery query)
         {
             return _entityMapping.GetOrAdd(
@@ -195,6 +208,12 @@ namespace EntityFramework.Mapping
             return ("[" + name.Replace("]", "]]") + "]");
         }
 
+        /// <summary>
+        /// Gets the underling <see cref="EntitySet"/> for the type of entity.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="objectContext">The <see cref="ObjectContext"/> context to get the <see cref="EntitySet"/> from.</param>
+        /// <returns>The <see cref="EntitySet"/> for the type of entity specified.</returns>
         public static EntitySet GetEntitySet<TEntity>(this ObjectContext objectContext)
         {
             var entityType = typeof (TEntity);

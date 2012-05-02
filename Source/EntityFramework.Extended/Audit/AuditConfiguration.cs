@@ -13,7 +13,7 @@ using EntityFramework.Reflection;
 namespace EntityFramework.Audit
 {
     /// <summary>
-    /// A class to configure the output of an AuditLog.
+    /// A class to configure the output of an <see cref="AuditLog"/>.
     /// </summary>
     public class AuditConfiguration
     {

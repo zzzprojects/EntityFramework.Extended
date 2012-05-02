@@ -27,7 +27,7 @@ namespace EntityFramework.Audit
         /// <summary>
         /// Initializes a new instance of the <see cref="AuditLogger"/> class.
         /// </summary>
-        /// <param name="objectContext">The ObjectContext to create the AuditLog from.</param>
+        /// <param name="objectContext">The <see cref="ObjectContext"/> to create the <see cref="AuditLog"/> from.</param>
         public AuditLogger(ObjectContext objectContext)
             : this(objectContext, null)
         { }
@@ -35,8 +35,8 @@ namespace EntityFramework.Audit
         /// <summary>
         /// Initializes a new instance of the <see cref="AuditLogger"/> class.
         /// </summary>
-        /// <param name="objectContext">The ObjectContext to create the AuditLog from.</param>
-        /// <param name="configuration">The AuditConfiguration to use when creating the AuditLog.</param>
+        /// <param name="objectContext">The <see cref="ObjectContext"/> to create the <see cref="AuditLog"/> from.</param>
+        /// <param name="configuration">The <see cref="AuditConfiguration"/> to use when creating the <see cref="AuditLog"/>.</param>
         public AuditLogger(ObjectContext objectContext, AuditConfiguration configuration)
         {
             if (objectContext == null)
@@ -51,7 +51,7 @@ namespace EntityFramework.Audit
         /// <summary>
         /// Initializes a new instance of the <see cref="AuditLogger"/> class.
         /// </summary>
-        /// <param name="dbContext">The DbContext to create the AuditLog from.</param>
+        /// <param name="dbContext">The <see cref="DbContext"/> to create the <see cref="AuditLog"/> from.</param>
         public AuditLogger(DbContext dbContext)
             : this(dbContext, null)
         { }
@@ -59,8 +59,8 @@ namespace EntityFramework.Audit
         /// <summary>
         /// Initializes a new instance of the <see cref="AuditLogger"/> class.
         /// </summary>
-        /// <param name="dbContext">The DbContext to create the AuditLog from.</param>
-        /// <param name="configuration">The AuditConfiguration to use when creating the AuditLog.</param>
+        /// <param name="dbContext">The <see cref="DbContext"/> to create the <see cref="AuditLog"/> from.</param>
+        /// <param name="configuration">The <see cref="AuditConfiguration"/> to use when creating the <see cref="AuditLog"/>.</param>
         public AuditLogger(DbContext dbContext, AuditConfiguration configuration)
         {
             if (dbContext == null)
@@ -97,7 +97,7 @@ namespace EntityFramework.Audit
 
         private readonly ObjectContext _objectContext;
         /// <summary>
-        /// Gets the ObjectContext to create the AuditLog from.
+        /// Gets the ObjectContext to create the <see cref="AuditLog"/> from.
         /// </summary>
         public ObjectContext ObjectContext
         {
@@ -106,7 +106,7 @@ namespace EntityFramework.Audit
 
         private readonly AuditConfiguration _configuration;
         /// <summary>
-        /// Gets the AuditConfiguration to use when creating the AuditLog.
+        /// Gets the <see cref="AuditConfiguration"/> to use when creating the <see cref="AuditLog"/>.
         /// </summary>
         public AuditConfiguration Configuration
         {
@@ -114,12 +114,12 @@ namespace EntityFramework.Audit
         }
 
         /// <summary>
-        /// Gets the last AuditLog created.
+        /// Gets the last <see cref="AuditLog"/> created.
         /// </summary>
         public AuditLog LastLog { get; private set; }
         
         /// <summary>
-        /// Creates the AuditLog from the current ObjectContext.
+        /// Creates the <see cref="AuditLog"/> from the current <see cref="ObjectContext"/>.
         /// </summary>
         /// <returns></returns>
         public AuditLog CreateLog()

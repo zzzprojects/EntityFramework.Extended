@@ -108,7 +108,7 @@ namespace EntityFramework.Audit
         }
 
         /// <summary>
-        /// Saves the <see cref="AuditLog"/> to the specifed XmlWriter.
+        /// Saves the <see cref="AuditLog"/> to the specified <see cref="XmlWriter"/>.
         /// </summary>
         /// <param name="writer">The writer to save <see cref="AuditLog"/> to.</param>
         public void ToXml(XmlWriter writer)
@@ -148,7 +148,7 @@ namespace EntityFramework.Audit
         /// <summary>
         /// Returns an <see cref="AuditLog"/> object created from an XML string.
         /// </summary>
-        /// <param name="reader">The <see cref="XmlReader"/> to create the AuditLog from.</param>
+        /// <param name="reader">The <see cref="XmlReader"/> to create the <see cref="AuditLog"/> from.</param>
         /// <returns>
         /// An <see cref="AuditLog"/> object created from an <see cref="XmlReader"/>.
         /// </returns>
