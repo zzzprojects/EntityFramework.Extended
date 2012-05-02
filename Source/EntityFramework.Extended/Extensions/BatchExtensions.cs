@@ -482,7 +482,29 @@ namespace EntityFramework.Extensions
                         value = constantExpression.Value;
                     }
                     else
-                    {
+                    {                        
+                        if (memberAssignment.Expression.NodeType == ExpressionType.MemberAccess)
+    				    {
+						    var memberExpression = memberAssignment.Expression as MemberExpression;
+							if (memberExpression == null)
+							    throw new ArgumentException("The MemberAssignment expression is not a MemberExpression.", "updateExpression");
+
+							if (memberExpression.Expression.Type == typeof(TEntity))
+							{
+							    string otherColumnName = entityMap.PropertyMaps
+								    .Where(p => p.PropertyName == memberExpression.Member.Name)
+									.Select(p => p.ColumnName)
+									.FirstOrDefault();
+
+							    if (string.IsNullOrWhiteSpace(otherColumnName))
+								    throw new ArgumentException("The source column for the MemberAssignment expression was not found", "updateExpression");
+
+								sqlBuilder.AppendFormat("{0} = {1}", columnName, otherColumnName);
+								wroteSet = true;
+								continue;
+							}
+						}
+                        
                         LambdaExpression lambda = Expression.Lambda(memberAssignment.Expression, null);
                         value = lambda.Compile().DynamicInvoke();
                     }
