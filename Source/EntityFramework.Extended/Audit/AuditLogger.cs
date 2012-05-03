@@ -117,7 +117,7 @@ namespace EntityFramework.Audit
         /// Gets the last <see cref="AuditLog"/> created.
         /// </summary>
         public AuditLog LastLog { get; private set; }
-        
+
         /// <summary>
         /// Creates the <see cref="AuditLog"/> from the current <see cref="ObjectContext"/>.
         /// </summary>
@@ -180,7 +180,9 @@ namespace EntityFramework.Audit
             if (keys == null)
                 return;
 
-            var currentValues = state.ObjectStateEntry.CurrentValues;
+            var currentValues = state.IsDeleted
+                ? state.ObjectStateEntry.OriginalValues
+                : state.ObjectStateEntry.CurrentValues;
 
             foreach (var keyMember in keys)
             {
@@ -217,9 +219,13 @@ namespace EntityFramework.Audit
 
             var type = state.ObjectType;
 
-            CurrentValueRecord currentValues = state.ObjectStateEntry.CurrentValues;
-            DbDataRecord originalValues = state.IsModified
-              ? state.ObjectStateEntry.OriginalValues : null;
+            var currentValues = state.IsDeleted
+                ? state.ObjectStateEntry.OriginalValues
+                : state.ObjectStateEntry.CurrentValues;
+
+            var originalValues = state.IsModified
+                ? state.ObjectStateEntry.OriginalValues
+                : null;
 
             foreach (EdmProperty edmProperty in properties)
             {
@@ -295,9 +301,13 @@ namespace EntityFramework.Audit
 
             var type = state.ObjectType;
 
-            CurrentValueRecord currentValues = state.ObjectStateEntry.CurrentValues;
-            DbDataRecord originalValues = state.IsModified
-              ? state.ObjectStateEntry.OriginalValues : null;
+            var currentValues = state.IsDeleted
+                ? state.ObjectStateEntry.OriginalValues
+                : state.ObjectStateEntry.CurrentValues;
+
+            var originalValues = state.IsModified
+                ? state.ObjectStateEntry.OriginalValues
+                : null;
 
             foreach (NavigationProperty navigationProperty in properties)
             {

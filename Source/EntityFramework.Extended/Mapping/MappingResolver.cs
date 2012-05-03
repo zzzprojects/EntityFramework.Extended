@@ -15,8 +15,8 @@ namespace EntityFramework.Mapping
     /// Static class to resolve Entity Framework mapping.
     /// </summary>
     /// <remarks>
-    /// This class uses a lot of reflection to get access to internal mapping data the Entity Framework 
-    /// does not provide access.  There maybe issues with this implementation as version of of Entity Framework change.
+    /// This class uses a lot of reflection to get access to internal mapping data that Entity Framework 
+    /// does not provide access to.  There maybe issues with this implementation as version of of Entity Framework change.
     /// </remarks>
     public static class MappingResolver
     {
@@ -189,7 +189,7 @@ namespace EntityFramework.Mapping
             MetadataProperty schemaProperty;
 
             storeSet.MetadataProperties.TryGetValue("Table", true, out tableProperty);
-            if (tableProperty == null)
+            if (tableProperty == null || tableProperty.Value == null)
                 storeSet.MetadataProperties.TryGetValue("http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator:Table", true, out tableProperty);
 
             if (tableProperty != null)
@@ -200,7 +200,7 @@ namespace EntityFramework.Mapping
                 table = storeSet.Name;
 
             storeSet.MetadataProperties.TryGetValue("Schema", true, out schemaProperty);
-            if (schemaProperty == null)
+            if (schemaProperty == null || schemaProperty.Value == null)
                 storeSet.MetadataProperties.TryGetValue("http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator:Schema", true, out schemaProperty);
 
             if (schemaProperty != null)
@@ -230,7 +230,7 @@ namespace EntityFramework.Mapping
         /// <returns>The <see cref="EntitySet"/> for the type of entity specified.</returns>
         public static EntitySet GetEntitySet<TEntity>(this ObjectContext objectContext)
         {
-            var entityType = typeof (TEntity);
+            var entityType = typeof(TEntity);
             var mapping = _entitySetMappings.GetOrAdd(objectContext.DefaultContainerName, k =>
             {
                 var metadataWorkspace = objectContext.MetadataWorkspace;
