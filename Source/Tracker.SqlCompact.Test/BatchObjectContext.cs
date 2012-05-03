@@ -8,7 +8,8 @@ namespace Tracker.SqlCompact.Test
     [TestClass]
     public class BatchObjectContext
     {
-        //[TestMethod]
+        [TestMethod]
+        [Ignore]
         public void Delete()
         {
             var db = new TrackerEntities();
@@ -16,7 +17,8 @@ namespace Tracker.SqlCompact.Test
             int count = db.Users.Delete(u => u.Email.Contains(emailDomain));
         }
 
-        //[TestMethod]
+        [TestMethod]
+        [Ignore]
         public void Update()
         {
             var db = new TrackerEntities();

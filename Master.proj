@@ -97,10 +97,6 @@
                File="Artifacts\EntityFramework.Extended.nupkg"
                APIKey="$(NuGetAPIKey)" />
 
-    <NuGetPush ToolPath="Libraries"
-               File="Artifacts\EntityFramework.Extended.symbols.nupkg"
-               APIKey="$(NuGetAPIKey)" />
-
     <CreateItem Include="*.nupkg">
       <Output TaskParameter="Include" ItemName="DeleteFiles" />
     </CreateItem>
