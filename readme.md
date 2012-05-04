@@ -2,6 +2,17 @@
 
 A library the extends the functionality of Entity Framework.
 
+##Download
+
+The Entity Framework Extended library is available on nuget.org via package name `EntityFramework.Extended`.
+
+To install EntityFramework.Extended, run the following command in the Package Manager Console
+
+    PM> Install-Package EntityFramework.Extended
+    
+More information about NuGet package avaliable at
+https://nuget.org/packages/EntityFramework.Extended
+
 ##Features
 
 
@@ -107,7 +118,7 @@ Create an Audit Log
     db.SaveChanges();
     var log = audit.LastLog;
 
-### License
+## License
 
 Copyright (c) 2012, LoreSoft
 All rights reserved.
