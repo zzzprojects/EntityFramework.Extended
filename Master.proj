@@ -85,24 +85,6 @@
     <Zip Files="@(ZipFiles)"
          ZipFileName="EntityFramework.Extended.v$(Major).$(Minor).$(Build).$(Revision).zip" />
   </Target>
-  
-  <Target Name="Publish">
-    
-    <RegistryRead KeyName="HKEY_CURRENT_USER\SOFTWARE\MSBuildTasks" ValueName="NuGetAPIKey">
-      <Output TaskParameter="Value" PropertyName="NuGetAPIKey" />
-    </RegistryRead>
-
-    <!-- Depends on TeamCity Artifacts -->
-    <NuGetPush ToolPath="Libraries"
-               File="Artifacts\EntityFramework.Extended.nupkg"
-               APIKey="$(NuGetAPIKey)" />
-
-    <CreateItem Include="*.nupkg">
-      <Output TaskParameter="Include" ItemName="DeleteFiles" />
-    </CreateItem>
-
-    <Delete Files="@(DeleteFiles)" />
-  </Target>
 
   <Target Name="Package" DependsOnTargets="Compile">
     <!-- Clean Files -->
@@ -126,22 +108,6 @@
     </CreateItem>
     <Copy SourceFiles="@(TestFiles)"
           DestinationFolder="$(TestFolder)" />
-
-    <!-- Clean NuGet Files -->
-    <CreateItem Include="*.nupkg">
-      <Output TaskParameter="Include" ItemName="NuGetFiles" />
-    </CreateItem>
-    <Delete Files="@(NuGetFiles)" />
-
-    <NuGetPack ToolPath="$(MSBuildProjectDirectory)\Libraries"
-               File="EntityFramework.Extended.nuspec"
-               Symbols="true"
-               Version="$(Major).$(Minor).$(Build).$(Revision)" />
-        
-    <Move SourceFiles="EntityFramework.Extended.$(Major).$(Minor).$(Build).$(Revision).nupkg" 
-          DestinationFiles="EntityFramework.Extended.nupkg" />
-    <Move SourceFiles="EntityFramework.Extended.$(Major).$(Minor).$(Build).$(Revision).symbols.nupkg"
-          DestinationFiles="EntityFramework.Extended.symbols.nupkg" />
   </Target>
 
   <Target Name="Build">
