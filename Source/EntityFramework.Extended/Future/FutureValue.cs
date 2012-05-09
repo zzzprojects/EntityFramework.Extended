@@ -10,7 +10,7 @@ namespace EntityFramework.Future
     /// <typeparam name="T">The type for the future query.</typeparam>
     /// <example>The following is an example of how to use FutureValue.
     /// <code><![CDATA[
-    /// var db = new TrackerDataContext { Log = Console.Out };
+    /// var db = new TrackeContext;
     /// // build up queries
     /// var q1 = db.User.ByEmailAddress("one@test.com").FutureValue();
     /// var q2 = db.Task.Where(t => t.Summary == "Test").Future();

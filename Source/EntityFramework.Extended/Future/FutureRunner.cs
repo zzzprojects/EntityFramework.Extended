@@ -9,16 +9,16 @@ using EntityFramework.Reflection;
 namespace EntityFramework.Future
 {
     /// <summary>
-    /// A class encapsulated the execution of future queries.
+    /// A class encapsulating the execution of future queries.
     /// </summary>
-    public static class FutureRunner
+    public class FutureRunner : IFutureRunner
     {
         /// <summary>
         /// Executes the future queries.
         /// </summary>
-        /// <param name="context">The object context to run the queries against.</param>
+        /// <param name="context">The <see cref="ObjectContext"/> to run the queries against.</param>
         /// <param name="futureQueries">The future queries list.</param>
-        public static void ExecuteFutureQueries(ObjectContext context, IList<IFutureQuery> futureQueries)
+        public void ExecuteFutureQueries(ObjectContext context, IList<IFutureQuery> futureQueries)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -93,7 +93,7 @@ namespace EntityFramework.Future
                 futureSql.AppendLine();
 
                 futureSql.Append(sql.Trim());
-                futureSql.AppendLine(";"); // TODO, config this by provider?
+                futureSql.AppendLine(";"); 
 
                 queryCount++;
             } // foreach query

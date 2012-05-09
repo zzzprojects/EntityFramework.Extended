@@ -23,7 +23,7 @@ namespace EntityFramework.Future
         }
 
         /// <summary>
-        /// Gets or create the future context that is linked to the underlying ObjectContext.
+        /// Gets or create the future context that is linked to the underlying <see cref="ObjectContext"/>.
         /// </summary>
         /// <param name="objectQuery">The query source to get the future context from.</param>
         /// <returns>An instance of <see cref="IFutureContext"/> to store waiting future queries.</returns>
@@ -91,7 +91,7 @@ namespace EntityFramework.Future
         private static readonly Lazy<FutureStore> _current = new Lazy<FutureStore>(() => new FutureStore());
 
         /// <summary>
-        /// Gets the current default instance of FutureStore.
+        /// Gets the current default instance of <see cref="FutureStore"/>.
         /// </summary>
         public static FutureStore Default
         {

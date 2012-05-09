@@ -6,13 +6,13 @@ using System.Data.Objects;
 namespace EntityFramework.Future
 {
     /// <summary>
-    /// A class to hold waiting future queries for an ObjectContext.
+    /// A class to hold waiting future queries for an <see cref="ObjectContext"/>.
     /// </summary>
     /// <remarks>
-    /// This class creates a link between the ObjectContext and
+    /// This class creates a link between the <see cref="ObjectContext"/> and
     /// the waiting future queries. Since the ObjectContext could
     /// be displosed before this class, ObjectContext is stored as
-    /// a WeakReference. 
+    /// a <see cref="WeakReference"/>. 
     /// </remarks>
     public class FutureContext : IFutureContext
     {
@@ -79,7 +79,11 @@ namespace EntityFramework.Future
             if (context == null)
                 throw new ObjectDisposedException("ObjectContext", "The ObjectContext for the future queries has been displosed.");
 
-            FutureRunner.ExecuteFutureQueries(context, FutureQueries);
+            var runner = IoC.Current.Resolve<IFutureRunner>();
+            if (runner == null)
+                throw new InvalidOperationException("Could not resolve the IFutureRunner. Make sure IFutureRunner is registered in the IoC.Current container.");
+
+            runner.ExecuteFutureQueries(context, FutureQueries);
         }
 
         /// <summary>
