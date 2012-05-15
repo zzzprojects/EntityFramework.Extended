@@ -6,10 +6,37 @@ using System.Text;
 namespace EntityFramework.Caching
 {
     /// <summary>
-    /// 
+    /// The CacheManager with support for providers used by FromCache extension methods.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This CacheManager uses the <see cref="IoC"/> container to resolve an <see cref="ICacheProvider"/> to store the cache items.
+    /// </para>
+    /// <para>
+    /// The CacheManager also supports tagging the cache entry to support expiring by tag. <see cref="CacheKey"/> supports a list
+    /// of tags to associate with the cache entry.  Use <see cref="Expire"/> to evict the cache entry by <see cref="CacheTag"/>.
+    /// </para>
+    /// </remarks>
+    /// <example>
+    /// Replace cache provider with Memcached provider
+    /// <code><![CDATA[
+    /// IoC.Current.Register<ICacheProvider>(() => new MemcachedProvider());
+    /// ]]>
+    /// </code>
+    /// </example>
     public class CacheManager
     {
+        private static readonly Lazy<CacheManager> _current = new Lazy<CacheManager>(() => new CacheManager());
+
+        /// <summary>
+        /// Gets the current singleton instance of <see cref="CacheManager"/>.
+        /// </summary>
+        /// <value>The current singleton instance.</value>
+        public static CacheManager Current
+        {
+            get { return _current.Value; }
+        }
+
         /// <summary>
         /// Inserts a cache entry into the cache without overwriting any existing cache entry.
         /// </summary>
@@ -269,6 +296,7 @@ namespace EntityFramework.Caching
             var cacheKey = new CacheKey(key);
             return Remove(cacheKey);
         }
+        
         /// <summary>
         /// Removes a cache entry from the cache. 
         /// </summary>
@@ -281,7 +309,12 @@ namespace EntityFramework.Caching
 
             return item;
         }
-        
+
+        /// <summary>
+        /// Expires the specified cache tag.
+        /// </summary>
+        /// <param name="cacheTag">The cache tag.</param>
+        /// <returns></returns>
         public virtual int Expire(CacheTag cacheTag)
         {
             var provider = ResolveProvider();
@@ -351,7 +384,11 @@ namespace EntityFramework.Caching
         }
 
 
-        private ICacheProvider ResolveProvider()
+        /// <summary>
+        /// Gets the registered <see cref="ICacheProvider"/> from <see cref="IoC"/>.
+        /// </summary>
+        /// <returns>An instance from <see cref="IoC"/>.</returns>
+        protected ICacheProvider ResolveProvider()
         {
             var provider = IoC.Current.Resolve<ICacheProvider>();
             if (provider == null)

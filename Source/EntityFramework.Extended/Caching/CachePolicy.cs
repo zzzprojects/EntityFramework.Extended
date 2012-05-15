@@ -11,6 +11,16 @@ namespace EntityFramework.Caching
     /// </summary>
     public class CachePolicy
     {
+        private static readonly Lazy<CachePolicy> _current = new Lazy<CachePolicy>(() => new CachePolicy());
+
+        /// <summary>
+        /// Gets the default <see cref="CachePolicy"/>.
+        /// </summary>
+        public static CachePolicy Default
+        {
+            get { return _current.Value; }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CachePolicy"/> class.
         /// </summary>
@@ -40,8 +50,24 @@ namespace EntityFramework.Caching
         /// <summary>
         /// Creates a <see cref="CachePolicy"/> with the absolute expiration.
         /// </summary>
+        /// <param name="absoluteSpan">The <see cref="TimeSpan"/> used to calculate absolute expiration from now.</param>
+        /// <returns>An instance of <see cref="CachePolicy"/>.</returns>
+        public static CachePolicy WithAbsoluteExpiration(TimeSpan absoluteSpan)
+        {
+            var policy = new CachePolicy
+            {
+                Mode = CacheExpirationMode.Absolute,
+                AbsoluteExpiration = DateTimeOffset.Now.Add(absoluteSpan)
+            };
+
+            return policy;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="CachePolicy"/> with the absolute expiration.
+        /// </summary>
         /// <param name="absoluteExpiration">The absolute expiration.</param>
-        /// <returns></returns>
+        /// <returns>An instance of <see cref="CachePolicy"/>.</returns>
         public static CachePolicy WithAbsoluteExpiration(DateTimeOffset absoluteExpiration)
         {
             var policy = new CachePolicy
@@ -56,7 +82,7 @@ namespace EntityFramework.Caching
         /// Creates a <see cref="CachePolicy"/> with the sliding expiration.
         /// </summary>
         /// <param name="slidingExpiration">The sliding expiration.</param>
-        /// <returns></returns>
+        /// <returns>An instance of <see cref="CachePolicy"/>.</returns>
         public static CachePolicy WithSlidingExpiration(TimeSpan slidingExpiration)
         {
             var policy = new CachePolicy
@@ -66,5 +92,6 @@ namespace EntityFramework.Caching
             };
             return policy;
         }
+
     }
 }
