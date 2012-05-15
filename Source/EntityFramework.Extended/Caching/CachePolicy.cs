@@ -37,27 +37,62 @@ namespace EntityFramework.Caching
         /// <value>The cache expiration mode.</value>
         public CacheExpirationMode Mode { get; set; }
 
-        /// <summary>
-        /// Gets or sets a value that indicates whether a cache entry should be evicted after a specified duration.
-        /// </summary>
-        public DateTimeOffset AbsoluteExpiration { get; set; }
+        private DateTimeOffset _absoluteExpiration;
 
         /// <summary>
-        /// Gets or sets a value that indicates whether a cache entry should be evicted if it has not been accessed in a given span of time. 
+        /// Gets or sets a value that indicates a cache entry should be evicted after a specified duration.
         /// </summary>
-        public TimeSpan SlidingExpiration { get; set; }
+        public DateTimeOffset AbsoluteExpiration
+        {
+            get { return _absoluteExpiration; }
+            set
+            {
+                _absoluteExpiration = value;
+                Mode = CacheExpirationMode.Absolute;
+            }
+        }
+
+        private TimeSpan _slidingExpiration;
+
+        /// <summary>
+        /// Gets or sets a value that indicates a cache entry should be evicted if it has not been accessed in a given span of time. 
+        /// </summary>
+        public TimeSpan SlidingExpiration
+        {
+            get { return _slidingExpiration; }
+            set
+            {
+                _slidingExpiration = value;
+                Mode = CacheExpirationMode.Sliding;
+            }
+        }
+
+        private TimeSpan _duration;
+
+        /// <summary>
+        /// Gets or sets a value that indicates a cache entry should be evicted after a given span of time. 
+        /// </summary>
+        public TimeSpan Duration
+        {
+            get { return _duration; }
+            set
+            {
+                _duration = value;
+                Mode = CacheExpirationMode.Duration;
+            }
+        }
 
         /// <summary>
         /// Creates a <see cref="CachePolicy"/> with the absolute expiration.
         /// </summary>
-        /// <param name="absoluteSpan">The <see cref="TimeSpan"/> used to calculate absolute expiration from now.</param>
+        /// <param name="expirationSpan">The <see cref="TimeSpan"/> used to calculate absolute expiration from now.</param>
         /// <returns>An instance of <see cref="CachePolicy"/>.</returns>
-        public static CachePolicy WithAbsoluteExpiration(TimeSpan absoluteSpan)
+        public static CachePolicy WithDurationExpiration(TimeSpan expirationSpan)
         {
             var policy = new CachePolicy
             {
-                Mode = CacheExpirationMode.Absolute,
-                AbsoluteExpiration = DateTimeOffset.Now.Add(absoluteSpan)
+                Mode = CacheExpirationMode.Duration,
+                Duration = expirationSpan
             };
 
             return policy;

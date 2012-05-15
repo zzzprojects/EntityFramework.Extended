@@ -310,6 +310,18 @@ namespace EntityFramework.Caching
             return item;
         }
 
+
+        /// <summary>
+        /// Expires the specified cache tag.
+        /// </summary>
+        /// <param name="tag">The cache tag.</param>
+        /// <returns></returns>
+        public int Expire(string tag)
+        {
+            var cacheTag = new CacheTag(tag);
+            return Expire(cacheTag);
+        }
+
         /// <summary>
         /// Expires the specified cache tag.
         /// </summary>

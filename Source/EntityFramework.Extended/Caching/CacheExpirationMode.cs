@@ -13,7 +13,7 @@ namespace EntityFramework.Caching
         None,
         /// <summary>
         /// The cache item will expire using the Duration property to calculate
-        /// the absolute expiration from DateTime.UtcNow.
+        /// the absolute expiration from DateTimeOffset.Now.
         /// </summary>
         Duration,
         /// <summary>

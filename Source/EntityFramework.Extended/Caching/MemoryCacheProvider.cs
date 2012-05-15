@@ -143,6 +143,9 @@ namespace EntityFramework.Caching
                 case CacheExpirationMode.Absolute:
                     policy.AbsoluteExpiration = cachePolicy.AbsoluteExpiration;
                     break;
+                case CacheExpirationMode.Duration:
+                    policy.AbsoluteExpiration = DateTimeOffset.Now.Add(cachePolicy.Duration);
+                    break;
                 default:
                     policy.AbsoluteExpiration = ObjectCache.InfiniteAbsoluteExpiration;
                     break;
