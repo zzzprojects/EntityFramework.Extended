@@ -16,9 +16,10 @@ https://nuget.org/packages/EntityFramework.Extended
 ##Features
 
 
-- Batch Update and Delete
-- Future Queries
-- Audit Log
+- [Batch Update and Delete](https://github.com/loresoft/EntityFramework.Extended/wiki/Batch-Update-and-Delete)
+- [Future Queries](https://github.com/loresoft/EntityFramework.Extended/wiki/Future-Queries)
+- [Query Result Cache](https://github.com/loresoft/EntityFramework.Extended/wiki/Query-Result-Cache)
+- [Audit Log](https://github.com/loresoft/EntityFramework.Extended/wiki/Audit-Log)
  
 ### Batch Update and Delete
 
@@ -83,6 +84,35 @@ In the example above, there are 2 queries built up, as soon as one of the querie
 In this example, we have a common senerio where you want to page a list of tasks. In order for the GUI to setup the paging control, you need a total count. With Future, we can batch together the queries to get all the data in one database call.
 
 Future queries work by creating the appropriate IFutureQuery object that keeps the IQuerable. The IFutureQuery object is then stored in IFutureContext.FutureQueries list. Then, when one of the IFutureQuery objects is enumerated, it calls back to IFutureContext.ExecuteFutureQueries() via the LoadAction delegate. ExecuteFutureQueries builds a batch query from all the stored IFutureQuery objects. Finally, all the IFutureQuery objects are updated with the results from the query.
+
+### Query Result Cache
+
+To cache query results, use the `FromCache` extension method located in the `EntityFramework.Extensions` namespace. Below is a sample caching query results. Simply construct the LINQ query as you normally would, then append the `FromCache` extension.
+     
+    //query is cached using the default settings
+    var tasks = db.Tasks
+        .Where(t => t.CompleteDate == null)
+        .FromCache();
+ 
+    //query result is now cached 300 seconds
+    var tasks = db.Tasks
+        .Where(t => t.AssignedId == myUserId && t.CompleteDate == null)
+        .FromCache(CachePolicy.WithDurationExpiration(TimeSpan.FromSeconds(300)));
+        
+The Query Result Cache also supports tagging the cache so you can expire common cache entries by calling `Expire` on a cache tag.
+
+    // cache assigned tasks
+    var tasks = db.Tasks
+        .Where(t => t.AssignedId == myUserId && t.CompleteDate == null)
+        .FromCache(tags: new[] { "Task", "Assigned-Task-" + myUserId  });
+
+    // some update happened to Task, expire Task tag
+    CacheManager.Current.Expire("Task");
+    
+The `CacheManager` has support for providers.  The default provider uses `MemoryCache` to store the cache entries.  To create a custom provider, implement `ICacheProvider`. The custom provider will then need to be registered in the `IoC` container.
+
+    // Replace cache provider with Memcached provider
+    IoC.Current.Register<ICacheProvider>(() => new MemcachedProvider());
 
 ### Audit Log
 
