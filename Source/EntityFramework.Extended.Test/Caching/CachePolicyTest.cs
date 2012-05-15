@@ -47,5 +47,19 @@ namespace EntityFramework.Test.Caching
             cachePolicy.AbsoluteExpiration.Should().Be(ObjectCache.InfiniteAbsoluteExpiration);
             cachePolicy.SlidingExpiration.Should().Be(slidingExpiration);
         }
+
+        [TestMethod]
+        public void WithDurationExpirationTest()
+        {
+            TimeSpan expirationSpan = TimeSpan.FromSeconds(30);
+            var cachePolicy = CachePolicy.WithDurationExpiration(expirationSpan);
+
+            cachePolicy.Should().NotBeNull();
+            cachePolicy.Mode.Should().Be(CacheExpirationMode.Duration);
+            cachePolicy.AbsoluteExpiration.Should().Be(ObjectCache.InfiniteAbsoluteExpiration);
+            cachePolicy.SlidingExpiration.Should().Be(ObjectCache.NoSlidingExpiration);
+            cachePolicy.Duration.Should().Be(expirationSpan);
+        }
+
     }
 }

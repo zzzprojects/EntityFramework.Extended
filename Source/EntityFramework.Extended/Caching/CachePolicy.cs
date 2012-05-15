@@ -27,8 +27,9 @@ namespace EntityFramework.Caching
         public CachePolicy()
         {
             Mode = CacheExpirationMode.None;
-            AbsoluteExpiration = ObjectCache.InfiniteAbsoluteExpiration;
-            SlidingExpiration = ObjectCache.NoSlidingExpiration;
+            _absoluteExpiration = ObjectCache.InfiniteAbsoluteExpiration;
+            _slidingExpiration = ObjectCache.NoSlidingExpiration;
+            _duration = TimeSpan.Zero;
         }
 
         /// <summary>
@@ -91,7 +92,6 @@ namespace EntityFramework.Caching
         {
             var policy = new CachePolicy
             {
-                Mode = CacheExpirationMode.Duration,
                 Duration = expirationSpan
             };
 
@@ -107,9 +107,9 @@ namespace EntityFramework.Caching
         {
             var policy = new CachePolicy
             {
-                Mode = CacheExpirationMode.Absolute,
                 AbsoluteExpiration = absoluteExpiration
             };
+
             return policy;
         }
 
@@ -122,9 +122,9 @@ namespace EntityFramework.Caching
         {
             var policy = new CachePolicy
             {
-                Mode = CacheExpirationMode.Sliding,
                 SlidingExpiration = slidingExpiration
             };
+
             return policy;
         }
 
