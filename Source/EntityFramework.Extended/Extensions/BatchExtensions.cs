@@ -97,7 +97,7 @@ namespace EntityFramework.Extensions
         /// any entities that have already been materialized in the current context.        
         /// </remarks>
         public static int Delete<TEntity>(
-           this DbSet<TEntity> source,
+           this IDbSet<TEntity> source,
            IQueryable<TEntity> query)
            where TEntity : class
         {
@@ -146,7 +146,7 @@ namespace EntityFramework.Extensions
         /// any entities that have already been materialized in the current context.        
         /// </remarks>
         public static int Delete<TEntity>(
-            this DbSet<TEntity> source,
+            this IDbSet<TEntity> source,
             Expression<Func<TEntity, bool>> filterExpression)
             where TEntity : class
         {
@@ -251,7 +251,7 @@ namespace EntityFramework.Extensions
         /// any entities that have already been materialized in the current context.        
         /// </remarks>
         public static int Update<TEntity>(
-            this DbSet<TEntity> source,
+            this IDbSet<TEntity> source,
             IQueryable<TEntity> query,
             Expression<Func<TEntity, TEntity>> updateExpression)
             where TEntity : class
@@ -306,7 +306,7 @@ namespace EntityFramework.Extensions
         /// any entities that have already been materialized in the current context.        
         /// </remarks>
         public static int Update<TEntity>(
-            this DbSet<TEntity> source,
+            this IDbSet<TEntity> source,
             Expression<Func<TEntity, bool>> filterExpression,
             Expression<Func<TEntity, TEntity>> updateExpression)
             where TEntity : class
