@@ -109,10 +109,10 @@ The Query Result Cache also supports tagging the cache so you can expire common 
     // some update happened to Task, expire Task tag
     CacheManager.Current.Expire("Task");
     
-The `CacheManager` has support for providers.  The default provider uses `MemoryCache` to store the cache entries.  To create a custom provider, implement `ICacheProvider`. The custom provider will then need to be registered in the `IoC` container.
+The `CacheManager` has support for providers.  The default provider uses `MemoryCache` to store the cache entries.  To create a custom provider, implement `ICacheProvider`. The custom provider will then need to be registered in the `Locator` container.
 
     // Replace cache provider with Memcached provider
-    IoC.Current.Register<ICacheProvider>(() => new MemcachedProvider());
+    Locator.Current.Register<ICacheProvider>(() => new MemcachedProvider());
 
 ### Audit Log
 

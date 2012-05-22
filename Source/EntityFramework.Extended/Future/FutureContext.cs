@@ -79,9 +79,9 @@ namespace EntityFramework.Future
             if (context == null)
                 throw new ObjectDisposedException("ObjectContext", "The ObjectContext for the future queries has been displosed.");
 
-            var runner = IoC.Current.Resolve<IFutureRunner>();
+            var runner = Locator.Current.Resolve<IFutureRunner>();
             if (runner == null)
-                throw new InvalidOperationException("Could not resolve the IFutureRunner. Make sure IFutureRunner is registered in the IoC.Current container.");
+                throw new InvalidOperationException("Could not resolve the IFutureRunner. Make sure IFutureRunner is registered in the Locator.Current container.");
 
             runner.ExecuteFutureQueries(context, FutureQueries);
         }

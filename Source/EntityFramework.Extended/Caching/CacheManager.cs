@@ -10,7 +10,7 @@ namespace EntityFramework.Caching
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This CacheManager uses the <see cref="IoC"/> container to resolve an <see cref="ICacheProvider"/> to store the cache items.
+    /// This CacheManager uses the <see cref="Locator"/> container to resolve an <see cref="ICacheProvider"/> to store the cache items.
     /// </para>
     /// <para>
     /// The CacheManager also supports tagging the cache entry to support expiring by tag. <see cref="CacheKey"/> supports a list
@@ -20,7 +20,7 @@ namespace EntityFramework.Caching
     /// <example>
     /// Replace cache provider with Memcached provider
     /// <code><![CDATA[
-    /// IoC.Current.Register<ICacheProvider>(() => new MemcachedProvider());
+    /// Locator.Current.Register<ICacheProvider>(() => new MemcachedProvider());
     /// ]]>
     /// </code>
     /// </example>
@@ -397,14 +397,14 @@ namespace EntityFramework.Caching
 
 
         /// <summary>
-        /// Gets the registered <see cref="ICacheProvider"/> from <see cref="IoC"/>.
+        /// Gets the registered <see cref="ICacheProvider"/> from <see cref="Locator"/>.
         /// </summary>
-        /// <returns>An instance from <see cref="IoC"/>.</returns>
+        /// <returns>An instance from <see cref="Locator"/>.</returns>
         protected ICacheProvider ResolveProvider()
         {
-            var provider = IoC.Current.Resolve<ICacheProvider>();
+            var provider = Locator.Current.Resolve<ICacheProvider>();
             if (provider == null)
-                throw new InvalidOperationException("Could not resolve the ICacheProvider. Make sure ICacheProvider is registered in the IoC.Current container.");
+                throw new InvalidOperationException("Could not resolve the ICacheProvider. Make sure ICacheProvider is registered in the Locator.Current container.");
 
             return provider;
         }

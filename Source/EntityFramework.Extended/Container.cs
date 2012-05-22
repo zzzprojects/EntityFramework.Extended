@@ -5,7 +5,7 @@ using EntityFramework.Caching;
 namespace EntityFramework
 {
     /// <summary>
-    /// The default <see cref="IoC"/> <see cref="IContainer"/> for resolving dependencies.
+    /// The default <see cref="IContainer"/> for resolving dependencies.
     /// </summary>
     public class Container : IContainer
     {

@@ -77,7 +77,7 @@
     <Compile Include="Caching\Query\QueryCache.cs" />
     <Compile Include="Caching\Query\Utility.cs" />
     <Compile Include="Future\IFutureRunner.cs" />
-    <Compile Include="IoC.cs" />
+    <Compile Include="Locator.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="Dynamic\DynamicQueryable.cs" />
     <Compile Include="Extensions\AuditExtensions.cs" />

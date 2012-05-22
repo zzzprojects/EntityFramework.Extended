@@ -321,9 +321,9 @@ namespace EntityFramework.Extensions
 
         private static IBatchRunner ResolveRunner()
         {
-            var provider = IoC.Current.Resolve<IBatchRunner>();
+            var provider = Locator.Current.Resolve<IBatchRunner>();
             if (provider == null)
-                throw new InvalidOperationException("Could not resolve the IBatchRunner. Make sure IBatchRunner is registered in the IoC.Current container.");
+                throw new InvalidOperationException("Could not resolve the IBatchRunner. Make sure IBatchRunner is registered in the Locator.Current container.");
 
             return provider;
         }

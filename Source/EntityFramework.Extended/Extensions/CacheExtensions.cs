@@ -31,7 +31,7 @@ namespace EntityFramework.Extensions
                 tags ?? Enumerable.Empty<string>());
 
             // allow override of CacheManager
-            var manager = IoC.Current.Resolve<CacheManager>();
+            var manager = Locator.Current.Resolve<CacheManager>();
 
             var result = manager.GetOrAdd(
                 cacheKey,
@@ -90,7 +90,7 @@ namespace EntityFramework.Extensions
             string key = query.GetCacheKey();
             
             // allow override of CacheManager
-            var manager = IoC.Current.Resolve<CacheManager>();
+            var manager = Locator.Current.Resolve<CacheManager>();
 
             removed = manager.Remove(key) as IEnumerable<TEntity>;
             return query;

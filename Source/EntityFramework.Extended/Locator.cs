@@ -10,42 +10,42 @@ using EntityFramework.Mapping;
 namespace EntityFramework
 {
     /// <summary>
-    /// Inversion of control abstraction.
+    /// Service locator pattern.
     /// </summary>
     /// <example>
     /// Replace cache provider with Memcached provider
     /// <code><![CDATA[
-    /// IoC.Current.Register<ICacheProvider>(() => new MemcachedProvider());
+    /// Locator.Current.Register<ICacheProvider>(() => new MemcachedProvider());
     /// ]]>
     /// </code>
-    /// Replace the built in <see cref="IContainer"/> with other IoC framework.
+    /// Replace the built in <see cref="IContainer"/> with other Locator framework.
     /// <code><![CDATA[
     /// var container = new OtherContainer();
     /// // register all default providers
-    /// IoC.RegisterDefaults(container);
+    /// Locator.RegisterDefaults(container);
     /// // overide cache provider
     /// container.Register<ICacheProvider>(() => new MemcachedProvider());
-    /// // make IoC use new custom container
-    /// IoC.SetContainer(container);
+    /// // make Locator use new custom container
+    /// Locator.SetContainer(container);
     /// ]]>
     /// </code>
     /// </example>
-    public class IoC
+    public class Locator
     {
-        private static readonly IoC _instance = new IoC();
+        private static readonly Locator _instance = new Locator();
         private IContainer _container;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="IoC"/> class.
+        /// Initializes a new instance of the <see cref="Locator"/> class.
         /// </summary>
-        public IoC()
+        public Locator()
         {
             _container = new Container();
             RegisterDefaults(_container);
         }
 
         /// <summary>
-        /// Gets the current IoC <see cref="IContainer"/>.
+        /// Gets the current Locator <see cref="IContainer"/>.
         /// </summary>
         public static IContainer Current
         {

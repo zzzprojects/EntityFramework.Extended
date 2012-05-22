@@ -33,7 +33,7 @@ namespace EntityFramework.Mapping
                 typeof(TEntity),
                 k =>
                 {
-                    var provider = IoC.Current.Resolve<IMappingProvider>();
+                    var provider = Locator.Current.Resolve<IMappingProvider>();
                     return provider.GetEntityMap<TEntity>(query);
                 });
         }

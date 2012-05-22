@@ -17,7 +17,7 @@ namespace EntityFramework.Mapping
     /// does not provide access to.  There maybe issues with this implementation as version of of Entity Framework change.
     /// </para>
     /// <para>
-    /// This implementation can be overridden using the <see cref="IoC"/> container resolving 
+    /// This implementation can be overridden using the <see cref="Locator"/> container resolving 
     /// the <see cref="IMappingProvider"/> <see langword="interface"/>.
     /// </para>
     /// </remarks>
