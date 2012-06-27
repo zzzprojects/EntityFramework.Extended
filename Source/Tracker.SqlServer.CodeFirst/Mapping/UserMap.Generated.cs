@@ -30,12 +30,15 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
                 .IsRequired();
             Property(t => t.EmailAddress)
                 .HasColumnName("EmailAddress")
+                .HasMaxLength(250)
                 .IsRequired();
             Property(t => t.FirstName)
                 .HasColumnName("FirstName")
+                .HasMaxLength(200)
                 .IsOptional();
             Property(t => t.LastName)
                 .HasColumnName("LastName")
+                .HasMaxLength(200)
                 .IsOptional();
             Property(t => t.Avatar)
                 .HasColumnName("Avatar")
@@ -49,16 +52,20 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
             Property(t => t.RowVersion)
                 .HasColumnName("RowVersion")
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)
+                .HasMaxLength(8)
                 .IsRowVersion()
                 .IsRequired();
             Property(t => t.PasswordHash)
                 .HasColumnName("PasswordHash")
+                .HasMaxLength(86)
                 .IsRequired();
             Property(t => t.PasswordSalt)
                 .HasColumnName("PasswordSalt")
+                .HasMaxLength(5)
                 .IsRequired();
             Property(t => t.Comment)
                 .HasColumnName("Comment")
+                .HasMaxLength(16)
                 .IsOptional();
             Property(t => t.IsApproved)
                 .HasColumnName("IsApproved")
@@ -74,6 +81,7 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
                 .IsOptional();
             Property(t => t.AvatarType)
                 .HasColumnName("AvatarType")
+                .HasMaxLength(150)
                 .IsOptional();
 
             // Relationships

@@ -30,9 +30,11 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
                 .IsRequired();
             Property(t => t.Name)
                 .HasColumnName("Name")
+                .HasMaxLength(50)
                 .IsRequired();
             Property(t => t.Description)
                 .HasColumnName("Description")
+                .HasMaxLength(150)
                 .IsOptional();
             Property(t => t.Order)
                 .HasColumnName("Order")
@@ -46,6 +48,7 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
             Property(t => t.RowVersion)
                 .HasColumnName("RowVersion")
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)
+                .HasMaxLength(8)
                 .IsRowVersion()
                 .IsRequired();
 

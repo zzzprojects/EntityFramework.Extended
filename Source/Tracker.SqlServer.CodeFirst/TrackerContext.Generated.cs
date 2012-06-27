@@ -14,10 +14,34 @@ namespace Tracker.SqlServer.CodeFirst
     public partial class TrackerContext
         : System.Data.Entity.DbContext
     {
-        static TrackerContext()
-        {
-            System.Data.Entity.Database.SetInitializer<TrackerContext>(null);
-        }
+        public TrackerContext()
+            :base("Name=TrackerContext")
+        { }
+
+        public TrackerContext(System.Data.Entity.Infrastructure.DbCompiledModel model)
+            : base("Name=TrackerContext", model)
+        { }
+
+        public TrackerContext(string nameOrConnectionString)
+            : base(nameOrConnectionString)
+        { }
+
+        public TrackerContext(string nameOrConnectionString, System.Data.Entity.Infrastructure.DbCompiledModel model)
+            : base(nameOrConnectionString, model)
+        { }
+
+        public TrackerContext(System.Data.Common.DbConnection existingConnection, bool contextOwnsConnection)
+            : base(existingConnection, contextOwnsConnection)
+        { }
+
+        public TrackerContext(System.Data.Common.DbConnection existingConnection, System.Data.Entity.Infrastructure.DbCompiledModel model, bool contextOwnsConnection)
+            : base(existingConnection, model, contextOwnsConnection)
+        { }
+
+        public TrackerContext(System.Data.Objects.ObjectContext objectContext, bool dbContextOwnsObjectContext)
+            : base(objectContext, dbContextOwnsObjectContext)
+        { }
+
 
         public System.Data.Entity.DbSet<Tracker.SqlServer.CodeFirst.Entities.AuditData> Audits { get; set; }
         public System.Data.Entity.DbSet<Tracker.SqlServer.CodeFirst.Entities.Task> Tasks { get; set; }
@@ -29,7 +53,6 @@ namespace Tracker.SqlServer.CodeFirst
 
         protected override void OnModelCreating(System.Data.Entity.DbModelBuilder modelBuilder)
         {
-            modelBuilder.Conventions.Remove<System.Data.Entity.Infrastructure.IncludeMetadataConvention>();
             modelBuilder.Configurations.Add(new Tracker.SqlServer.CodeFirst.Mapping.AuditMap());
             modelBuilder.Configurations.Add(new Tracker.SqlServer.CodeFirst.Mapping.TaskMap());
             modelBuilder.Configurations.Add(new Tracker.SqlServer.CodeFirst.Mapping.UserMap());

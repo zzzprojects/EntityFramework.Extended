@@ -49,9 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\Audit.cs" />
-    <Compile Include="Entities\Audit.Generated.cs">
-      <DependentUpon>Audit.cs</DependentUpon>
+    <Compile Include="Entities\AuditData.cs" />
+    <Compile Include="Entities\AuditData.Generated.cs">
+      <DependentUpon>AuditData.cs</DependentUpon>
     </Compile>
     <Compile Include="Entities\Priority.cs" />
     <Compile Include="Entities\Priority.Generated.cs">

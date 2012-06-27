@@ -29,9 +29,11 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
                 .IsRequired();
             Property(t => t.Browser)
                 .HasColumnName("Browser")
+                .HasMaxLength(200)
                 .IsOptional();
             Property(t => t.Os)
                 .HasColumnName("OS")
+                .HasMaxLength(150)
                 .IsOptional();
             Property(t => t.CreatedDate)
                 .HasColumnName("CreatedDate")
@@ -42,12 +44,14 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
             Property(t => t.RowVersion)
                 .HasColumnName("RowVersion")
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)
+                .HasMaxLength(8)
                 .IsRowVersion()
                 .IsRequired();
 
             // Relationships
             HasRequired(t => t.Task)
-                .WithOptional(t => t.TaskExtended);
+                .WithOptional(t => t.TaskExtended)
+                .WillCascadeOnDelete(false);
 
             InitializeMapping();
         }

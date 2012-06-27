@@ -29,12 +29,14 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
                 .IsRequired();
             Property(t => t.Name)
                 .HasColumnName("Name")
+                .HasMaxLength(50)
                 .IsRequired();
             Property(t => t.Order)
                 .HasColumnName("Order")
                 .IsRequired();
             Property(t => t.Description)
                 .HasColumnName("Description")
+                .HasMaxLength(200)
                 .IsOptional();
             Property(t => t.CreatedDate)
                 .HasColumnName("CreatedDate")
@@ -45,6 +47,7 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
             Property(t => t.RowVersion)
                 .HasColumnName("RowVersion")
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)
+                .HasMaxLength(8)
                 .IsRowVersion()
                 .IsRequired();
 

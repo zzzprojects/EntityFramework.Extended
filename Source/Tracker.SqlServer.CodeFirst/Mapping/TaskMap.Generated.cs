@@ -39,9 +39,11 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
                 .IsRequired();
             Property(t => t.Summary)
                 .HasColumnName("Summary")
+                .HasMaxLength(255)
                 .IsRequired();
             Property(t => t.Details)
                 .HasColumnName("Details")
+                .HasMaxLength(2000)
                 .IsOptional();
             Property(t => t.StartDate)
                 .HasColumnName("StartDate")
@@ -64,25 +66,31 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
             Property(t => t.RowVersion)
                 .HasColumnName("RowVersion")
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)
+                .HasMaxLength(8)
                 .IsRowVersion()
                 .IsRequired();
             Property(t => t.LastModifiedBy)
                 .HasColumnName("LastModifiedBy")
+                .HasMaxLength(50)
                 .IsOptional();
 
             // Relationships
             HasOptional(t => t.Priority)
                 .WithMany(t => t.Tasks)
-                .HasForeignKey(d => d.PriorityId);
+                .HasForeignKey(d => d.PriorityId)
+                .WillCascadeOnDelete(false);
             HasRequired(t => t.Status)
                 .WithMany(t => t.Tasks)
-                .HasForeignKey(d => d.StatusId);
+                .HasForeignKey(d => d.StatusId)
+                .WillCascadeOnDelete(false);
             HasOptional(t => t.AssignedUser)
                 .WithMany(t => t.AssignedTasks)
-                .HasForeignKey(d => d.AssignedId);
+                .HasForeignKey(d => d.AssignedId)
+                .WillCascadeOnDelete(false);
             HasRequired(t => t.CreatedUser)
                 .WithMany(t => t.CreatedTasks)
-                .HasForeignKey(d => d.CreatedId);
+                .HasForeignKey(d => d.CreatedId)
+                .WillCascadeOnDelete(false);
 
             InitializeMapping();
         }
