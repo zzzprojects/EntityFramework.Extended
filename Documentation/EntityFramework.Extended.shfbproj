@@ -20,7 +20,24 @@
     <Language>en-US</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="..\Source\EntityFramework.Extended\bin\Release\EntityFramework.Extended.dll" />
-<DocumentationSource sourceFile="..\Source\EntityFramework.Extended\bin\Release\EntityFramework.Extended.xml" /></DocumentationSources>
+      <DocumentationSource sourceFile="..\Source\EntityFramework.Extended\bin\Release\EntityFramework.Extended.xml" />
+    </DocumentationSources>
+    <PresentationStyle>vs2010</PresentationStyle>
+    <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
+    <CopyrightText>Copyright %28c%29 2012, LoreSoft</CopyrightText>
+    <CopyrightHref>https://github.com/loresoft/EntityFramework.Extended</CopyrightHref>
+    <NamingMethod>HashedMemberName</NamingMethod>
+    <ComponentConfigurations>
+      <ComponentConfig id="Code Block Component" enabled="True" xmlns="">
+        <component id="Code Block Component" type="SandcastleBuilder.Components.CodeBlockComponent" assembly="{@SHFBFolder}SandcastleBuilder.Components.dll">
+  <basePath value="{@HtmlEncProjectFolder}" />
+  <languageFilter value="true" />
+  <allowMissingSource value="false" />
+  <removeRegionMarkers value="false" />
+  <colorizer syntaxFile="{@SHFBFolder}Colorizer\highlight.xml" styleFile="{@SHFBFolder}Colorizer\highlight.xsl" copyImageUrl="../icons/CopyCode.gif" language="cs" tabSize="4" numberLines="false" outlining="false" keepSeeTags="false" defaultTitle="true" />
+</component>
+      </ComponentConfig>
+    </ComponentConfigurations>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in
        order for Visual Studio to perform the build.  The others are optional

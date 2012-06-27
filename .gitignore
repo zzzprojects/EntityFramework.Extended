@@ -1,11 +1,12 @@
 [Bb]in
 [Oo]bj
+packages
+[Bb]uild
+TestResults
 *.suo
 *.user
 *.[Cc]ache
 *[Rr]esharper*
-packages
-[Bb]uild
 *.zip
 *.nupkg
 *.msi
