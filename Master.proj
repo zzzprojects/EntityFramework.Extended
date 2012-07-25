@@ -103,7 +103,7 @@
 
     <!-- Test Files -->
     <MakeDir Directories="$(TestFolder)" />
-    <CreateItem Include="Source\*.Test\bin\$(BuildConfiguration)\*.*">
+    <CreateItem Include="Source\**\*.Test\bin\$(BuildConfiguration)\*.*">
       <Output TaskParameter="Include" ItemName="TestFiles" />
     </CreateItem>
     <Copy SourceFiles="@(TestFiles)"

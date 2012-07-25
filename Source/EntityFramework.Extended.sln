@@ -15,19 +15,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlServer.CodeFirst", "Tracker.SqlServer.CodeFirst\Tracker.SqlServer.CodeFirst.csproj", "{FA68FB7C-D87E-497B-A300-F2A7827FE92C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlServer.CodeFirst", "Samples\net45\Tracker.SqlServer.CodeFirst\Tracker.SqlServer.CodeFirst.csproj", "{FA68FB7C-D87E-497B-A300-F2A7827FE92C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlServer", "SqlServer", "{14134A51-5696-4B7C-B257-40E06494C315}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlServer.Test", "Tracker.SqlServer.Test\Tracker.SqlServer.Test.csproj", "{ACB6E31F-C2B8-48BF-97C5-22FED0F6D6AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlServer.Test", "Samples\net45\Tracker.SqlServer.Test\Tracker.SqlServer.Test.csproj", "{ACB6E31F-C2B8-48BF-97C5-22FED0F6D6AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlServer.Entities", "Tracker.SqlServer.Entities\Tracker.SqlServer.Entities.csproj", "{60743577-CDBD-4E89-AC63-F46CF914458D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlServer.Entities", "Samples\net45\Tracker.SqlServer.Entities\Tracker.SqlServer.Entities.csproj", "{60743577-CDBD-4E89-AC63-F46CF914458D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SqlCompact", "SqlCompact", "{155A9572-45F0-40F3-87AF-CBFC9D770EF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlCompact.Entities", "Tracker.SqlCompact.Entities\Tracker.SqlCompact.Entities.csproj", "{673ABCFA-71ED-4907-8EAC-D0328DB01D8E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlCompact.Entities", "Samples\net45\Tracker.SqlCompact.Entities\Tracker.SqlCompact.Entities.csproj", "{673ABCFA-71ED-4907-8EAC-D0328DB01D8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlCompact.Test", "Tracker.SqlCompact.Test\Tracker.SqlCompact.Test.csproj", "{9B3AA433-49DF-46AA-BE45-34CB3EE81173}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlCompact.Test", "Samples\net45\Tracker.SqlCompact.Test\Tracker.SqlCompact.Test.csproj", "{9B3AA433-49DF-46AA-BE45-34CB3EE81173}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{0E3BC071-9F05-44AF-AA3E-4373EF1390A1}"
 	ProjectSection(SolutionItems) = preProject
