@@ -8,12 +8,13 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.ComponentModel;
+using System.Data.EntityClient;
 using System.Data.Objects;
 using System.Data.Objects.DataClasses;
-using System.Data.EntityClient;
-using System.ComponentModel;
-using System.Xml.Serialization;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 [assembly: EdmSchemaAttribute()]
 #region EDM Relationship Metadata
@@ -206,6 +207,7 @@ namespace Tracker.SqlCompact.Entities
         private ObjectSet<User> _Users;
 
         #endregion
+
         #region AddTo Methods
     
         /// <summary>
@@ -273,11 +275,11 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
+
     }
-    
 
     #endregion
-    
+
     #region Entities
     
     /// <summary>
@@ -312,7 +314,8 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -331,7 +334,7 @@ namespace Tracker.SqlCompact.Entities
                 {
                     OnIdChanging(value);
                     ReportPropertyChanging("Id");
-                    _Id = StructuralObject.SetValidValue(value);
+                    _Id = StructuralObject.SetValidValue(value, "Id");
                     ReportPropertyChanged("Id");
                     OnIdChanged();
                 }
@@ -356,7 +359,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnDateChanging(value);
                 ReportPropertyChanging("Date");
-                _Date = StructuralObject.SetValidValue(value);
+                _Date = StructuralObject.SetValidValue(value, "Date");
                 ReportPropertyChanged("Date");
                 OnDateChanged();
             }
@@ -380,7 +383,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnUserIdChanging(value);
                 ReportPropertyChanging("UserId");
-                _UserId = StructuralObject.SetValidValue(value);
+                _UserId = StructuralObject.SetValidValue(value, "UserId");
                 ReportPropertyChanged("UserId");
                 OnUserIdChanged();
             }
@@ -404,7 +407,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnTaskIdChanging(value);
                 ReportPropertyChanging("TaskId");
-                _TaskId = StructuralObject.SetValidValue(value);
+                _TaskId = StructuralObject.SetValidValue(value, "TaskId");
                 ReportPropertyChanged("TaskId");
                 OnTaskIdChanged();
             }
@@ -428,7 +431,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnContentChanging(value);
                 ReportPropertyChanging("Content");
-                _Content = StructuralObject.SetValidValue(value, false);
+                _Content = StructuralObject.SetValidValue(value, false, "Content");
                 ReportPropertyChanged("Content");
                 OnContentChanged();
             }
@@ -452,7 +455,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnUsernameChanging(value);
                 ReportPropertyChanging("Username");
-                _Username = StructuralObject.SetValidValue(value, false);
+                _Username = StructuralObject.SetValidValue(value, false, "Username");
                 ReportPropertyChanged("Username");
                 OnUsernameChanged();
             }
@@ -476,7 +479,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnCreatedDateChanging(value);
                 ReportPropertyChanging("CreatedDate");
-                _CreatedDate = StructuralObject.SetValidValue(value);
+                _CreatedDate = StructuralObject.SetValidValue(value, "CreatedDate");
                 ReportPropertyChanged("CreatedDate");
                 OnCreatedDateChanged();
             }
@@ -500,7 +503,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnRowVersionChanging(value);
                 ReportPropertyChanging("RowVersion");
-                _RowVersion = StructuralObject.SetValidValue(value, false);
+                _RowVersion = StructuralObject.SetValidValue(value, false, "RowVersion");
                 ReportPropertyChanged("RowVersion");
                 OnRowVersionChanged();
             }
@@ -510,7 +513,7 @@ namespace Tracker.SqlCompact.Entities
         partial void OnRowVersionChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -590,6 +593,7 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -614,7 +618,8 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -633,7 +638,7 @@ namespace Tracker.SqlCompact.Entities
                 {
                     OnIdChanging(value);
                     ReportPropertyChanging("Id");
-                    _Id = StructuralObject.SetValidValue(value);
+                    _Id = StructuralObject.SetValidValue(value, "Id");
                     ReportPropertyChanged("Id");
                     OnIdChanged();
                 }
@@ -658,7 +663,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnAlternateIdChanging(value);
                 ReportPropertyChanging("AlternateId");
-                _AlternateId = StructuralObject.SetValidValue(value);
+                _AlternateId = StructuralObject.SetValidValue(value, "AlternateId");
                 ReportPropertyChanged("AlternateId");
                 OnAlternateIdChanged();
             }
@@ -682,7 +687,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnModifiedDateChanging(value);
                 ReportPropertyChanging("ModifiedDate");
-                _ModifiedDate = StructuralObject.SetValidValue(value);
+                _ModifiedDate = StructuralObject.SetValidValue(value, "ModifiedDate");
                 ReportPropertyChanged("ModifiedDate");
                 OnModifiedDateChanged();
             }
@@ -692,7 +697,7 @@ namespace Tracker.SqlCompact.Entities
         partial void OnModifiedDateChanged();
 
         #endregion
-    
+
     }
     
     /// <summary>
@@ -727,7 +732,8 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -746,7 +752,7 @@ namespace Tracker.SqlCompact.Entities
                 {
                     OnIdChanging(value);
                     ReportPropertyChanging("Id");
-                    _Id = StructuralObject.SetValidValue(value);
+                    _Id = StructuralObject.SetValidValue(value, "Id");
                     ReportPropertyChanged("Id");
                     OnIdChanged();
                 }
@@ -771,7 +777,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -795,7 +801,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnOrderChanging(value);
                 ReportPropertyChanging("Order");
-                _Order = StructuralObject.SetValidValue(value);
+                _Order = StructuralObject.SetValidValue(value, "Order");
                 ReportPropertyChanged("Order");
                 OnOrderChanged();
             }
@@ -819,7 +825,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnDescriptionChanging(value);
                 ReportPropertyChanging("Description");
-                _Description = StructuralObject.SetValidValue(value, true);
+                _Description = StructuralObject.SetValidValue(value, true, "Description");
                 ReportPropertyChanged("Description");
                 OnDescriptionChanged();
             }
@@ -843,7 +849,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnCreatedDateChanging(value);
                 ReportPropertyChanging("CreatedDate");
-                _CreatedDate = StructuralObject.SetValidValue(value);
+                _CreatedDate = StructuralObject.SetValidValue(value, "CreatedDate");
                 ReportPropertyChanged("CreatedDate");
                 OnCreatedDateChanged();
             }
@@ -867,7 +873,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnModifiedDateChanging(value);
                 ReportPropertyChanging("ModifiedDate");
-                _ModifiedDate = StructuralObject.SetValidValue(value);
+                _ModifiedDate = StructuralObject.SetValidValue(value, "ModifiedDate");
                 ReportPropertyChanged("ModifiedDate");
                 OnModifiedDateChanged();
             }
@@ -891,7 +897,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnRowVersionChanging(value);
                 ReportPropertyChanging("RowVersion");
-                _RowVersion = StructuralObject.SetValidValue(value, false);
+                _RowVersion = StructuralObject.SetValidValue(value, false, "RowVersion");
                 ReportPropertyChanged("RowVersion");
                 OnRowVersionChanged();
             }
@@ -901,7 +907,7 @@ namespace Tracker.SqlCompact.Entities
         partial void OnRowVersionChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -927,6 +933,7 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -959,7 +966,8 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -978,7 +986,7 @@ namespace Tracker.SqlCompact.Entities
                 {
                     OnIdChanging(value);
                     ReportPropertyChanging("Id");
-                    _Id = StructuralObject.SetValidValue(value);
+                    _Id = StructuralObject.SetValidValue(value, "Id");
                     ReportPropertyChanged("Id");
                     OnIdChanged();
                 }
@@ -1003,7 +1011,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -1027,7 +1035,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnDescriptionChanging(value);
                 ReportPropertyChanging("Description");
-                _Description = StructuralObject.SetValidValue(value, true);
+                _Description = StructuralObject.SetValidValue(value, true, "Description");
                 ReportPropertyChanged("Description");
                 OnDescriptionChanged();
             }
@@ -1051,7 +1059,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnCreatedDateChanging(value);
                 ReportPropertyChanging("CreatedDate");
-                _CreatedDate = StructuralObject.SetValidValue(value);
+                _CreatedDate = StructuralObject.SetValidValue(value, "CreatedDate");
                 ReportPropertyChanged("CreatedDate");
                 OnCreatedDateChanged();
             }
@@ -1075,7 +1083,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnModifiedDateChanging(value);
                 ReportPropertyChanging("ModifiedDate");
-                _ModifiedDate = StructuralObject.SetValidValue(value);
+                _ModifiedDate = StructuralObject.SetValidValue(value, "ModifiedDate");
                 ReportPropertyChanged("ModifiedDate");
                 OnModifiedDateChanged();
             }
@@ -1099,7 +1107,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnRowVersionChanging(value);
                 ReportPropertyChanging("RowVersion");
-                _RowVersion = StructuralObject.SetValidValue(value, false);
+                _RowVersion = StructuralObject.SetValidValue(value, false, "RowVersion");
                 ReportPropertyChanged("RowVersion");
                 OnRowVersionChanged();
             }
@@ -1109,7 +1117,7 @@ namespace Tracker.SqlCompact.Entities
         partial void OnRowVersionChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -1135,6 +1143,7 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -1169,7 +1178,8 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -1188,7 +1198,7 @@ namespace Tracker.SqlCompact.Entities
                 {
                     OnIdChanging(value);
                     ReportPropertyChanging("Id");
-                    _Id = StructuralObject.SetValidValue(value);
+                    _Id = StructuralObject.SetValidValue(value, "Id");
                     ReportPropertyChanged("Id");
                     OnIdChanged();
                 }
@@ -1213,7 +1223,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -1237,7 +1247,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnDescriptionChanging(value);
                 ReportPropertyChanging("Description");
-                _Description = StructuralObject.SetValidValue(value, true);
+                _Description = StructuralObject.SetValidValue(value, true, "Description");
                 ReportPropertyChanged("Description");
                 OnDescriptionChanged();
             }
@@ -1261,7 +1271,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnOrderChanging(value);
                 ReportPropertyChanging("Order");
-                _Order = StructuralObject.SetValidValue(value);
+                _Order = StructuralObject.SetValidValue(value, "Order");
                 ReportPropertyChanged("Order");
                 OnOrderChanged();
             }
@@ -1285,7 +1295,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnCreatedDateChanging(value);
                 ReportPropertyChanging("CreatedDate");
-                _CreatedDate = StructuralObject.SetValidValue(value);
+                _CreatedDate = StructuralObject.SetValidValue(value, "CreatedDate");
                 ReportPropertyChanged("CreatedDate");
                 OnCreatedDateChanged();
             }
@@ -1309,7 +1319,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnModifiedDateChanging(value);
                 ReportPropertyChanging("ModifiedDate");
-                _ModifiedDate = StructuralObject.SetValidValue(value);
+                _ModifiedDate = StructuralObject.SetValidValue(value, "ModifiedDate");
                 ReportPropertyChanged("ModifiedDate");
                 OnModifiedDateChanged();
             }
@@ -1333,7 +1343,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnRowVersionChanging(value);
                 ReportPropertyChanging("RowVersion");
-                _RowVersion = StructuralObject.SetValidValue(value, false);
+                _RowVersion = StructuralObject.SetValidValue(value, false, "RowVersion");
                 ReportPropertyChanged("RowVersion");
                 OnRowVersionChanged();
             }
@@ -1343,7 +1353,7 @@ namespace Tracker.SqlCompact.Entities
         partial void OnRowVersionChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -1369,6 +1379,7 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -1405,7 +1416,8 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -1424,7 +1436,7 @@ namespace Tracker.SqlCompact.Entities
                 {
                     OnIdChanging(value);
                     ReportPropertyChanging("Id");
-                    _Id = StructuralObject.SetValidValue(value);
+                    _Id = StructuralObject.SetValidValue(value, "Id");
                     ReportPropertyChanged("Id");
                     OnIdChanged();
                 }
@@ -1449,7 +1461,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnStatusIdChanging(value);
                 ReportPropertyChanging("StatusId");
-                _StatusId = StructuralObject.SetValidValue(value);
+                _StatusId = StructuralObject.SetValidValue(value, "StatusId");
                 ReportPropertyChanged("StatusId");
                 OnStatusIdChanged();
             }
@@ -1473,7 +1485,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnPriorityIdChanging(value);
                 ReportPropertyChanging("PriorityId");
-                _PriorityId = StructuralObject.SetValidValue(value);
+                _PriorityId = StructuralObject.SetValidValue(value, "PriorityId");
                 ReportPropertyChanged("PriorityId");
                 OnPriorityIdChanged();
             }
@@ -1497,7 +1509,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnCreatedIdChanging(value);
                 ReportPropertyChanging("CreatedId");
-                _CreatedId = StructuralObject.SetValidValue(value);
+                _CreatedId = StructuralObject.SetValidValue(value, "CreatedId");
                 ReportPropertyChanged("CreatedId");
                 OnCreatedIdChanged();
             }
@@ -1521,7 +1533,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnSummaryChanging(value);
                 ReportPropertyChanging("Summary");
-                _Summary = StructuralObject.SetValidValue(value, false);
+                _Summary = StructuralObject.SetValidValue(value, false, "Summary");
                 ReportPropertyChanged("Summary");
                 OnSummaryChanged();
             }
@@ -1545,7 +1557,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnDetailsChanging(value);
                 ReportPropertyChanging("Details");
-                _Details = StructuralObject.SetValidValue(value, true);
+                _Details = StructuralObject.SetValidValue(value, true, "Details");
                 ReportPropertyChanged("Details");
                 OnDetailsChanged();
             }
@@ -1569,7 +1581,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnStartDateChanging(value);
                 ReportPropertyChanging("StartDate");
-                _StartDate = StructuralObject.SetValidValue(value);
+                _StartDate = StructuralObject.SetValidValue(value, "StartDate");
                 ReportPropertyChanged("StartDate");
                 OnStartDateChanged();
             }
@@ -1593,7 +1605,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnDueDateChanging(value);
                 ReportPropertyChanging("DueDate");
-                _DueDate = StructuralObject.SetValidValue(value);
+                _DueDate = StructuralObject.SetValidValue(value, "DueDate");
                 ReportPropertyChanged("DueDate");
                 OnDueDateChanged();
             }
@@ -1617,7 +1629,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnCompleteDateChanging(value);
                 ReportPropertyChanging("CompleteDate");
-                _CompleteDate = StructuralObject.SetValidValue(value);
+                _CompleteDate = StructuralObject.SetValidValue(value, "CompleteDate");
                 ReportPropertyChanged("CompleteDate");
                 OnCompleteDateChanged();
             }
@@ -1641,7 +1653,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnAssignedIdChanging(value);
                 ReportPropertyChanging("AssignedId");
-                _AssignedId = StructuralObject.SetValidValue(value);
+                _AssignedId = StructuralObject.SetValidValue(value, "AssignedId");
                 ReportPropertyChanged("AssignedId");
                 OnAssignedIdChanged();
             }
@@ -1665,7 +1677,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnLastModifiedByChanging(value);
                 ReportPropertyChanging("LastModifiedBy");
-                _LastModifiedBy = StructuralObject.SetValidValue(value, true);
+                _LastModifiedBy = StructuralObject.SetValidValue(value, true, "LastModifiedBy");
                 ReportPropertyChanged("LastModifiedBy");
                 OnLastModifiedByChanged();
             }
@@ -1689,7 +1701,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnCreatedDateChanging(value);
                 ReportPropertyChanging("CreatedDate");
-                _CreatedDate = StructuralObject.SetValidValue(value);
+                _CreatedDate = StructuralObject.SetValidValue(value, "CreatedDate");
                 ReportPropertyChanged("CreatedDate");
                 OnCreatedDateChanged();
             }
@@ -1713,7 +1725,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnModifiedDateChanging(value);
                 ReportPropertyChanging("ModifiedDate");
-                _ModifiedDate = StructuralObject.SetValidValue(value);
+                _ModifiedDate = StructuralObject.SetValidValue(value, "ModifiedDate");
                 ReportPropertyChanged("ModifiedDate");
                 OnModifiedDateChanged();
             }
@@ -1737,7 +1749,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnRowVersionChanging(value);
                 ReportPropertyChanging("RowVersion");
-                _RowVersion = StructuralObject.SetValidValue(value, false);
+                _RowVersion = StructuralObject.SetValidValue(value, false, "RowVersion");
                 ReportPropertyChanged("RowVersion");
                 OnRowVersionChanged();
             }
@@ -1747,7 +1759,7 @@ namespace Tracker.SqlCompact.Entities
         partial void OnRowVersionChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -1963,6 +1975,7 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -1993,7 +2006,8 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -2012,7 +2026,7 @@ namespace Tracker.SqlCompact.Entities
                 {
                     OnTaskIdChanging(value);
                     ReportPropertyChanging("TaskId");
-                    _TaskId = StructuralObject.SetValidValue(value);
+                    _TaskId = StructuralObject.SetValidValue(value, "TaskId");
                     ReportPropertyChanged("TaskId");
                     OnTaskIdChanged();
                 }
@@ -2037,7 +2051,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnBrowserChanging(value);
                 ReportPropertyChanging("Browser");
-                _Browser = StructuralObject.SetValidValue(value, true);
+                _Browser = StructuralObject.SetValidValue(value, true, "Browser");
                 ReportPropertyChanged("Browser");
                 OnBrowserChanged();
             }
@@ -2061,7 +2075,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnOSChanging(value);
                 ReportPropertyChanging("OS");
-                _OS = StructuralObject.SetValidValue(value, true);
+                _OS = StructuralObject.SetValidValue(value, true, "OS");
                 ReportPropertyChanged("OS");
                 OnOSChanged();
             }
@@ -2085,7 +2099,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnCreatedDateChanging(value);
                 ReportPropertyChanging("CreatedDate");
-                _CreatedDate = StructuralObject.SetValidValue(value);
+                _CreatedDate = StructuralObject.SetValidValue(value, "CreatedDate");
                 ReportPropertyChanged("CreatedDate");
                 OnCreatedDateChanged();
             }
@@ -2109,7 +2123,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnModifiedDateChanging(value);
                 ReportPropertyChanging("ModifiedDate");
-                _ModifiedDate = StructuralObject.SetValidValue(value);
+                _ModifiedDate = StructuralObject.SetValidValue(value, "ModifiedDate");
                 ReportPropertyChanged("ModifiedDate");
                 OnModifiedDateChanged();
             }
@@ -2133,7 +2147,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnRowVersionChanging(value);
                 ReportPropertyChanging("RowVersion");
-                _RowVersion = StructuralObject.SetValidValue(value, false);
+                _RowVersion = StructuralObject.SetValidValue(value, false, "RowVersion");
                 ReportPropertyChanged("RowVersion");
                 OnRowVersionChanged();
             }
@@ -2143,7 +2157,7 @@ namespace Tracker.SqlCompact.Entities
         partial void OnRowVersionChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -2185,6 +2199,7 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -2225,7 +2240,8 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -2244,7 +2260,7 @@ namespace Tracker.SqlCompact.Entities
                 {
                     OnIdChanging(value);
                     ReportPropertyChanging("Id");
-                    _Id = StructuralObject.SetValidValue(value);
+                    _Id = StructuralObject.SetValidValue(value, "Id");
                     ReportPropertyChanged("Id");
                     OnIdChanged();
                 }
@@ -2269,7 +2285,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnEmailChanging(value);
                 ReportPropertyChanging("Email");
-                _Email = StructuralObject.SetValidValue(value, false);
+                _Email = StructuralObject.SetValidValue(value, false, "Email");
                 ReportPropertyChanged("Email");
                 OnEmailChanged();
             }
@@ -2293,7 +2309,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnFirstNameChanging(value);
                 ReportPropertyChanging("FirstName");
-                _FirstName = StructuralObject.SetValidValue(value, true);
+                _FirstName = StructuralObject.SetValidValue(value, true, "FirstName");
                 ReportPropertyChanged("FirstName");
                 OnFirstNameChanged();
             }
@@ -2317,7 +2333,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnLastNameChanging(value);
                 ReportPropertyChanging("LastName");
-                _LastName = StructuralObject.SetValidValue(value, true);
+                _LastName = StructuralObject.SetValidValue(value, true, "LastName");
                 ReportPropertyChanged("LastName");
                 OnLastNameChanged();
             }
@@ -2341,7 +2357,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnAvatarChanging(value);
                 ReportPropertyChanging("Avatar");
-                _Avatar = StructuralObject.SetValidValue(value, true);
+                _Avatar = StructuralObject.SetValidValue(value, true, "Avatar");
                 ReportPropertyChanged("Avatar");
                 OnAvatarChanged();
             }
@@ -2365,7 +2381,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnAvatarTypeChanging(value);
                 ReportPropertyChanging("AvatarType");
-                _AvatarType = StructuralObject.SetValidValue(value, true);
+                _AvatarType = StructuralObject.SetValidValue(value, true, "AvatarType");
                 ReportPropertyChanged("AvatarType");
                 OnAvatarTypeChanged();
             }
@@ -2389,7 +2405,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnPasswordHashChanging(value);
                 ReportPropertyChanging("PasswordHash");
-                _PasswordHash = StructuralObject.SetValidValue(value, false);
+                _PasswordHash = StructuralObject.SetValidValue(value, false, "PasswordHash");
                 ReportPropertyChanged("PasswordHash");
                 OnPasswordHashChanged();
             }
@@ -2413,7 +2429,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnPasswordSaltChanging(value);
                 ReportPropertyChanging("PasswordSalt");
-                _PasswordSalt = StructuralObject.SetValidValue(value, false);
+                _PasswordSalt = StructuralObject.SetValidValue(value, false, "PasswordSalt");
                 ReportPropertyChanged("PasswordSalt");
                 OnPasswordSaltChanged();
             }
@@ -2437,7 +2453,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnCommentChanging(value);
                 ReportPropertyChanging("Comment");
-                _Comment = StructuralObject.SetValidValue(value, true);
+                _Comment = StructuralObject.SetValidValue(value, true, "Comment");
                 ReportPropertyChanged("Comment");
                 OnCommentChanged();
             }
@@ -2461,7 +2477,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnIsApprovedChanging(value);
                 ReportPropertyChanging("IsApproved");
-                _IsApproved = StructuralObject.SetValidValue(value);
+                _IsApproved = StructuralObject.SetValidValue(value, "IsApproved");
                 ReportPropertyChanged("IsApproved");
                 OnIsApprovedChanged();
             }
@@ -2485,7 +2501,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnLastLoginDateChanging(value);
                 ReportPropertyChanging("LastLoginDate");
-                _LastLoginDate = StructuralObject.SetValidValue(value);
+                _LastLoginDate = StructuralObject.SetValidValue(value, "LastLoginDate");
                 ReportPropertyChanged("LastLoginDate");
                 OnLastLoginDateChanged();
             }
@@ -2509,7 +2525,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnLastActivityDateChanging(value);
                 ReportPropertyChanging("LastActivityDate");
-                _LastActivityDate = StructuralObject.SetValidValue(value);
+                _LastActivityDate = StructuralObject.SetValidValue(value, "LastActivityDate");
                 ReportPropertyChanged("LastActivityDate");
                 OnLastActivityDateChanged();
             }
@@ -2533,7 +2549,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnLastPasswordChangeDateChanging(value);
                 ReportPropertyChanging("LastPasswordChangeDate");
-                _LastPasswordChangeDate = StructuralObject.SetValidValue(value);
+                _LastPasswordChangeDate = StructuralObject.SetValidValue(value, "LastPasswordChangeDate");
                 ReportPropertyChanged("LastPasswordChangeDate");
                 OnLastPasswordChangeDateChanged();
             }
@@ -2557,7 +2573,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnCreatedDateChanging(value);
                 ReportPropertyChanging("CreatedDate");
-                _CreatedDate = StructuralObject.SetValidValue(value);
+                _CreatedDate = StructuralObject.SetValidValue(value, "CreatedDate");
                 ReportPropertyChanged("CreatedDate");
                 OnCreatedDateChanged();
             }
@@ -2581,7 +2597,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnModifiedDateChanging(value);
                 ReportPropertyChanging("ModifiedDate");
-                _ModifiedDate = StructuralObject.SetValidValue(value);
+                _ModifiedDate = StructuralObject.SetValidValue(value, "ModifiedDate");
                 ReportPropertyChanged("ModifiedDate");
                 OnModifiedDateChanged();
             }
@@ -2605,7 +2621,7 @@ namespace Tracker.SqlCompact.Entities
             {
                 OnRowVersionChanging(value);
                 ReportPropertyChanging("RowVersion");
-                _RowVersion = StructuralObject.SetValidValue(value, false);
+                _RowVersion = StructuralObject.SetValidValue(value, false, "RowVersion");
                 ReportPropertyChanged("RowVersion");
                 OnRowVersionChanged();
             }
@@ -2615,7 +2631,7 @@ namespace Tracker.SqlCompact.Entities
         partial void OnRowVersionChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -2707,8 +2723,9 @@ namespace Tracker.SqlCompact.Entities
         }
 
         #endregion
+
     }
 
     #endregion
-    
+
 }
