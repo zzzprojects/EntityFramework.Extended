@@ -4,7 +4,6 @@
   <PropertyGroup>
     <BuildConfiguration>Release</BuildConfiguration>
     <BuildFolder>Build\$(BuildConfiguration)</BuildFolder>
-    <PackageFolder>Build\Package</PackageFolder>
     <TestFolder>Build\Test</TestFolder>
     <LibraryFolder>Libraries</LibraryFolder>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\$(LibraryFolder)</MSBuildCommunityTasksPath>
@@ -49,8 +48,8 @@
   </ItemGroup>
 
   <Target Name="Clean">
-    <DeleteTree Directories="**\obj\**;**\bin\**" />
-    <RemoveDir Directories="$(PackageFolder)" ContinueOnError="true" />
+    <DeleteTree Directories="$(BuildFolder)" />
+    <DeleteTree Directories="$(TestFolder)" />
   </Target>
 
   <Target Name="Version">
@@ -62,52 +61,45 @@
 
     <AssemblyInfo CodeLanguage="CS"
                   OutputFile="Source\GlobalAssemblyInfo.cs"
-                  AssemblyProduct="EntityFramework.Extended"
+                  AssemblyProduct="EntityFramework.Extended (.NET 4.5)"
+                  AssemblyDescription="Entity Framework extensions library. Built for .NET 4.5"
                   AssemblyCompany="LoreSoft"
                   AssemblyCopyright="Copyright © $(Year) LoreSoft"
                   AssemblyVersion="$(Major).$(Minor).$(Build).$(Revision)"
                   AssemblyFileVersion="$(Major).$(Minor).$(Build).$(Revision)"
                   AssemblyInformationalVersion="$(Major).$(Minor).$(Build).$(Revision)"
-                  GenerateClass="true"
-                  Condition="$(Revision) != '0' "/>
+                  GenerateClass="true" />
+    
+    <AssemblyInfo CodeLanguage="CS"
+                  OutputFile="Source\GlobalAssemblyInfo.net40.cs"
+                  AssemblyProduct="EntityFramework.Extended (.NET 4.0)"
+                  AssemblyDescription="Entity Framework extensions library. Built for .NET 4.0"
+                  AssemblyCompany="LoreSoft"
+                  AssemblyCopyright="Copyright © $(Year) LoreSoft"
+                  AssemblyVersion="$(Major).$(Minor).$(Build).$(Revision)"
+                  AssemblyFileVersion="$(Major).$(Minor).$(Build).$(Revision)"
+                  AssemblyInformationalVersion="$(Major).$(Minor).$(Build).$(Revision)"
+                  GenerateClass="true" />
   </Target>
 
   <Target Name="Compile" DependsOnTargets="Clean;Version">
-    <MSBuild Projects="Source\EntityFramework.Extended.sln"
-             Properties="Configuration=$(BuildConfiguration)"/>
+        <DeleteTree Directories="**\obj\**;**\bin\**" />
+        <MSBuild Projects="Source\EntityFramework.Extended.sln"
+                 Properties="Configuration=$(BuildConfiguration)"/>
+             
+        <DeleteTree Directories="**\obj\**;**\bin\**" />
+        <MSBuild Projects="Source\EntityFramework.Extended.net40.sln"
+                 Properties="Configuration=$(BuildConfiguration)"/>
   </Target>
 
-  <Target Name="Zip" DependsOnTargets="Package">
-    <CreateItem Include="$(PackageFolder)\**\*.*" Exclude="@(DefaultExclude)" >
+  <Target Name="Zip" DependsOnTargets="Compile">
+    <CreateItem Include="$(BuildFolder)\**\EntityFramework.Extended.*" Exclude="@(DefaultExclude)" >
       <Output TaskParameter="Include" ItemName="ZipFiles" />
     </CreateItem>
 
     <Zip Files="@(ZipFiles)"
+         WorkingDirectory="$(BuildFolder)"
          ZipFileName="EntityFramework.Extended.v$(Major).$(Minor).$(Build).$(Revision).zip" />
-  </Target>
-
-  <Target Name="Package" DependsOnTargets="Compile">
-    <!-- Clean Files -->
-    <CreateItem Include="Build\**\*.*">
-      <Output TaskParameter="Include" ItemName="DeleteFiles" />
-    </CreateItem>
-    <Delete Files="@(DeleteFiles)" />
-
-    <!-- Release Files -->
-    <MakeDir Directories="$(PackageFolder)" />
-    <CreateItem Include="Source\EntityFramework.Extended\bin\$(BuildConfiguration)\EntityFramework.Extended.*">
-      <Output TaskParameter="Include" ItemName="ReleaseFiles" />
-    </CreateItem>
-    <Copy SourceFiles="@(ReleaseFiles)" 
-          DestinationFolder="$(PackageFolder)" />
-
-    <!-- Test Files -->
-    <MakeDir Directories="$(TestFolder)" />
-    <CreateItem Include="Source\**\*.Test\bin\$(BuildConfiguration)\*.*">
-      <Output TaskParameter="Include" ItemName="TestFiles" />
-    </CreateItem>
-    <Copy SourceFiles="@(TestFiles)"
-          DestinationFolder="$(TestFolder)" />
   </Target>
 
   <Target Name="Build">

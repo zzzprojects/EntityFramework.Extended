@@ -14,8 +14,8 @@ using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyProduct("EntityFramework.Extended (.NET 4.5)")]
-[assembly: AssemblyDescription("Entity Framework extensions library. Built for .NET 4.5")]
+[assembly: AssemblyProduct("EntityFramework.Extended (.NET 4.0)")]
+[assembly: AssemblyDescription("Entity Framework extensions library. Built for .NET 4.0")]
 [assembly: AssemblyCompany("LoreSoft")]
 [assembly: AssemblyCopyright("Copyright © 2012 LoreSoft")]
 [assembly: AssemblyVersion("1.0.0.0")]
@@ -26,9 +26,9 @@ using System.Runtime.InteropServices;
 
 internal sealed partial class ThisAssembly {
     
-    internal const string AssemblyProduct = "EntityFramework.Extended (.NET 4.5)";
+    internal const string AssemblyProduct = "EntityFramework.Extended (.NET 4.0)";
     
-    internal const string AssemblyDescription = "Entity Framework extensions library. Built for .NET 4.5";
+    internal const string AssemblyDescription = "Entity Framework extensions library. Built for .NET 4.0";
     
     internal const string AssemblyCompany = "LoreSoft";
     

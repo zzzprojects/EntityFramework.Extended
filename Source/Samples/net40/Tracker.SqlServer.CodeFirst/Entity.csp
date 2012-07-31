@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<codeSmith useRelativePaths="false" xmlns="http://www.codesmithtools.com/schema/csp.xsd">
+  <variables>
+    <add key="TrackerConnectionString" value="Data Source=(local);Initial Catalog=Tracker;Integrated Security=True" />
+  </variables>
+  <propertySets>
+    <propertySet name="Entity" output="Entity.txt" template="..\packages\PLINQO.EntityFramework.DbContext.1.0.29\tools\CSharp\Entity.cst">
+      <property name="ContextDirectory">.\</property>
+      <property name="EntityDirectory">.\Entities</property>
+      <property name="MappingDirectory">.\Mapping</property>
+      <property name="TableNaming">Singular</property>
+      <property name="EntityNaming">Singular</property>
+      <property name="RelationshipNaming">Plural</property>
+      <property name="ContextNaming">Plural</property>
+      <property name="IgnoreList">
+        <stringList>
+          <string>sysdiagrams$</string>
+        </stringList>
+      </property>
+      <property name="InclusionMode">False</property>
+      <property name="CleanExpressions">
+        <stringList>
+          <string>^(sp|tbl|udf|vw)_</string>
+        </stringList>
+      </property>
+      <property name="InterfaceMode">False</property>
+      <property name="IncludeQuery">False</property>
+      <property name="QueryDirectory">.\Queries</property>
+      <property name="MethodPrefix">By</property>
+      <property name="UniqueMethodPrefix">GetBy</property>
+      <property name="MethodKeySuffix">Key</property>
+      <property name="IncludeMock">False</property>
+      <property name="MockDirectory">.\Mocks</property>
+      <property name="Internalize">True</property>
+      <property name="ContextNamespace">Tracker.SqlServer.CodeFirst</property>
+      <property name="SourceDatabase">
+        <connectionString>$(TrackerConnectionString)</connectionString>
+        <providerType>SchemaExplorer.SqlSchemaProvider,SchemaExplorer.SqlSchemaProvider</providerType>
+      </property>
+      <property name="MappingNamespace">Tracker.SqlServer.CodeFirst.Mapping</property>
+      <property name="EntityNamespace">Tracker.SqlServer.CodeFirst.Entities</property>
+      <property name="QueryNamespace">Tracker.SqlServer.CodeFirst.Queries</property>
+      <property name="MockNamespace">Tracker.SqlServer.CodeFirst.Mocks</property>
+    </propertySet>
+  </propertySets>
+</codeSmith>

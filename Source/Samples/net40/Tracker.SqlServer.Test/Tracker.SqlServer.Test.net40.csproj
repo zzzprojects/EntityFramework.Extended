@@ -6,12 +6,12 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9B3AA433-49DF-46AA-BE45-34CB3EE81173}</ProjectGuid>
+    <ProjectGuid>{ACB6E31F-C2B8-48BF-97C5-22FED0F6D6AC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Tracker.SqlCompact.Test</RootNamespace>
-    <AssemblyName>Tracker.SqlCompact.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>Tracker.SqlServer.Test</RootNamespace>
+    <AssemblyName>Tracker.SqlServer.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -31,7 +31,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\Build\Test\net45\</OutputPath>
+    <OutputPath>..\..\..\..\Build\Test\net40\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -40,16 +40,21 @@
   <ItemGroup>
     <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\EntityFramework.5.0.0-rc\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\..\..\packages\EntityFramework.5.0.0-rc\lib\net40\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="FluentAssertions">
       <HintPath>..\..\..\packages\FluentAssertions.1.7.1.1\Lib\net40\FluentAssertions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
@@ -59,24 +64,33 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuditTest.cs" />
+    <Compile Include="BatchDbContext.cs" />
     <Compile Include="BatchObjectContext.cs" />
+    <Compile Include="CacheDbContext.cs" />
+    <Compile Include="ExtensionTest.cs" />
+    <Compile Include="FutureDbContext.cs" />
     <Compile Include="FutureObjectContext.cs" />
     <Compile Include="MappingObjectContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
+    <ProjectReference Include="..\..\..\EntityFramework.Extended\EntityFramework.Extended.net40.csproj">
+      <Project>{D390C235-242C-4E92-9E0B-D2463E87B0F0}</Project>
+      <Name>EntityFramework.Extended.net40</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tracker.SqlServer.CodeFirst\Tracker.SqlServer.CodeFirst.net40.csproj">
+      <Project>{FA68FB7C-D87E-497B-A300-F2A7827FE92C}</Project>
+      <Name>Tracker.SqlServer.CodeFirst.net40</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tracker.SqlServer.Entities\Tracker.SqlServer.Entities.net40.csproj">
+      <Project>{60743577-CDBD-4E89-AC63-F46CF914458D}</Project>
+      <Name>Tracker.SqlServer.Entities.net40</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\EntityFramework.Extended\EntityFramework.Extended.csproj">
-      <Project>{D390C235-242C-4E92-9E0B-D2463E87B0F0}</Project>
-      <Name>EntityFramework.Extended</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tracker.SqlCompact.Entities\Tracker.SqlCompact.Entities.csproj">
-      <Project>{673ABCFA-71ED-4907-8EAC-D0328DB01D8E}</Project>
-      <Name>Tracker.SqlCompact.Entities</Name>
-    </ProjectReference>
+    <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

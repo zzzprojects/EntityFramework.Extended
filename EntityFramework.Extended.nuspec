@@ -14,19 +14,22 @@
     <language>en-US</language>
     <tags>EntityFramework</tags>
     <dependencies>
-      <dependency id="EntityFramework" version="4.3.1" />
+      <dependency id="EntityFramework" version="5.0.0" />
     </dependencies>
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="System.Data.Entity" targetFramework="" />
       <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="" />
     </frameworkAssemblies>
   </metadata>
   <files>
     <file src="readme.md" target="tools\readme.md" />
-    <file src="Build\Package\EntityFramework.Extended.dll" target="lib\net40\EntityFramework.Extended.dll" />
-    <file src="Build\Package\EntityFramework.Extended.pdb" target="lib\net40\EntityFramework.Extended.pdb" />
-    <file src="Build\Package\EntityFramework.Extended.xml" target="lib\net40\EntityFramework.Extended.xml" />
+    <file src="Build\Release\net40\EntityFramework.Extended.dll" target="lib\net40\EntityFramework.Extended.dll" />
+    <file src="Build\Release\net40\EntityFramework.Extended.pdb" target="lib\net40\EntityFramework.Extended.pdb" />
+    <file src="Build\Release\net40\EntityFramework.Extended.xml" target="lib\net40\EntityFramework.Extended.xml" />
+    <file src="Build\Release\net45\EntityFramework.Extended.dll" target="lib\net45\EntityFramework.Extended.dll" />
+    <file src="Build\Release\net45\EntityFramework.Extended.pdb" target="lib\net45\EntityFramework.Extended.pdb" />
+    <file src="Build\Release\net45\EntityFramework.Extended.xml" target="lib\net45\EntityFramework.Extended.xml" />
     <file src="Source\GlobalAssemblyInfo.cs" target="src" />
+    <file src="Source\GlobalAssemblyInfo.net40.cs" target="src" />
     <file src="Source\EntityFramework.Extended\**\*.cs" target="src" />
   </files>
 </package>
