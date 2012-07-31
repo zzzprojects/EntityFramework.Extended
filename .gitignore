@@ -11,3 +11,4 @@ TestResults
 *.nupkg
 *.msi
 *.chm
+*.txt
