@@ -82,7 +82,7 @@ namespace EntityFramework.Batch
                     if (wroteKey)
                         sqlBuilder.Append(" AND ");
 
-                    sqlBuilder.AppendFormat("j0.{0} = j1.{0}", keyMap.ColumnName);
+                    sqlBuilder.AppendFormat("j0.[{0}] = j1.[{0}]", keyMap.ColumnName);
                     wroteKey = true;
                 }
                 sqlBuilder.Append(")");
