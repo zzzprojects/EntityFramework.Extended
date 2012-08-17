@@ -18,7 +18,20 @@ namespace Tracker.SqlServer.Test
         {
             var db = new TrackerContext();
             string emailDomain = "@test.com";
-            int count = db.Users.Delete(u => u.EmailAddress.EndsWith(emailDomain));
+            int count = db.Users
+                .Delete(u => u.EmailAddress.EndsWith(emailDomain));
+        }
+        [TestMethod]
+        public void DeleteWhere()
+        {
+            var db = new TrackerContext();
+            string emailDomain = "@test.com";
+
+            //var user = db.Users.Select(u => new User { FirstName = u.FirstName, LastName = u.LastName });
+
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Delete();
         }
 
         [TestMethod]

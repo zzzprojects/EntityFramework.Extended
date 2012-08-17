@@ -20,7 +20,7 @@ namespace EntityFramework.Batch
     public class SqlServerBatchRunner : IBatchRunner
     {
         /// <summary>
-        /// Create and runs a batch delete statement.
+        /// Create and run a batch delete statement.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <param name="objectContext">The <see cref="ObjectContext"/> to get connection and metadata information from.</param>
@@ -111,7 +111,7 @@ namespace EntityFramework.Batch
         }
 
         /// <summary>
-        /// Create and runs a batch update statement.
+        /// Create and run a batch update statement.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <param name="objectContext">The <see cref="ObjectContext"/> to get connection and metadata information from.</param>
