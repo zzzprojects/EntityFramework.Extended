@@ -78,6 +78,48 @@ namespace EntityFramework.Extensions
         /// Provides for defering the execution of the <paramref name="source" /> query to a batch of future queries.
         /// </summary>
         /// <typeparam name="TEntity">The type of the elements of <paramref name="source" />.</typeparam>
+        /// <typeparam name="TResult">The type of the result value wrapped in a <see cref="T:EntityFramework.Future.FutureValue`1"/>.</typeparam>
+        /// <param name="source">An <see cref="T:System.Linq.IQueryable`1" /> to add to the batch of future queries.</param>
+        /// <param name="selector">A lambda expression with one of the Min, Max, Count, Sum, Average aggregate functions</param>
+        /// <returns>An instance of <see cref="T:EntityFramework.Future.FutureValue`1" /> that contains the result of the query</returns>
+        public static FutureValue<TResult> FutureValue<TEntity, TResult>(this IQueryable<TEntity> source, Expression<Func<IQueryable<TEntity>, TResult>> selector)
+            where TEntity : class
+        {
+            if (source == null)
+                return new FutureValue<TResult>(default(TResult));
+
+            var sourceQuery = source.ToObjectQuery();
+            if (sourceQuery == null)
+                throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
+
+            var methodExpr = selector.Body as MethodCallExpression;
+            if (methodExpr == null || methodExpr.Arguments.Count == 0)
+                throw new ArgumentException("The body of lambda expression must be a Count, Min, Max, Sum or Average method call", "selector");
+
+            var arguments = new Expression[methodExpr.Arguments.Count];
+            // the first argument is our source query
+            arguments[0] = source.Expression; 
+            // copy the rest of the arguments from method call expression
+            for (int i = 1; i < arguments.Length; i++)
+            {
+                arguments[i] = methodExpr.Arguments[i];
+            }
+
+            var expression = Expression.Call(null, methodExpr.Method, arguments);
+            var valueQuery = sourceQuery.CreateQuery(expression, typeof(TResult));
+            if (valueQuery == null)
+                throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
+
+            var futureContext = GetFutureContext(sourceQuery);
+            var future = new FutureValue<TResult>(valueQuery, futureContext.ExecuteFutureQueries);
+            futureContext.AddQuery(future);
+            return future;
+        }
+
+        /// <summary>
+        /// Provides for defering the execution of the <paramref name="source" /> query to a batch of future queries.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the elements of <paramref name="source" />.</typeparam>
         /// <param name="source">An <see cref="T:System.Linq.IQueryable`1" /> to add to the batch of future queries.</param>
         /// <returns>An instance of <see cref="T:EntityFramework.Future.FutureValue`1"/> that contains the result of the query.</returns>
         /// <seealso cref="T:EntityFramework.Future.FutureValue`1"/>
