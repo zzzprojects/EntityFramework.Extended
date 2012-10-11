@@ -74,6 +74,14 @@ namespace EntityFramework.Extensions
             return future;
         }
 
+        /// <summary>
+        /// Provides for defering the execution of the <paramref name="source" /> query to a batch of future queries.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the elements of <paramref name="source" />.</typeparam>
+        /// <typeparam name="TResult">The type of the result value wrapped in a <see cref="T:EntityFramework.Future.FutureValue`1"/>.</typeparam>
+        /// <param name="source">An <see cref="T:System.Linq.IQueryable`1" /> to add to the batch of future queries.</param>
+        /// <param name="selector">A lambda expression with one of the Min, Max, Count, Sum, Average aggregate functions</param>
+        /// <returns>An instance of <see cref="T:EntityFramework.Future.FutureValue`1" /> that contains the result of the query</returns>
         public static FutureValue<TResult> FutureValue<TEntity, TResult>(this IQueryable<TEntity> source, Expression<Func<IQueryable<TEntity>, TResult>> selector)
             where TEntity : class
         {
