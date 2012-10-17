@@ -14,7 +14,7 @@ namespace EntityFramework.Extensions
     public static class BatchExtensions
     {
         /// <summary>
-        /// Executes a delete statement using the query to filter the rows to be deleted.
+        /// The API was refactored to no longer need this extension method. Use query.Where(expression).Delete() syntax instead.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <param name="source">The source used to determine the table to delete from.</param>
@@ -25,7 +25,7 @@ namespace EntityFramework.Extensions
         /// and is not part of the change tracking system.  Also, changes will not be reflected on 
         /// any entities that have already been materialized in the current context.        
         /// </remarks>
-        [Obsolete("The API was refactored to no longer need this extension method.")]
+        [Obsolete("The API was refactored to no longer need this extension method. Use query.Where(expression).Delete() syntax instead.")]
         public static int Delete<TEntity>(
            this IQueryable<TEntity> source,
            IQueryable<TEntity> query)
@@ -104,7 +104,7 @@ namespace EntityFramework.Extensions
         }
         
         /// <summary>
-        /// Executes an update statement using the query to filter the rows to be updated.
+        /// The API was refactored to no longer need this extension method. Use query.Where(expression).Update(updateExpression) syntax instead.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <param name="source">The source used to determine the table to update.</param>
@@ -116,7 +116,7 @@ namespace EntityFramework.Extensions
         /// and is not part of the change tracking system.  Also, changes will not be reflected on 
         /// any entities that have already been materialized in the current context.        
         /// </remarks>
-        [Obsolete("The API was refactored to no longer need this extension method.")]
+        [Obsolete("The API was refactored to no longer need this extension method. Use query.Where(expression).Update(updateExpression) syntax instead.")]
         public static int Update<TEntity>(
             this IQueryable<TEntity> source,
             IQueryable<TEntity> query,
