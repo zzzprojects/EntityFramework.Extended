@@ -220,5 +220,26 @@ namespace Tracker.SqlServer.Test
 
         }
 
+        [TestMethod]
+        public void FutureValueWithAggregateFunctions()
+        {
+            var db = new TrackerContext();
+
+            var q1 = db.Users.Where(x => x.EmailAddress.EndsWith("@battlestar.com")).FutureValue(x => x.Count());
+            var q2 = db.Users.Where(x => x.EmailAddress.EndsWith("@battlestar.com")).FutureValue(x => x.Min(t => t.LastName));
+            var q3 = db.Tasks.FutureValue(x => x.Sum(t => t.Priority.Order));
+
+            Assert.IsFalse(((IFutureQuery)q1).IsLoaded);
+            Assert.IsFalse(((IFutureQuery)q2).IsLoaded);
+            Assert.IsFalse(((IFutureQuery)q3).IsLoaded);
+
+            var r1 = q1.Value;
+            var r2 = q2.Value;
+            var r3 = q3.Value;
+
+            Assert.IsTrue(((IFutureQuery)q1).IsLoaded);
+            Assert.IsTrue(((IFutureQuery)q2).IsLoaded);
+            Assert.IsTrue(((IFutureQuery)q3).IsLoaded);
+        }
     }
 }
