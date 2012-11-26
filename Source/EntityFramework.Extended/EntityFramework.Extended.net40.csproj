@@ -37,6 +37,12 @@
     <DocumentationFile>..\..\Build\Release\net40\EntityFramework.Extended.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\EntityFramework.Extended.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -131,6 +137,9 @@
     <Compile Include="Reflection\TypeAccessor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\EntityFramework.Extended.snk">
+      <Link>EntityFramework.Extended.snk</Link>
+    </None>
     <None Include="Audit\Audit.xsd">
       <SubType>Designer</SubType>
     </None>
