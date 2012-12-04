@@ -12,8 +12,11 @@
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets"/>
 
   <PropertyGroup>
-    <Major>1</Major>
+    <Major>5</Major>
+    <Major4>4</Major4>
+
     <Minor>0</Minor>
+    <Minor4>4</Minor4>
 
     <Build>0</Build>
     <BindBuild>0</BindBuild>
@@ -65,7 +68,7 @@
                   AssemblyDescription="Entity Framework extensions library. Built for .NET 4.5"
                   AssemblyCompany="LoreSoft"
                   AssemblyCopyright="Copyright © $(Year) LoreSoft"
-                  AssemblyVersion="$(Major).$(Minor).$(Build).$(Revision)"
+                  AssemblyVersion="$(Major).$(Minor).$(BindBuild).$(BindRevision)"
                   AssemblyFileVersion="$(Major).$(Minor).$(Build).$(Revision)"
                   AssemblyInformationalVersion="$(Major).$(Minor).$(Build).$(Revision)"
                   GenerateClass="true" />
@@ -76,7 +79,7 @@
                   AssemblyDescription="Entity Framework extensions library. Built for .NET 4.0"
                   AssemblyCompany="LoreSoft"
                   AssemblyCopyright="Copyright © $(Year) LoreSoft"
-                  AssemblyVersion="$(Major).$(Minor).$(Build).$(Revision)"
+                  AssemblyVersion="$(Major4).$(Minor4).$(BindBuild).$(BindRevision)"
                   AssemblyFileVersion="$(Major).$(Minor).$(Build).$(Revision)"
                   AssemblyInformationalVersion="$(Major).$(Minor).$(Build).$(Revision)"
                   GenerateClass="true" />
