@@ -10,6 +10,7 @@ using System.Data.Objects.DataClasses;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using EntityFramework.Extensions;
 using EntityFramework.Reflection;
 
@@ -311,7 +312,8 @@ namespace EntityFramework.Audit
 
             foreach (NavigationProperty navigationProperty in properties)
             {
-                if (navigationProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
+                if (navigationProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many 
+                    || navigationProperty.FromEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many)
                     continue;
 
                 string name = navigationProperty.Name;
@@ -492,21 +494,38 @@ namespace EntityFramework.Audit
             if (edmType == null)
                 return null;
 
-            var eSql = string.Format("SELECT VALUE t FROM {0} AS t", edmType.Name);
+            var entitySet = state.ObjectContext.GetEntitySet(edmType.FullName);
 
-            var q = state.ObjectContext.CreateQuery<object>(eSql);
+            var sql = new StringBuilder();
+            sql.Append("SELECT VALUE t.")
+                .Append(displayMember.Name)
+                .Append(" FROM ")
+                .Append(entitySet.Name)
+                .Append(" as t")
+                .Append(" WHERE ");
+
+            var parameters = new List<ObjectParameter>();
             for (int index = 0; index < fromProperties.Count; index++)
             {
+                if (parameters.Count > 1)
+                    sql.Append(" AND ");
+
                 string fromProperty = fromProperties[index];
                 string toProperty = toProperties[index];
-
                 var value = values.GetValue(toProperty);
-                var predicate = string.Format("it.{0} == @{0}", fromProperty);
-                var parameter = new ObjectParameter(fromProperty, value);
+                var name = "@" + fromProperty;
 
-                q = q.Where(predicate, parameter);
+                sql.Append(" t.")
+                    .Append(fromProperty)
+                    .Append(" == ")
+                    .Append(name);
+
+                parameters.Add(new ObjectParameter(fromProperty, value));
             }
-            q = q.SelectValue<object>("it." + displayMember.Name);
+
+            var q = state.ObjectContext.CreateQuery<object>(
+                sql.ToString(), 
+                parameters.ToArray());
 
             return q.FirstOrDefault();
         }

@@ -14,7 +14,7 @@ namespace Tracker.SqlServer.Test
     public class AuditTest
     {
         [TestMethod]
-        public void CreateLog()
+        public void CreateLogFormatWith()
         {
             var auditConfiguration = AuditConfiguration.Default;
 
@@ -26,6 +26,108 @@ namespace Tracker.SqlServer.Test
             auditConfiguration.IsAuditable<Task>()
               .NotAudited(t => t.TaskExtended)
               .FormatWith(t => t.Status, v => FormatStatus(v));
+
+            var db = new TrackerContext();
+            var audit = db.BeginAudit();
+
+            var user = db.Users.Find(1);
+            user.Comment = "Testing: " + DateTime.Now.Ticks;
+
+            var task = new Task()
+            {
+                AssignedId = 1,
+                CreatedId = 1,
+                StatusId = 1,
+                PriorityId = 2,
+                Summary = "Summary: " + DateTime.Now.Ticks
+            };
+            db.Tasks.Add(task);
+
+            var task2 = db.Tasks.Find(1);
+            task2.PriorityId = 2;
+            task2.StatusId = 2;
+            task2.Summary = "Summary: " + DateTime.Now.Ticks;
+
+            var log = audit.CreateLog();
+            Assert.IsNotNull(log);
+
+            string xml = log.ToXml();
+            Assert.IsNotNull(xml);
+
+            foreach (var property in log.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
+        }
+
+        [TestMethod]
+        public void CreateLogLoaded()
+        {
+            var auditConfiguration = AuditConfiguration.Default;
+
+            auditConfiguration.IncludeRelationships = true;
+            auditConfiguration.LoadRelationships = true;
+            auditConfiguration.DefaultAuditable = true;
+
+            // customize the audit for Task entity
+            //auditConfiguration.IsAuditable<Task>()
+            //  .NotAudited(t => t.TaskExtended)
+            //  .FormatWith(t => t.Status, v => FormatStatus(v));
+
+            // set name as the display member when status is a foreign key
+            auditConfiguration.IsAuditable<Status>()
+              .DisplayMember(t => t.Name);
+
+            var db = new TrackerContext();
+            var audit = db.BeginAudit();
+
+            var user = db.Users.Find(1);
+            user.Comment = "Testing: " + DateTime.Now.Ticks;
+
+            var newTask = new Task()
+            {
+                AssignedId = 1,
+                CreatedId = 1,
+                StatusId = 1,
+                PriorityId = 2,
+                Summary = "Summary: " + DateTime.Now.Ticks
+            };
+            db.Tasks.Add(newTask);
+
+            var p = db.Priorities.Find(2);
+
+            var updateTask = db.Tasks.Find(1);
+            updateTask.Priority = p;
+            updateTask.StatusId = 2;
+            updateTask.Summary = "Summary: " + DateTime.Now.Ticks;
+
+            var log = audit.CreateLog();
+            Assert.IsNotNull(log);
+
+            string xml = log.ToXml();
+            Assert.IsNotNull(xml);
+
+            foreach (var property in log.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
+        }
+
+        [TestMethod]
+        public void CreateLog()
+        {
+            var auditConfiguration = AuditConfiguration.Default;
+
+            auditConfiguration.IncludeRelationships = true;
+            auditConfiguration.LoadRelationships = true;
+            auditConfiguration.DefaultAuditable = true;
+
+            // customize the audit for Task entity
+            //auditConfiguration.IsAuditable<Task>()
+            //  .NotAudited(t => t.TaskExtended)
+            //  .FormatWith(t => t.Status, v => FormatStatus(v));
 
             // set name as the display member when status is a foreign key
             auditConfiguration.IsAuditable<Status>()
@@ -57,6 +159,12 @@ namespace Tracker.SqlServer.Test
 
             string xml = log.ToXml();
             Assert.IsNotNull(xml);
+
+            foreach (var property in log.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
         }
 
         [TestMethod]
@@ -80,6 +188,11 @@ namespace Tracker.SqlServer.Test
 
             var log = audit.CreateLog();
             Assert.IsNotNull(log);
+            foreach (var property in log.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
 
             string xml = log.ToXml();
             Assert.IsNotNull(xml);
@@ -110,6 +223,11 @@ namespace Tracker.SqlServer.Test
 
             var log = audit.CreateLog();
             Assert.IsNotNull(log);
+            foreach (var property in log.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
 
             string beforeXml = log.ToXml();
             Assert.IsNotNull(beforeXml);
@@ -147,6 +265,11 @@ namespace Tracker.SqlServer.Test
 
             var log = audit.CreateLog();
             Assert.IsNotNull(log);
+            foreach (var property in log.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
 
             string beforeXml = log.ToXml();
             Assert.IsNotNull(beforeXml);
@@ -154,6 +277,11 @@ namespace Tracker.SqlServer.Test
             db.SaveChanges();
 
             log.Refresh();
+            foreach (var property in log.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
 
             string afterXml = log.ToXml();
             Assert.IsNotNull(afterXml);
@@ -198,6 +326,11 @@ namespace Tracker.SqlServer.Test
             db.SaveChanges();
 
             log.Refresh();
+            foreach (var property in log.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
 
             string afterXml = log.ToXml();
             Assert.IsNotNull(afterXml);
@@ -252,6 +385,11 @@ namespace Tracker.SqlServer.Test
             db.SaveChanges();
 
             log.Refresh();
+            foreach (var property in log.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
 
             string afterXml = log.ToXml();
             Assert.IsNotNull(afterXml);
@@ -266,12 +404,17 @@ namespace Tracker.SqlServer.Test
 
             var updateLog = audit.CreateLog();
             Assert.IsNotNull(updateLog);
+            foreach (var property in log.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
 
             db.SaveChanges();
 
-            var deleteXml = updateLog.ToXml();
-            Assert.IsNotNull(deleteXml);
-            Console.WriteLine(deleteXml);
+            var updateXml = updateLog.ToXml();
+            Assert.IsNotNull(updateXml);
+            Console.WriteLine(updateXml);
         }
 
 

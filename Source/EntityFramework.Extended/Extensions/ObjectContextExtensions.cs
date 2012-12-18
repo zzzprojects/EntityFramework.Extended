@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.Metadata.Edm;
 using System.Data.Objects;
 using System.Linq;
 using System.Text;
@@ -50,5 +51,18 @@ namespace EntityFramework.Extensions
             var adapter = context as IObjectContextAdapter;
             return adapter.ObjectContext.BeginTransaction(isolationLevel);
         }
+
+        internal static EntitySetBase GetEntitySet<TEntity>(this ObjectContext context)
+        {
+            string name = typeof(TEntity).FullName;
+            return GetEntitySet(context, name);
+        }
+
+        internal static EntitySetBase GetEntitySet(this ObjectContext context, string elementTypeName)
+        {
+            var container = context.MetadataWorkspace.GetEntityContainer(context.DefaultContainerName, DataSpace.CSpace);
+            return container.BaseEntitySets.FirstOrDefault(item => item.ElementType.FullName.Equals(elementTypeName));
+        }
+
     }
 }
