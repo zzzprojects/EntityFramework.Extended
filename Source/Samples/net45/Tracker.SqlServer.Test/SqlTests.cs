@@ -13,6 +13,7 @@ namespace EntityFramework.Test
     public class SqlTests
     {
         [TestMethod]
+        [Ignore]
         public void SelectByKey()
         {
             var db = new TrackerContext();
