@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.EntityClient;
@@ -6,8 +7,10 @@ using System.Data.Objects;
 using System.Linq;
 using System.Linq.Dynamic;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Transactions;
 using EntityFramework.Extensions;
 using EntityFramework.Mapping;
 using EntityFramework.Reflection;
@@ -316,6 +319,204 @@ namespace EntityFramework.Batch
             }
         }
 
+
+        /// <summary>
+        /// Create and runs a batch insert statement.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity to be inserted</typeparam>
+        /// <param name="objectContext">The <see cref="ObjectContext"/> to get connection and metadata information from.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for <typeparamref name="TEntity"/>.</param>
+        /// <param name="records">Collection of <typeparamref name="TEntity"/> to be inserted</param>
+        /// <returns>The number of rows inserted.</returns>
+        public int BulkInsert<TEntity>(ObjectContext objectContext, EntityMap entityMap, IEnumerable<TEntity> records)
+            where TEntity : class
+        {
+            DbConnection insertConnection = null;
+            DbTransaction insertTransaction = null;
+            DbCommand insertCommand = null;
+            bool ownConnection = false;
+            bool ownTransaction = false;
+
+            try
+            {
+                // get store connection and transaction
+                var store = GetStore(objectContext);
+                insertConnection = store.Item1;
+                insertTransaction = store.Item2;
+
+                if (insertConnection.State != ConnectionState.Open)
+                {
+                    insertConnection.Open();
+                    ownConnection = true;
+                }
+
+                if (insertTransaction == null)
+                {
+                    insertTransaction = insertConnection.BeginTransaction();
+                    ownTransaction = true;
+                }
+
+                insertCommand = insertConnection.CreateCommand();
+                insertCommand.Transaction = insertTransaction;
+
+                if (objectContext.CommandTimeout.HasValue)
+                    insertCommand.CommandTimeout = objectContext.CommandTimeout.Value;
+
+                List<PropertyMap> propertyMaps = entityMap.PropertyMaps;
+
+                var insertLine = new StringBuilder();
+                insertLine.Append("INSERT INTO ");
+                insertLine.AppendLine(entityMap.TableName);
+                insertLine.Append(" (");
+                insertLine.Append(String.Join(", ", propertyMaps
+                    .Select(x => x.ColumnName)));
+                insertLine.AppendLine(") VALUES ");
+                var rows = new StringBuilder();
+                List<DbParameter> parameters = new List<DbParameter>();
+                Type entityType = records.FirstOrDefault().GetType();
+                PropertyInfo[] properties = entityType.GetProperties();
+                int i = 0;
+                int result = 0;
+                int maxRows = 2000 / propertyMaps.Count();
+
+                foreach (var record in records)
+                {
+                    int propCount = parameters.Count();
+                    if (propCount > 0)
+                    {
+                        rows.AppendLine(",");
+                    }
+                    rows.Append("(");
+                    rows.Append(String.Join(", ", propertyMaps
+                        .Select(x => String.Format("@{0}", propCount++))));
+                    rows.Append(")");
+                    foreach (PropertyMap propMap in propertyMaps)
+                    {
+                        object value = null;
+                        DbParameter dbParam = insertCommand.CreateParameter();
+                        dbParam.ParameterName = String.Format("@{0}", parameters.Count);
+                        if (propMap is ConstantPropertyMap)
+                        {
+                            value = ((ConstantPropertyMap)propMap).Value;
+                        }
+                        else
+                        {
+                            PropertyInfo prop = properties.SingleOrDefault(x => x.Name == propMap.PropertyName);
+                            if (prop != null)
+                            {
+                                value = prop.GetValue(record, new object[0]);
+                                dbParam.DbType = DbTypeConversion.ToDbType(prop.PropertyType);
+                            }
+                        }
+                        dbParam.Value = value ?? DBNull.Value;
+                        parameters.Add(dbParam);
+                    }
+                    if (++i >= maxRows)
+                    {
+                        result += CommitBulk(insertCommand, insertLine, rows, parameters);
+                        i = 0;
+                        rows.Clear();
+                        parameters.Clear();
+                    }
+                }
+                if (rows.Length > 0)
+                {
+                    result += CommitBulk(insertCommand, insertLine, rows, parameters);
+                }
+                return result;
+            }
+            finally
+            {
+                if (insertCommand != null)
+                    insertCommand.Dispose();
+                if (insertTransaction != null && ownTransaction)
+                    insertTransaction.Dispose();
+                if (insertConnection != null && ownConnection)
+                    insertConnection.Close();
+            }
+        }
+
+        /// <summary>
+        /// Create and runs a batch insert from statement.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the source entity.</typeparam>
+        /// <typeparam name="TEntity">The type of the entity to be inserted.</typeparam>
+        /// <param name="destinationContext">The <see cref="ObjectContext"/> to get connection and metadata information from.</param>
+        /// <param name="destinationEntityMap">The <see cref="EntityMap"/> for <typeparamref name="TEntity"/>.</param>
+        /// <param name="sourceQuery">The query from which to get the <typeparamref name="TSource"/> entities.</param>
+        /// <param name="mappingExpression">The insert expression mapping <typeparamref name="TSource"/> to <typeparamref name="TEntity"/></param>
+        /// <returns>The number of rows inserted.</returns>
+        public int InsertFrom<TSource, TEntity>(ObjectContext destinationContext, EntityMap destinationEntityMap, ObjectQuery<TSource> sourceQuery, Expression<Func<TSource, TEntity>> mappingExpression)
+            where TEntity : class
+            where TSource : class
+        {
+            DbConnection insertConnection = null;
+            DbTransaction insertTransaction = null;
+            DbCommand insertCommand = null;
+            bool ownConnection = false;
+            bool ownTransaction = false;
+
+            try
+            {
+                // get store connection and transaction
+                var store = GetStore(destinationContext);
+                insertConnection = store.Item1;
+                insertTransaction = store.Item2;
+
+                if (insertConnection.State != ConnectionState.Open)
+                {
+                    insertConnection.Open();
+                    ownConnection = true;
+                }
+
+                if (insertTransaction == null)
+                {
+                    insertTransaction = insertConnection.BeginTransaction();
+                    ownTransaction = true;
+                }
+
+                insertCommand = insertConnection.CreateCommand();
+                insertCommand.Transaction = insertTransaction;
+
+                if (destinationContext.CommandTimeout.HasValue)
+                    insertCommand.CommandTimeout = destinationContext.CommandTimeout.Value;
+
+                var memberInitExpression = mappingExpression.Body as MemberInitExpression;
+                if (memberInitExpression == null)
+                    throw new ArgumentException("The insert expression must be of type MemberInitExpression.", "insertExpression");
+
+                var innerSelect = GetInsertSelectSql(sourceQuery, destinationEntityMap, memberInitExpression, insertCommand);
+                var sqlBuilder = new StringBuilder(innerSelect.Length * 2);
+
+                sqlBuilder.Append("INSERT INTO ");
+                sqlBuilder.AppendLine(destinationEntityMap.TableName);
+                sqlBuilder.Append(" (");
+
+                sqlBuilder.Append(String.Join(", ", memberInitExpression.Bindings
+                    .Select(x => destinationEntityMap.PropertyMaps
+                        .Where(p => p.PropertyName == x.Member.Name)
+                        .Select(p => p.ColumnName)
+                        .FirstOrDefault())
+                    .Union(destinationEntityMap.PropertyMaps.OfType<ConstantPropertyMap>().Select(x => x.ColumnName))));
+
+                sqlBuilder.AppendLine(") ");
+                sqlBuilder.AppendLine(innerSelect);
+                insertCommand.CommandText = sqlBuilder.ToString();
+
+                int result = insertCommand.ExecuteNonQuery();
+                return result;
+            }
+            finally
+            {
+                if (insertCommand != null)
+                    insertCommand.Dispose();
+                if (insertTransaction != null && ownTransaction)
+                    insertTransaction.Dispose();
+                if (insertConnection != null && ownConnection)
+                    insertConnection.Close();
+            }
+        }
+
         private static Tuple<DbConnection, DbTransaction> GetStore(ObjectContext objectContext)
         {
             DbConnection dbConnection = objectContext.Connection;
@@ -372,5 +573,54 @@ namespace EntityFramework.Batch
 
             return innerJoinSql;
         }
+
+        private static string GetInsertSelectSql<TSource>(ObjectQuery<TSource> query, EntityMap entityMap, MemberInitExpression memberInitExpression, DbCommand command)
+            where TSource : class
+        {
+            var selector = new StringBuilder(50);
+            int i = 0;
+            var constantProperties = entityMap.PropertyMaps.OfType<ConstantPropertyMap>();
+            selector.Append("new(");
+            selector.Append(String.Join(", ", memberInitExpression.Bindings
+                .Select(x => ((x as MemberAssignment).Expression as MemberExpression).Member.Name)
+                .Union(constantProperties.Select(x => String.Format("@{0} as {1}", i++, x.PropertyName))))); //, x.PropertyName
+            selector.Append(")");
+
+            var selectQuery = DynamicQueryable.Select(query, selector.ToString(), constantProperties.Select(x => x.Value).ToArray());
+            var objectQuery = selectQuery as ObjectQuery;
+
+            if (objectQuery == null)
+                throw new ArgumentException("The query must be of type ObjectQuery.", "query");
+            objectQuery.EnablePlanCaching = true;
+            string innerJoinSql = EFQueryUtils.GetLimitedQuery(objectQuery);
+            // create parameters
+            foreach (var objectParameter in objectQuery.Parameters)
+            {
+                var parameter = command.CreateParameter();
+                parameter.ParameterName = objectParameter.Name;
+                parameter.Value = objectParameter.Value ?? DBNull.Value;
+
+                command.Parameters.Add(parameter);
+            }
+
+            return innerJoinSql;
+        }
+
+        private static int CommitBulk(DbCommand command, StringBuilder insertLine, StringBuilder rows, List<DbParameter> parameters)
+        {
+            string commandText = insertLine.ToString() + rows.ToString();
+            int parameterCount = 0;
+            if (command.CommandText != commandText)
+            {
+                command.CommandText = commandText;
+                command.Parameters.Clear();
+                command.Parameters.AddRange(parameters.ToArray());
+            }
+            else
+            {
+                parameters.ForEach(x => command.Parameters[parameterCount++].Value = x.Value);
+            }
+            return command.ExecuteNonQuery();
+        }    
     }
 }
