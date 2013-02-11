@@ -67,22 +67,22 @@ namespace EntityFramework.Mapping
             if (itemCollection == null)
                 return null;
 
-            dynamic mappingFragmentProxy = FindMappingFragment(itemCollection, entityMap.ModelSet);
-            if (mappingFragmentProxy == null)
+            List<dynamic> mappingFragmentProxies = FindMappingFragments(entityType, itemCollection, entityMap.ModelSet);
+            if (mappingFragmentProxies == null)
                 return null;
 
             // SModel
-            entityMap.StoreSet = mappingFragmentProxy.TableSet;
+            entityMap.StoreSet = mappingFragmentProxies.Select(x => x.TableSet).Where(x => x != null).FirstOrDefault();
             entityMap.StoreType = entityMap.StoreSet.ElementType;
 
-            SetProperties(entityMap, mappingFragmentProxy);
+            SetProperties(entityMap, mappingFragmentProxies);
             SetKeys(entityMap);
             SetTableName(entityMap);
 
             return entityMap;
         }
 
-        private static dynamic FindMappingFragment(IEnumerable<GlobalItem> itemCollection, EntitySet entitySet)
+        private static List<dynamic> FindMappingFragments(Type entityType, IEnumerable<GlobalItem> itemCollection, EntitySet entitySet)
         {
             //StorageEntityContainerMapping
             var storage = itemCollection.FirstOrDefault();
@@ -108,26 +108,37 @@ namespace EntityFramework.Mapping
                 if (typeMappings == null)
                     continue;
 
-                object typeMapping = typeMappings.FirstOrDefault();
-                if (typeMapping == null)
-                    continue;
+                List<dynamic> mappingFragmentProxies = new List<dynamic>();
+                foreach (var typeMapping in typeMappings)
+                {
+                    if (typeMapping == null)
+                        continue;
 
-                // StorageEntityTypeMapping
-                dynamic typeMappingProxy = new DynamicProxy(typeMapping);
+                    // StorageEntityTypeMapping
+                    dynamic typeMappingProxy = new DynamicProxy(typeMapping);
+                    IEnumerable<dynamic> types = typeMappingProxy.Types;
+                    if (types.Any(x => x.Name != entityType.Name))
+                    {
+                        continue;
+                    }
 
-                // only support first mapping fragment
-                IEnumerable<object> mappingFragments = typeMappingProxy.MappingFragments;
-                if (mappingFragments == null)
-                    continue;
-                object mappingFragment = mappingFragments.FirstOrDefault();
-                if (mappingFragment == null)
-                    continue;
+                    // only support first mapping fragment
+                    IEnumerable<object> mappingFragments = typeMappingProxy.MappingFragments;
+                    if (mappingFragments == null)
+                        continue;
+                    foreach (var mappingFragment in mappingFragments)
+                    {
+                        if (mappingFragment == null)
+                            continue;
 
-                //StorageMappingFragment
-                dynamic mappingFragmentProxy = new DynamicProxy(mappingFragment);
-                return mappingFragmentProxy;
+                        mappingFragmentProxies.Add(new DynamicProxy(mappingFragment));
+                    }
+                }
+                if (mappingFragmentProxies.Any())
+                {
+                    return mappingFragmentProxies;
+                }
             }
-
             return null;
         }
 
@@ -149,24 +160,40 @@ namespace EntityFramework.Mapping
             }
         }
 
-        private static void SetProperties(EntityMap entityMap, dynamic mappingFragmentProxy)
+        private static void SetProperties(EntityMap entityMap, List<dynamic> mappingFragmentProxies)
         {
-            var propertyMaps = mappingFragmentProxy.Properties;
-            foreach (var propertyMap in propertyMaps)
+            foreach (dynamic mappingFragmentProxy in mappingFragmentProxies)
             {
-                // StorageScalarPropertyMapping
-                dynamic propertyMapProxy = new DynamicProxy(propertyMap);
-
-                EdmProperty modelProperty = propertyMapProxy.EdmProperty;
-                EdmProperty storeProperty = propertyMapProxy.ColumnProperty;
-
-                var map = new PropertyMap
+                var propertyMaps = mappingFragmentProxy.AllProperties;
+                foreach (var propertyMap in propertyMaps)
                 {
-                    ColumnName = storeProperty.Name,
-                    PropertyName = modelProperty.Name
-                };
-
-                entityMap.PropertyMaps.Add(map);
+                    // StorageScalarPropertyMapping
+                    dynamic propertyMapProxy = new DynamicProxy(propertyMap);
+                    EdmProperty storeProperty = propertyMapProxy.ColumnProperty;
+                    if (!entityMap.PropertyMaps.Any(x => x.PropertyName == storeProperty.Name))
+                    {
+                        PropertyMap map;
+                        EdmProperty modelProperty = propertyMapProxy.EdmProperty;
+                        if (modelProperty == null)
+                        {
+                            map = new ConstantPropertyMap
+                            {
+                                ColumnName = QuoteIdentifier(storeProperty.Name),
+                                PropertyName = storeProperty.Name,
+                                Value = propertyMapProxy.Value.Wrapped
+                            };
+                        }
+                        else
+                        {
+                            map = new PropertyMap
+                            {
+                                ColumnName = QuoteIdentifier(storeProperty.Name),
+                                PropertyName = modelProperty.Name
+                            };
+                        }
+                        entityMap.PropertyMaps.Add(map);
+                    }
+                }
             }
         }
 
@@ -193,13 +220,17 @@ namespace EntityFramework.Mapping
             if (table == null)
                 table = storeSet.Name;
 
-            storeSet.MetadataProperties.TryGetValue("Schema", true, out schemaProperty);
-            if (schemaProperty == null || schemaProperty.Value == null)
-                storeSet.MetadataProperties.TryGetValue("http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator:Schema", true, out schemaProperty);
+            dynamic storeSetProxy = new DynamicProxy(storeSet);
+            schema = (string)storeSetProxy.Schema;
+            if (schema == null)
+            {
+                storeSet.MetadataProperties.TryGetValue("Schema", true, out schemaProperty);
+                if (schemaProperty == null || schemaProperty.Value == null)
+                    storeSet.MetadataProperties.TryGetValue("http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator:Schema", true, out schemaProperty);
 
-            if (schemaProperty != null)
-                schema = schemaProperty.Value as string;
-
+                if (schemaProperty != null)
+                    schema = schemaProperty.Value as string;
+            }
             if (!string.IsNullOrWhiteSpace(schema))
             {
                 builder.Append(QuoteIdentifier(schema));
