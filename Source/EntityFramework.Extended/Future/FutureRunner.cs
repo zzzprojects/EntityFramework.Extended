@@ -60,7 +60,6 @@ namespace EntityFramework.Future
                               : entityConnection.StoreConnection.CreateCommand();
 
             var futureSql = new StringBuilder();
-            int paramCount = 0;
             int queryCount = 0;
 
             foreach (IFutureQuery futureQuery in futureQueries)
@@ -72,13 +71,20 @@ namespace EntityFramework.Future
                 foreach (var parameter in plan.Parameters)
                 {
                     string orginal = parameter.Name;
-                    string updated = string.Format("{0}__f__{1}", orginal, paramCount++);
+                    string updated = string.Format("f{0}_{1}", queryCount, orginal);
 
                     sql = sql.Replace("@" + orginal, "@" + updated);
 
                     var dbParameter = command.CreateParameter();
                     dbParameter.ParameterName = updated;
-                    dbParameter.Value = parameter.Value;
+                    if (parameter.Value == null)
+                    {
+                        dbParameter.Value = DBNull.Value;
+                    }
+                    else
+                    {
+                        dbParameter.Value = parameter.Value;
+                    }
 
                     command.Parameters.Add(dbParameter);
                 }
