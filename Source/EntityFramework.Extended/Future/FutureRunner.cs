@@ -77,7 +77,14 @@ namespace EntityFramework.Future
 
                     var dbParameter = command.CreateParameter();
                     dbParameter.ParameterName = updated;
-                    dbParameter.Value = parameter.Value;
+                    if (parameter.Value == null)
+                    {
+                        dbParameter.Value = DBNull.Value;
+                    }
+                    else
+                    {
+                        dbParameter.Value = parameter.Value;
+                    }
 
                     command.Parameters.Add(dbParameter);
                 }
