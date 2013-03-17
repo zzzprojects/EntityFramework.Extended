@@ -80,6 +80,13 @@ namespace EntityFramework.Caching
                 return Expression.Constant(fn.DynamicInvoke(null), e.Type);
             }
 
+            protected override Expression VisitMemberInit(MemberInitExpression node)
+            {
+                if (node.NewExpression.NodeType == ExpressionType.New)
+                    return node;
+
+                return base.VisitMemberInit(node);
+            }
         }
 
         /// <summary>

@@ -58,5 +58,34 @@ namespace Tracker.SqlServer.Test
 
 
         }
+
+        [TestMethod]
+        public void TaskProjectionFromCacheTest()
+        {
+            var db = new TrackerContext();
+
+            int myUserId = 0;
+
+            //query result is now cached 300 seconds
+            var tasks = db.Tasks
+                .Select(t => new TaskLookup
+                {
+                    Id = t.Id,
+                    Summary = t.Summary
+                })
+                .FromCache()
+                .ToList();
+
+
+
+        }
+
+    }
+
+    public class TaskLookup
+    {
+        public int Id { get; set; }
+        public string Summary { get; set; }
+
     }
 }
