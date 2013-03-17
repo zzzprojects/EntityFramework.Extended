@@ -12,13 +12,8 @@ namespace EntityFramework.Mapping
     /// </summary>
     public static class MappingResolver
     {
-        private static readonly ConcurrentDictionary<string, Dictionary<Type, EntitySet>> _entitySetMappings;
-        private static readonly ConcurrentDictionary<Type, EntityMap> _entityMapping;
-
         static MappingResolver()
         {
-            _entitySetMappings = new ConcurrentDictionary<string, Dictionary<Type, EntitySet>>();
-            _entityMapping = new ConcurrentDictionary<Type, EntityMap>();
         }
 
         /// <summary>
@@ -29,13 +24,8 @@ namespace EntityFramework.Mapping
         /// <returns>An <see cref="EntityMap"/> for the specified <paramref name="query"/>.</returns>
         public static EntityMap GetEntityMap<TEntity>(this ObjectQuery query)
         {
-            return _entityMapping.GetOrAdd(
-                typeof(TEntity),
-                k =>
-                {
-                    var provider = Locator.Current.Resolve<IMappingProvider>();
-                    return provider.GetEntityMap<TEntity>(query);
-                });
+            var provider = Locator.Current.Resolve<IMappingProvider>();
+            return provider.GetEntityMap<TEntity>(query);
         }
 
         /// <summary>
@@ -47,20 +37,17 @@ namespace EntityFramework.Mapping
         public static EntitySet GetEntitySet<TEntity>(this ObjectContext objectContext)
         {
             var entityType = typeof(TEntity);
-            var mapping = _entitySetMappings.GetOrAdd(objectContext.DefaultContainerName, k =>
+            var metadataWorkspace = objectContext.MetadataWorkspace;
+
+            // make sure types are loaded
+            Type baseType = entityType;
+            do
             {
-                var metadataWorkspace = objectContext.MetadataWorkspace;
-                // make sure types are loaded
-                Type baseType = entityType;
-                do
-                {
-                    metadataWorkspace.LoadFromAssembly(baseType.Assembly);
-                    baseType = baseType.BaseType;
-                } while ((baseType != null) && (baseType != typeof(object)));
+                metadataWorkspace.LoadFromAssembly(baseType.Assembly);
+                baseType = baseType.BaseType;
+            } while ((baseType != null) && (baseType != typeof(object)));
 
-                return CreateEntitySetMappings(metadataWorkspace);
-            });
-
+            var mapping = CreateEntitySetMappings(metadataWorkspace);
             EntitySet entitySet;
             mapping.TryGetValue(entityType, out entitySet);
             return entitySet;
