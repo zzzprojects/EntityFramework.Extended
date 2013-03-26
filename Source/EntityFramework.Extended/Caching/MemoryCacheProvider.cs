@@ -56,21 +56,24 @@ namespace EntityFramework.Caching
         /// </returns>
         public object GetOrAdd(CacheKey cacheKey, Func<CacheKey, object> valueFactory, CachePolicy cachePolicy)
         {
-            string key = GetKey(cacheKey);
-            if (MemoryCache.Default.Contains(key))
+
+            var key = GetKey(cacheKey);
+            var cachedResult = MemoryCache.Default.Get(key);
+
+            if (cachedResult != null)
             {
                 Debug.WriteLine("Cache Hit : " + key);
-                return MemoryCache.Default.Get(key);
+                return cachedResult;
             }
 
             Debug.WriteLine("Cache Miss: " + key);
-            // get value and add to cache
-            object value = valueFactory(cacheKey);
-            if (Add(cacheKey, value, cachePolicy))
-                return value;
 
-            // add failed
-            return null;
+            // get value and add to cache, not bothered
+            // if it succeeds or not just rerturn the value
+            var value = valueFactory(cacheKey);
+            this.Add(cacheKey, value, cachePolicy);
+
+            return value;
         }
 
         /// <summary>
@@ -125,7 +128,7 @@ namespace EntityFramework.Caching
         {
             return cacheKey.Key;
         }
-        
+
         internal static string GetTagKey(CacheTag t)
         {
             return string.Format(_tagKey, t);
