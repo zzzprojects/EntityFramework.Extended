@@ -217,6 +217,15 @@ namespace EntityFramework.Audit
         /// </value>
         public bool DefaultAuditable { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the log is maintain across multiple calls to <see cref="M:System.Data.Entity.DbContext.SaveChanges"/>.
+        /// Each additional call will add to the <see cref="P:EntityFramework.Audit.AuditLogger.LastLog"/> instance.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> to maintain log across saves; otherwise, <c>false</c> to create a new log on eash save.
+        /// </value>
+        public bool MaintainAcrossSaves { get; set; }
+
         #region Default
         private static readonly Lazy<AuditConfiguration> _default = new Lazy<AuditConfiguration>(() => new AuditConfiguration());
 

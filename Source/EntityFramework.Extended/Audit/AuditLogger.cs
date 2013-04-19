@@ -92,7 +92,10 @@ namespace EntityFramework.Audit
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         protected virtual void OnSavingChanges(object sender, EventArgs e)
         {
-            LastLog = CreateLog();
+            if (LastLog == null || !Configuration.MaintainAcrossSaves)
+                LastLog = CreateLog();
+            else
+                UpdateLog(LastLog);
         }
         #endregion
 
@@ -131,12 +134,25 @@ namespace EntityFramework.Audit
                 Username = Environment.UserName
             };
 
+            return UpdateLog(auditLog);
+        }
+
+        /// <summary>
+        /// Updates the <see cref="AuditLog"/> from the current <see cref="ObjectContext"/> changes. 
+        /// </summary>
+        /// <param name="auditLog">The audit log.</param>
+        /// <returns></returns>
+        public AuditLog UpdateLog(AuditLog auditLog)
+        {
+            if (auditLog == null)
+                throw new ArgumentNullException("auditLog");
+
             // must call to make sure changes are detected
             ObjectContext.DetectChanges();
 
             IEnumerable<ObjectStateEntry> changes = ObjectContext
-              .ObjectStateManager
-              .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified);
+                .ObjectStateManager
+                .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified);
 
             foreach (ObjectStateEntry objectStateEntry in changes)
             {

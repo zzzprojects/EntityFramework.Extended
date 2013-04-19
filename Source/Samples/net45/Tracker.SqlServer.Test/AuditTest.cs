@@ -417,6 +417,75 @@ namespace Tracker.SqlServer.Test
             Console.WriteLine(updateXml);
         }
 
+        [TestMethod]
+        public void MaintainAcrossSaves()
+        {
+            var auditConfiguration = AuditConfiguration.Default;
+
+            auditConfiguration.IncludeRelationships = true;
+            auditConfiguration.LoadRelationships = true;
+            auditConfiguration.DefaultAuditable = true;
+            auditConfiguration.MaintainAcrossSaves = true;
+
+            // customize the audit for Task entity
+            //auditConfiguration.IsAuditable<Task>()
+            //  .NotAudited(t => t.TaskExtended)
+            //  .FormatWith(t => t.Status, v => FormatStatus(v));
+
+            // set name as the display member when status is a foreign key
+            auditConfiguration.IsAuditable<Status>()
+              .DisplayMember(t => t.Name);
+
+            var db = new TrackerContext();
+            var tran = db.BeginTransaction();
+            var audit = db.BeginAudit();
+
+            var user = db.Users.Find(1);
+            user.Comment = "Testing: " + DateTime.Now.Ticks;
+
+            var task = new Task()
+            {
+                AssignedId = 1,
+                StatusId = 1,
+                PriorityId = 2,
+                Summary = "Summary: " + DateTime.Now.Ticks,
+                CreatedId = 1,
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now
+            };
+            db.Tasks.Add(task);
+
+            db.SaveChanges();
+
+            Assert.IsNotNull(audit.LastLog);
+            Assert.AreEqual(2, audit.LastLog.Entities.Count);
+
+
+            var task2 = db.Tasks.Find(1);
+            task2.PriorityId = 2;
+            task2.StatusId = 2;
+            task2.Summary = "Summary: " + DateTime.Now.Ticks;
+
+            db.SaveChanges();
+
+            Assert.IsNotNull(audit.LastLog);
+            Assert.AreEqual(3, audit.LastLog.Entities.Count);
+
+            var log = audit.LastLog;
+            Assert.IsNotNull(log);
+
+            string xml = log.ToXml();
+            Assert.IsNotNull(xml);
+
+            foreach (var property in log.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
+
+            //undo work
+            tran.Rollback();
+        }
 
         public static object FormatStatus(AuditPropertyContext auditProperty)
         {
