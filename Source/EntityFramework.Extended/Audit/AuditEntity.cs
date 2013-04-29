@@ -15,8 +15,6 @@ namespace EntityFramework.Audit
     [DebuggerDisplay("Action: {Action}, Type: {Type}")]
     public class AuditEntity : IEquatable<AuditEntity>
     {
-        private readonly AuditPropertyCollection _properties;
-        private readonly AuditKeyCollection _keys;
         private WeakReference _current;
         private Type _entityType;
 
@@ -25,8 +23,8 @@ namespace EntityFramework.Audit
         /// </summary>
         public AuditEntity()
         {
-            _keys = new AuditKeyCollection();
-            _properties = new AuditPropertyCollection();
+            Keys = new AuditKeyCollection();
+            Properties = new AuditPropertyCollection();
         }
 
         /// <summary>
@@ -64,10 +62,7 @@ namespace EntityFramework.Audit
         /// </summary>
         /// <value>The list of properties that are the key for the entity.</value>
         [XmlElement("key", typeof(AuditKey))]
-        public AuditKeyCollection Keys
-        {
-            get { return _keys; }
-        }
+        public AuditKeyCollection Keys { get; set; }
 
         /// <summary>
         /// Gets the entity in its current modified state. Value is held as a WeakReference and can be disposed.
@@ -95,10 +90,7 @@ namespace EntityFramework.Audit
         /// </summary>
         /// <value>The list of properties that action was taken on.</value>
         [XmlElement("property", typeof(AuditProperty))]
-        public AuditPropertyCollection Properties
-        {
-            get { return _properties; }
-        }
+        public AuditPropertyCollection Properties { get; set; }
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
@@ -152,7 +144,7 @@ namespace EntityFramework.Audit
                 int result = (Type != null ? Type.GetHashCode() : 0);
                 result = (result * HASH_SEED) ^ Action.GetHashCode();
 
-                return _keys
+                return Keys
                   .Where(key => key.Value != null)
                   .Aggregate(result, (current, key) => (current * HASH_SEED) ^ key.Value.GetHashCode());
             }

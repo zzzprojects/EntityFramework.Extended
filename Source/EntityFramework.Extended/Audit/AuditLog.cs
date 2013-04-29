@@ -21,7 +21,6 @@ namespace EntityFramework.Audit
         public const string AuditNamespace = "http://schemas.tempuri.org/ef/audit/1.0";
 
         private static readonly Lazy<XmlSerializer> _serializer;
-        private readonly List<AuditEntity> _entities;
 
         static AuditLog()
         {
@@ -34,7 +33,7 @@ namespace EntityFramework.Audit
         /// </summary>
         public AuditLog()
         {
-            _entities = new List<AuditEntity>();
+            Entities = new List<AuditEntity>();
         }
 
         /// <summary>
@@ -56,10 +55,7 @@ namespace EntityFramework.Audit
         /// </summary>
         /// <value>The list entities that have changes.</value>
         [XmlElement("entity", typeof(AuditEntity))]
-        public List<AuditEntity> Entities
-        {
-            get { return _entities; }
-        }
+        public List<AuditEntity> Entities { get; set; }
 
         /// <summary>
         /// Refresh key and property values. Call after Save to capture database updated keys and values.
