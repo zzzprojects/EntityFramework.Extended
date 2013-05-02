@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Metadata.Edm;
 using System.Data.Objects;
+using EntityFramework.Extensions;
 using EntityFramework.Reflection;
 
 namespace EntityFramework.Audit
@@ -10,31 +12,34 @@ namespace EntityFramework.Audit
     {
         public AuditEntryState(ObjectStateEntry objectStateEntry)
         {
-            if (objectStateEntry == null)
-                throw new ArgumentNullException("objectStateEntry");
+			if (objectStateEntry == null)
+				throw new ArgumentNullException("objectStateEntry");
 
-            if (objectStateEntry.Entity == null)
-                throw new ArgumentException("The Entity property is null for the specified ObjectStateEntry.", "objectStateEntry");
+			if (objectStateEntry.Entity == null)
+				throw new ArgumentException("The Entity property is null for the specified ObjectStateEntry.", "objectStateEntry");
 
-            ObjectStateEntry = objectStateEntry;
-            Entity = objectStateEntry.Entity;
+			ObjectStateEntry = objectStateEntry;
+			Entity = objectStateEntry.Entity;
 
-            EntityType = objectStateEntry.EntitySet.ElementType as EntityType;
+			EntityType = objectStateEntry.EntitySet.ElementType as EntityType;
 
-            Type entityType = objectStateEntry.Entity.GetType();
-            entityType = ObjectContext.GetObjectType(entityType);
+			Type entityType = objectStateEntry.Entity.GetType();
+			entityType = ObjectContext.GetObjectType(entityType);
 
-            ObjectType = entityType;
-            EntityAccessor = TypeAccessor.GetAccessor(entityType);
+			ObjectType = entityType;
+			EntityAccessor = TypeAccessor.GetAccessor(entityType);
 
-            AuditEntity = new AuditEntity(objectStateEntry.Entity)
-            {
-                Action = GetAction(objectStateEntry),
-            };
+			AuditEntity = new AuditEntity(objectStateEntry.Entity)
+			{
+				Action = GetAction(objectStateEntry),
+			};
         }
 
         public ObjectContext ObjectContext { get; set; }
         public AuditLog AuditLog { get; set; }
+		public NavigationProperty AdditionalModifiedProperty { get; set; }
+		public object AdditionalModifiedPropertyEnd { get; set; }
+		public bool AdditionalModifiedPropertyIsAdd { get; set; }
 
         public object Entity { get; private set; }
         public Type ObjectType { get; private set; }
@@ -54,7 +59,7 @@ namespace EntityFramework.Audit
         }
         public bool IsModified
         {
-            get { return AuditEntity.Action == AuditAction.Modified; }
+            get { return AuditEntity.Action == AuditAction.Modified || AdditionalModifiedProperty != null; }
         }
 
         private static AuditAction GetAction(ObjectStateEntry entity)
