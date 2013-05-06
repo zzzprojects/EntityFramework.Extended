@@ -73,8 +73,9 @@
     <Compile Include="Audit\AuditKeyCollection.cs" />
     <Compile Include="Audit\AuditLog.cs" />
     <Compile Include="Audit\AuditLogger.cs" />
-    <Compile Include="Batch\IBatchRunner.cs" />
     <Compile Include="Batch\SqlServerBatchRunner.cs" />
+    <Compile Include="Batch\IBatchRunner.cs" />
+    <Compile Include="Batch\MySqlBatchRunner.cs" />
     <Compile Include="Caching\CacheExpirationMode.cs" />
     <Compile Include="Caching\CacheKey.cs" />
     <Compile Include="Caching\CacheManager.cs" />
