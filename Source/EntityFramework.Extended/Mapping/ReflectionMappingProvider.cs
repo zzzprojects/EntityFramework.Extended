@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Metadata.Edm;
 using System.Data.Objects;
 using System.Linq;
@@ -139,11 +141,15 @@ namespace EntityFramework.Mapping
                 var property = entityMap.PropertyMaps.FirstOrDefault(p => p.PropertyName == edmMember.Name);
                 if (property == null)
                     continue;
-
+                if (!(property is PropertyMap))
+                {
+                    throw new InvalidOperationException(string.Format("KeyMember {1} of entity {0} cannot be complex.",
+                                                                      entityMap.TableName, edmMember.Name));
+                }
                 var map = new PropertyMap
                 {
                     PropertyName = property.PropertyName,
-                    ColumnName = property.ColumnName
+                    ColumnName = ((PropertyMap)property).ColumnName
                 };
                 entityMap.KeyMaps.Add(map);
             }
@@ -156,17 +162,49 @@ namespace EntityFramework.Mapping
             {
                 // StorageScalarPropertyMapping
                 dynamic propertyMapProxy = new DynamicProxy(propertyMap);
-
                 EdmProperty modelProperty = propertyMapProxy.EdmProperty;
                 EdmProperty storeProperty = propertyMapProxy.ColumnProperty;
+                ICollection typeMappings = propertyMapProxy.TypeMappings;
 
-                var map = new PropertyMap
+                // use this "ugly" way of type detection as the types 
+                // are internal
+                if (propertyMap.GetType().Name == "StorageScalarPropertyMapping")
                 {
-                    ColumnName = storeProperty.Name,
-                    PropertyName = modelProperty.Name
-                };
 
-                entityMap.PropertyMaps.Add(map);
+                    var map = new PropertyMap
+                        {
+                            ColumnName = storeProperty.Name,
+                            PropertyName = modelProperty.Name
+                        };
+
+                    entityMap.PropertyMaps.Add(map);
+                }
+                else if (propertyMap.GetType().Name == "StorageComplexPropertyMapping")
+                {
+                    var map = new ComplexPropertyMap
+                        {
+                            PropertyName = modelProperty.Name,
+                            TypeElements = new List<IPropertyMapElement>()
+                        };
+                    foreach (var typeMapping in typeMappings)
+                    {
+                        dynamic typeMappingProxy = new DynamicProxy(typeMapping);
+                        foreach (var property in typeMappingProxy.AllProperties)
+                        {
+                            dynamic pMap = new DynamicProxy(property);
+                            modelProperty = pMap.EdmProperty;
+                            storeProperty = pMap.ColumnProperty;
+
+                            var item = new PropertyMap
+                                {
+                                    ColumnName = storeProperty.Name,
+                                    PropertyName = modelProperty.Name
+                                };
+                            map.TypeElements.Add(item);
+                        }
+                    }
+                    entityMap.PropertyMaps.Add(map);
+                }
             }
         }
 
