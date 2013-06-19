@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -157,55 +157,63 @@ namespace EntityFramework.Mapping
 
         private static void SetProperties(EntityMap entityMap, dynamic mappingFragmentProxy)
         {
-            var propertyMaps = mappingFragmentProxy.Properties;
+            ICollection propertyMaps = mappingFragmentProxy.Properties;
             foreach (var propertyMap in propertyMaps)
             {
-                // StorageScalarPropertyMapping
-                dynamic propertyMapProxy = new DynamicProxy(propertyMap);
-                EdmProperty modelProperty = propertyMapProxy.EdmProperty;
-                EdmProperty storeProperty = propertyMapProxy.ColumnProperty;
-                ICollection typeMappings = propertyMapProxy.TypeMappings;
+                var map = CreatePropertyMap(propertyMap);
+                if (map == null) continue;
 
-                // use this "ugly" way of type detection as the types 
-                // are internal
-                if (propertyMap.GetType().Name == "StorageScalarPropertyMapping")
-                {
+                entityMap.PropertyMaps.Add(map);
+            }
+        }
 
-                    var map = new PropertyMap
-                        {
-                            ColumnName = storeProperty.Name,
-                            PropertyName = modelProperty.Name
-                        };
+        private static IPropertyMapElement CreatePropertyMap(object propertyMap)
+        {
+            // StorageScalarPropertyMapping
+            dynamic propertyMapProxy = new DynamicProxy(propertyMap);
+            EdmProperty modelProperty = propertyMapProxy.EdmProperty;
+            EdmProperty storeProperty = propertyMapProxy.ColumnProperty;
 
-                    entityMap.PropertyMaps.Add(map);
-                }
-                else if (propertyMap.GetType().Name == "StorageComplexPropertyMapping")
-                {
-                    var map = new ComplexPropertyMap
-                        {
-                            PropertyName = modelProperty.Name,
-                            TypeElements = new List<IPropertyMapElement>()
-                        };
-                    foreach (var typeMapping in typeMappings)
+            // use this "ugly" way of type detection as the types 
+            // are internal
+            if (propertyMap.GetType().Name == "StorageScalarPropertyMapping")
+            {
+                return new PropertyMap
                     {
-                        dynamic typeMappingProxy = new DynamicProxy(typeMapping);
-                        foreach (var property in typeMappingProxy.AllProperties)
-                        {
-                            dynamic pMap = new DynamicProxy(property);
-                            modelProperty = pMap.EdmProperty;
-                            storeProperty = pMap.ColumnProperty;
+                        ColumnName = storeProperty.Name,
+                        PropertyName = modelProperty.Name
+                    };
+            }
 
-                            var item = new PropertyMap
-                                {
-                                    ColumnName = storeProperty.Name,
-                                    PropertyName = modelProperty.Name
-                                };
-                            map.TypeElements.Add(item);
-                        }
-                    }
-                    entityMap.PropertyMaps.Add(map);
+            if (propertyMap.GetType().Name == "StorageComplexPropertyMapping")
+            {
+                ICollection typeMappings = propertyMapProxy.TypeMappings;
+                return CreateComplexPropertyMap(modelProperty.Name, typeMappings);
+            }
+
+
+            throw new InvalidOperationException("Invalid or unknown propertyMap type: " + propertyMap.GetType().Name);
+        }
+
+        private static ComplexPropertyMap CreateComplexPropertyMap(string propertyName, IEnumerable typeMappings)
+        {
+            var typeElements = new List<IPropertyMapElement>();
+            foreach (var typeMapping in typeMappings)
+            {
+                dynamic typeMappingProxy = new DynamicProxy(typeMapping);
+                foreach (var property in typeMappingProxy.AllProperties)
+                {
+                    var map = CreatePropertyMap(property);
+
+                    typeElements.Add(map);
                 }
             }
+
+            return new ComplexPropertyMap
+                {
+                    PropertyName = propertyName,
+                    TypeElements = typeElements
+                };
         }
 
         private static void SetTableName(EntityMap entityMap)
