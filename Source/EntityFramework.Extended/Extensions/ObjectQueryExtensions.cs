@@ -23,6 +23,12 @@ namespace EntityFramework.Extensions
       /// <returns>The converted ObjectQuery; otherwise null if it can't be converted.</returns>
       public static ObjectQuery<TEntity> ToObjectQuery<TEntity>(this IQueryable<TEntity> query) where TEntity : class
       {
+          var queryUnwrapper = Locator.Current.Resolve<IQueryUnwrapper>();
+          if (queryUnwrapper != null)
+          {
+              query = queryUnwrapper.Unwrap(query);
+          }
+
           // first try direct cast
           var objectQuery = query as ObjectQuery<TEntity>;
           if (objectQuery != null)
