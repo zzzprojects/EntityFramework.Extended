@@ -1,5 +1,7 @@
-﻿using System;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Metadata.Edm;
 using System.Data.Objects;
 using System.Linq;
@@ -139,11 +141,15 @@ namespace EntityFramework.Mapping
                 var property = entityMap.PropertyMaps.FirstOrDefault(p => p.PropertyName == edmMember.Name);
                 if (property == null)
                     continue;
-
+                if (!(property is PropertyMap))
+                {
+                    throw new InvalidOperationException(string.Format("KeyMember {1} of entity {0} cannot be complex.",
+                                                                      entityMap.TableName, edmMember.Name));
+                }
                 var map = new PropertyMap
                 {
                     PropertyName = property.PropertyName,
-                    ColumnName = property.ColumnName
+                    ColumnName = ((PropertyMap)property).ColumnName
                 };
                 entityMap.KeyMaps.Add(map);
             }
@@ -151,23 +157,63 @@ namespace EntityFramework.Mapping
 
         private static void SetProperties(EntityMap entityMap, dynamic mappingFragmentProxy)
         {
-            var propertyMaps = mappingFragmentProxy.Properties;
+            ICollection propertyMaps = mappingFragmentProxy.Properties;
             foreach (var propertyMap in propertyMaps)
             {
-                // StorageScalarPropertyMapping
-                dynamic propertyMapProxy = new DynamicProxy(propertyMap);
-
-                EdmProperty modelProperty = propertyMapProxy.EdmProperty;
-                EdmProperty storeProperty = propertyMapProxy.ColumnProperty;
-
-                var map = new PropertyMap
-                {
-                    ColumnName = storeProperty.Name,
-                    PropertyName = modelProperty.Name
-                };
+                var map = CreatePropertyMap(propertyMap);
+                if (map == null) continue;
 
                 entityMap.PropertyMaps.Add(map);
             }
+        }
+
+        private static IPropertyMapElement CreatePropertyMap(object propertyMap)
+        {
+            // StorageScalarPropertyMapping
+            dynamic propertyMapProxy = new DynamicProxy(propertyMap);
+            EdmProperty modelProperty = propertyMapProxy.EdmProperty;
+            EdmProperty storeProperty = propertyMapProxy.ColumnProperty;
+
+            // use this "ugly" way of type detection as the types 
+            // are internal
+            if (propertyMap.GetType().Name == "StorageScalarPropertyMapping")
+            {
+                return new PropertyMap
+                    {
+                        ColumnName = storeProperty.Name,
+                        PropertyName = modelProperty.Name
+                    };
+            }
+
+            if (propertyMap.GetType().Name == "StorageComplexPropertyMapping")
+            {
+                ICollection typeMappings = propertyMapProxy.TypeMappings;
+                return CreateComplexPropertyMap(modelProperty.Name, typeMappings);
+            }
+
+
+            throw new InvalidOperationException("Invalid or unknown propertyMap type: " + propertyMap.GetType().Name);
+        }
+
+        private static ComplexPropertyMap CreateComplexPropertyMap(string propertyName, IEnumerable typeMappings)
+        {
+            var typeElements = new List<IPropertyMapElement>();
+            foreach (var typeMapping in typeMappings)
+            {
+                dynamic typeMappingProxy = new DynamicProxy(typeMapping);
+                foreach (var property in typeMappingProxy.AllProperties)
+                {
+                    var map = CreatePropertyMap(property);
+
+                    typeElements.Add(map);
+                }
+            }
+
+            return new ComplexPropertyMap
+                {
+                    PropertyName = propertyName,
+                    TypeElements = typeElements
+                };
         }
 
         private static void SetTableName(EntityMap entityMap)

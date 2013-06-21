@@ -20,7 +20,7 @@ namespace EntityFramework.Mapping
         {
             _entityType = entityType;
             _keyMaps = new List<PropertyMap>();
-            _propertyMaps = new List<PropertyMap>();
+            _propertyMaps = new List<IPropertyMapElement>();
         }
 
         /// <summary>
@@ -57,11 +57,11 @@ namespace EntityFramework.Mapping
         /// </value>
         public string TableName { get; set; }
 
-        private readonly List<PropertyMap> _propertyMaps;
+        private readonly List<IPropertyMapElement> _propertyMaps;
         /// <summary>
         /// Gets the property maps.
         /// </summary>
-        public List<PropertyMap> PropertyMaps
+        public List<IPropertyMapElement> PropertyMaps
         {
             get { return _propertyMaps; }
         }

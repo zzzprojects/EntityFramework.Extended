@@ -6,7 +6,7 @@ namespace EntityFramework.Mapping
     /// A class representing a property map
     /// </summary>
     [DebuggerDisplay("Property: {PropertyName}, Column: {ColumnName}")]
-    public class PropertyMap
+    public class PropertyMap: IPropertyMapElement
     {
         /// <summary>
         /// Gets or sets the name of the property.
