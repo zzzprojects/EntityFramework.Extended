@@ -28,7 +28,7 @@ namespace EntityFramework.Extensions
             if (source == null)
                 throw new ArgumentNullException("source");
 
-            ObjectQuery<TEntity> sourceQuery = source.ToObjectQuery();
+            ObjectQuery sourceQuery = source.ToObjectQuery();
             if (sourceQuery == null)
                 throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
 
@@ -136,7 +136,7 @@ namespace EntityFramework.Extensions
             // make sure to only get the first value
             IQueryable<TEntity> firstQuery = source.Take(1);
 
-            ObjectQuery<TEntity> objectQuery = firstQuery.ToObjectQuery();
+            ObjectQuery objectQuery = firstQuery.ToObjectQuery();
             if (objectQuery == null)
                 throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
 
