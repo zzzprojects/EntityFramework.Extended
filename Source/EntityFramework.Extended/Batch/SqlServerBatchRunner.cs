@@ -268,9 +268,12 @@ namespace EntityFramework.Batch
 
                             var parameter = updateCommand.CreateParameter();
                             parameter.ParameterName = parameterName;
-                            parameter.Value = objectParameter.Value;
+                            
+                            // set the parameter value, ensure null values are replaced with DBNull.Value
+                            parameter.Value = objectParameter.Value ?? (object)DBNull.Value;
+                            
                             updateCommand.Parameters.Add(parameter);
-
+                            
                             value = value.Replace(objectParameter.Name, parameterName);
                         }
                         sqlBuilder.AppendFormat("[{0}] = {1}", columnName, value);
@@ -365,8 +368,10 @@ namespace EntityFramework.Batch
             {
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = objectParameter.Name;
-                parameter.Value = objectParameter.Value;
 
+                // set the parameter value, ensure null values are replaced with DBNull.Value
+                parameter.Value = objectParameter.Value ?? (object)DBNull.Value;
+                
                 command.Parameters.Add(parameter);
             }
 

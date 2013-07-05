@@ -21,6 +21,7 @@ namespace Tracker.SqlServer.Test
             int count = db.Users
                 .Delete(u => u.EmailAddress.EndsWith(emailDomain));
         }
+
         [TestMethod]
         public void DeleteWhere()
         {
@@ -35,12 +36,50 @@ namespace Tracker.SqlServer.Test
         }
 
         [TestMethod]
+        public void DeleteWithExpressionContainingNullParameter()
+        {
+            // This test verifies that the delete is processed correctly when the where expression uses a parameter with a null parameter
+            var db = new TrackerContext();
+            string emailDomain = "@test.com";
+            string optionalComparisonString = null;
+
+            int count = db.Users
+                .Delete(u => u.EmailAddress.EndsWith(emailDomain) && (string.IsNullOrEmpty(optionalComparisonString) || u.AvatarType == optionalComparisonString));
+        }
+        
+        [TestMethod]
+        public void DeleteWhereWithExpressionContainingNullParameter()
+        {
+            var db = new TrackerContext();
+            string emailDomain = "@test.com";
+            string optionalComparisonString = null;
+
+            // This test verifies that the delete is processed correctly when the where expression uses a parameter with a null parameter
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain) && (string.IsNullOrEmpty(optionalComparisonString) || u.AvatarType == optionalComparisonString))
+                .Delete();
+        }
+
+        [TestMethod]
         public void Update()
         {
             var db = new TrackerContext();
             string emailDomain = "@test.com";
             int count = db.Users.Update(
                 u => u.EmailAddress.EndsWith(emailDomain),
+                u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
+        }
+
+        [TestMethod]
+        public void UpdateWithExpressionContainingNullParameter()
+        {
+            // This test verifies that the update is interpreted correctly when the where expression uses a parameter with a null parameter
+            var db = new TrackerContext();
+            string emailDomain = "@test.com";
+            string optionalComparisonString = null;
+
+            int count = db.Users.Update(
+                u => u.EmailAddress.EndsWith(emailDomain) && (string.IsNullOrEmpty(optionalComparisonString) || u.AvatarType == optionalComparisonString),
                 u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
         }
 
