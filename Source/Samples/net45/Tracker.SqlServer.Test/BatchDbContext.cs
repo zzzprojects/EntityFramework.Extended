@@ -41,10 +41,10 @@ namespace Tracker.SqlServer.Test
             // This test verifies that the delete is processed correctly when the where expression uses a parameter with a null parameter
             var db = new TrackerContext();
             string emailDomain = "@test.com";
-            string nullComparisonString = null;
+            string optionalComparisonString = null;
 
             int count = db.Users
-                .Delete(u => u.EmailAddress.EndsWith(emailDomain) && u.AvatarType == nullComparisonString);
+                .Delete(u => u.EmailAddress.EndsWith(emailDomain) && (string.IsNullOrEmpty(optionalComparisonString) || u.AvatarType == optionalComparisonString));
         }
         
         [TestMethod]
@@ -52,11 +52,11 @@ namespace Tracker.SqlServer.Test
         {
             var db = new TrackerContext();
             string emailDomain = "@test.com";
-            string nullComparisonString = null;
+            string optionalComparisonString = null;
 
             // This test verifies that the delete is processed correctly when the where expression uses a parameter with a null parameter
             int count = db.Users
-                .Where(u => u.EmailAddress.EndsWith(emailDomain) && u.AvatarType == nullComparisonString)
+                .Where(u => u.EmailAddress.EndsWith(emailDomain) && (string.IsNullOrEmpty(optionalComparisonString) || u.AvatarType == optionalComparisonString))
                 .Delete();
         }
 
@@ -76,10 +76,10 @@ namespace Tracker.SqlServer.Test
             // This test verifies that the update is interpreted correctly when the where expression uses a parameter with a null parameter
             var db = new TrackerContext();
             string emailDomain = "@test.com";
-            string nullComparisonString = null;
+            string optionalComparisonString = null;
 
             int count = db.Users.Update(
-                u => u.EmailAddress.EndsWith(emailDomain) && u.AvatarType == nullComparisonString,
+                u => u.EmailAddress.EndsWith(emailDomain) && (string.IsNullOrEmpty(optionalComparisonString) || u.AvatarType == optionalComparisonString),
                 u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
         }
 
