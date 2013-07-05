@@ -80,6 +80,7 @@
     <Compile Include="ExceptionAssert.cs" />
     <Compile Include="IoCTest.cs" />
     <Compile Include="Caching\MemoryCacheProviderTest.cs" />
+    <Compile Include="InsertSqlGenerationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\DynamicProxyTest.cs" />
     <Compile Include="Reflection\DelegateFactoryTest.cs" />
