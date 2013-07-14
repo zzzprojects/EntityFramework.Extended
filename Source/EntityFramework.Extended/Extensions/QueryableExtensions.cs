@@ -106,5 +106,22 @@ namespace EntityFramework.Extensions
                                  , columnList
                                  , originalSql);
         }
+
+        /// <summary>
+        /// Captures SELECT ... FROM ... SQL from IDbSet, converts it into INSERT INTO ... SELECT FROM ... ANSI-SQL
+        /// and executes it via context.ExecuteStoreCommand(). <br/>
+        /// No objects are being brought into RAM / Context. <br/>
+        /// Contributed by Agile Design LLC ( http://agiledesignllc.com/ ).
+        /// </summary>
+        /// <param name="source">DbSet of entities</param>
+        /// <param name="tableName">Target table name to insert into</param>
+        /// <param name="columnList">Optional parameter for a list of columns to insert into</param>
+        /// <typeparam name="TEntity">Entity type</typeparam>
+        public static void InsertInto<TEntity>(this IDbSet<TEntity> source, string tableName, string columnList = "")
+            where TEntity : class
+        {
+            source.GetContext()
+                .ExecuteStoreCommand(source.InsertIntoSql(tableName, columnList));
+        }
     }
 }
