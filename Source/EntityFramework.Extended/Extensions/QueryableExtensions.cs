@@ -1,6 +1,4 @@
-﻿using System.Data;
-using System.Data.Entity;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace EntityFramework.Extensions
@@ -12,56 +10,6 @@ namespace EntityFramework.Extensions
     public static class QueryableExtensions
     {
         private const string FromTableSqlExpression = @"\bFROM\b";
-
-        /// <summary>
-        /// Captures SELECT ... FROM ... SQL from IDbSet, converts it into SELECT ... INTO ... T-SQL and executes it via context.ExecuteStoreCommand().<br/>
-        /// No objects are being brought into RAM / Context. <br/>
-        /// Only MS SQL Server and Sybase T-SQL RDBMS are supported.
-        /// Contributed by Agile Design LLC ( http://agiledesignllc.com/ ).
-        /// </summary>
-        /// <typeparam name="TEntity">Entity type</typeparam>
-        /// <param name="source">DbSet of entities</param>
-        /// <param name="tableName">Target table name to insert into</param>
-        public static void SelectInsert<TEntity>(this IDbSet<TEntity> source, string tableName)
-            where TEntity : class
-        {
-            source.GetContext()
-                .ExecuteStoreCommand(source.SelectInsertSql(tableName));
-        }
-
-        /// <summary>
-        /// Captures SELECT ... FROM ... SQL from IQueryable, converts it into SELECT ... INTO ... T-SQL and executes it on sqlCommand.<br/>
-        /// No objects are being brought into RAM / Context. <br/>
-        /// Only MS SQL Server and Sybase T-SQL RDBMS are supported.
-        /// Contributed by Agile Design LLC ( http://agiledesignllc.com/ ).
-        /// </summary>
-        /// <typeparam name="TEntity">Entity type</typeparam>
-        /// <param name="tableName">Target table name to insert into</param>
-        /// <param name="source">DbSet of entities (or any IQueryable that returns SQL from its ToString() implementation</param>
-        /// <param name="connection">Creates IDbCommand which executes generated T-SQL</param>
-        public static void SelectInsert<TEntity>(this IQueryable<TEntity> source, string tableName, IDbConnection connection)
-            where TEntity : class
-        {
-            var sqlCommand = connection.CreateCommand();
-            sqlCommand.CommandText = source.SelectInsertSql(tableName);
-            sqlCommand.ExecuteNonQuery();
-        }
-
-        /// <summary>
-        /// Captures SELECT ... FROM ... SQL from IQueryable, converts it into SELECT ... INTO ... T-SQL and executes it on sqlCommand.<br/>
-        /// No objects are being brought into RAM / Context. <br/>
-        /// Only MS SQL Server and Sybase T-SQL RDBMS are supported.
-        /// Contributed by Agile Design LLC ( http://agiledesignllc.com/ ).
-        /// </summary>
-        /// <typeparam name="TEntity">Entity type</typeparam>
-        /// <param name="sqlConnection">Creates IDbCommand which executes generated T-SQL</param>
-        /// <param name="tableName">Target table name to insert into</param>
-        /// <param name="source">DbSet of entities (or any IQueryable that returns SQL from its ToString() implementation</param>
-        public static void SelectInsert<TEntity>(this IDbConnection sqlConnection, string tableName, IQueryable<TEntity> source)
-            where TEntity : class
-        {
-            source.SelectInsert(tableName, sqlConnection);
-        }
 
         /// <summary>
         /// Captures SELECT ... FROM ... SQL from IQueryable and converts it into SELECT ... INTO ... T-SQL. <br/>
@@ -105,23 +53,6 @@ namespace EntityFramework.Extensions
                                  , tableName
                                  , columnList
                                  , originalSql);
-        }
-
-        /// <summary>
-        /// Captures SELECT ... FROM ... SQL from IDbSet, converts it into INSERT INTO ... SELECT FROM ... ANSI-SQL
-        /// and executes it via context.ExecuteStoreCommand(). <br/>
-        /// No objects are being brought into RAM / Context. <br/>
-        /// Contributed by Agile Design LLC ( http://agiledesignllc.com/ ).
-        /// </summary>
-        /// <param name="source">DbSet of entities</param>
-        /// <param name="tableName">Target table name to insert into</param>
-        /// <param name="columnList">Optional parameter for a list of columns to insert into</param>
-        /// <typeparam name="TEntity">Entity type</typeparam>
-        public static void InsertInto<TEntity>(this IDbSet<TEntity> source, string tableName, string columnList = "")
-            where TEntity : class
-        {
-            source.GetContext()
-                .ExecuteStoreCommand(source.InsertIntoSql(tableName, columnList));
         }
     }
 }
