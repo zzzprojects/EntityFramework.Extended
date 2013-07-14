@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Objects;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using EntityFramework.Reflection;
 
 namespace EntityFramework.Extensions
@@ -124,5 +122,37 @@ namespace EntityFramework.Extensions
           return null;
       }
 
+      /// <summary>
+      /// Captures SELECT ... FROM ... SQL from IDbSet, converts it into SELECT ... INTO ... T-SQL and executes it via context.ExecuteStoreCommand().<br/>
+      /// No objects are being brought into RAM / Context. <br/>
+      /// Only MS SQL Server and Sybase T-SQL RDBMS are supported. <br/>
+      /// Contributed by Agile Design LLC ( http://agiledesignllc.com/ ).
+      /// </summary>
+      /// <typeparam name="TEntity">Entity type</typeparam>
+      /// <param name="source">DbSet of entities</param>
+      /// <param name="tableName">Target table name to insert into</param>
+      public static void SelectInsert<TEntity>(this IQueryable<TEntity> source, string tableName)
+          where TEntity : class
+      {
+          source.GetContext()
+              .ExecuteStoreCommand(source.SelectInsertSql(tableName));
+      }
+
+        /// <summary>
+        /// Captures SELECT ... FROM ... SQL from IDbSet, converts it into INSERT INTO ... SELECT FROM ... ANSI-SQL
+        /// and executes it via context.ExecuteStoreCommand(). <br/>
+        /// No objects are being brought into RAM / Context. <br/>
+        /// Contributed by Agile Design LLC ( http://agiledesignllc.com/ ).
+        /// </summary>
+        /// <param name="source">DbSet of entities</param>
+        /// <param name="tableName">Target table name to insert into</param>
+        /// <param name="columnList">Optional parameter for a list of columns to insert into</param>
+        /// <typeparam name="TEntity">Entity type</typeparam>
+        public static void InsertInto<TEntity>(this IQueryable<TEntity> source, string tableName, string columnList = "")
+            where TEntity : class
+        {
+            source.GetContext()
+                  .ExecuteStoreCommand(source.InsertIntoSql(tableName, columnList));
+        }
   }
 }

@@ -86,6 +86,7 @@
     <Compile Include="Caching\Query\LocalCollectionExpander.cs" />
     <Compile Include="Caching\Query\QueryCache.cs" />
     <Compile Include="Caching\Query\Utility.cs" />
+    <Compile Include="Extensions\QueryableExtensions.cs" />
     <Compile Include="Future\IFutureRunner.cs" />
     <Compile Include="Locator.cs" />
     <Compile Include="Container.cs" />
