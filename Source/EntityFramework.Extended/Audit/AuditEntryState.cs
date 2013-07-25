@@ -21,7 +21,7 @@ namespace EntityFramework.Audit
 			ObjectStateEntry = objectStateEntry;
 			Entity = objectStateEntry.Entity;
 
-			EntityType = objectStateEntry.EntitySet.ElementType as EntityType;
+            EntityType = Extensions.GetInheritedEntityType(objectStateEntry);
 
 			Type entityType = objectStateEntry.Entity.GetType();
 			entityType = ObjectContext.GetObjectType(entityType);
@@ -59,7 +59,7 @@ namespace EntityFramework.Audit
         }
         public bool IsModified
         {
-            get { return AuditEntity.Action == AuditAction.Modified || AdditionalModifiedProperty != null; }
+            get { return AuditEntity.Action == AuditAction.Modified; }
         }
 
         private static AuditAction GetAction(ObjectStateEntry entity)
