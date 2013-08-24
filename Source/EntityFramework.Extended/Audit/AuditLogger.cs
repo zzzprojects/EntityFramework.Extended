@@ -569,7 +569,7 @@ namespace EntityFramework.Audit
                 return null;
 
             var edmType = referentialConstraint
-              .FromProperties
+              .ToProperties
               .Select(p => p.DeclaringType)
               .FirstOrDefault();
 
@@ -634,13 +634,18 @@ namespace EntityFramework.Audit
         {
             var relationshipManager = state.ObjectStateEntry.RelationshipManager;
             var getEntityReference = _relatedAccessor.Value.MakeGenericMethod(accessor.MemberType);
-            var parameters = new[]
+            var parameters = new object[]
             {
                 navigationProperty.RelationshipType.FullName,
                 navigationProperty.ToEndMember.Name
             };
 
-            var entityReference = getEntityReference.Invoke(relationshipManager, parameters) as EntityReference;
+            EntityReference entityReference = null;
+            try
+            {
+                entityReference = getEntityReference.Invoke(relationshipManager, parameters) as EntityReference;
+            }
+            catch(TargetInvocationException){}
             return (entityReference != null && entityReference.IsLoaded);
         }
 

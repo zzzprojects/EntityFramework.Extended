@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Metadata.Edm;
 using System.Data.Objects;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,14 +69,12 @@ namespace EntityFramework.Audit
 
 			var otherEnd = entry.GetOtherAssociationEnd(end);
 			var relationshipType = entry.EntitySet.ElementType;
-			var key = entry.GetEndEntityKey(end);
-			var entitySet = key.GetEntitySet(
-					entry.ObjectStateManager.MetadataWorkspace);
-			var property = entitySet.ElementType.NavigationProperties.Where(
-					p => p.RelationshipType == relationshipType &&
-							p.FromEndMember == end && p.ToEndMember == otherEnd)
-					.SingleOrDefault();
-			return property;
+
+            EntityType elementType = GetInheritedEntityTypeByEntityName(entry, end.Name);
+		    NavigationProperty property =
+		        elementType.NavigationProperties.SingleOrDefault(p => p.RelationshipType == relationshipType &&
+		                                                              p.FromEndMember == end && p.ToEndMember == otherEnd);
+		    return property;
 		}
 
 		static void ValidateBelongsTo(this AssociationEndMember end, ObjectStateEntry entry)
@@ -95,5 +94,25 @@ namespace EntityFramework.Audit
 						"relationship {1}", end, entry));
 			}
 		}
+
+	    public static EntityType GetInheritedEntityType(ObjectStateEntry entry)
+	    {
+	        if (entry.Entity == null)
+	        {
+	            throw new ArgumentException("entity is null", "entry");
+	        }
+	        string entityName = entry.Entity.GetType().Name;
+	        return GetInheritedEntityTypeByEntityName(entry, entityName);
+	    }
+
+	    static EntityType GetInheritedEntityTypeByEntityName(ObjectStateEntry entry, string entityName)
+	    {
+	        var stateEntryEdmType =
+	            (EntityType)
+	            entry.ObjectStateManager.MetadataWorkspace.GetType(entityName, entry.EntitySet.ElementType.NamespaceName,
+	                                                               DataSpace.CSpace);
+
+	        return stateEntryEdmType;
+	    }
 	}
 }
