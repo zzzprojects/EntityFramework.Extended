@@ -150,16 +150,73 @@ namespace EntityFramework.Audit
             // must call to make sure changes are detected
             ObjectContext.DetectChanges();
 
-            IEnumerable<ObjectStateEntry> changes = ObjectContext
-                .ObjectStateManager
-                .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified);
+	        IEnumerable<ObjectStateEntry> changes = ObjectContext
+		        .ObjectStateManager
+				.GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified)
+				.Where(t => !t.IsRelationship);
 
-            foreach (ObjectStateEntry objectStateEntry in changes)
-            {
-                if (objectStateEntry.Entity == null)
-                    continue;
 
-                Type entityType = objectStateEntry.Entity.GetType();
+			foreach (ObjectStateEntry objectStateEntry in ObjectContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added | EntityState.Deleted).Where(t => t.IsRelationship))
+			{
+				ObjectStateEntry entryLeft = null;
+				ObjectStateEntry entryRight = null;
+				var associationEnds = objectStateEntry.GetAssociationEnds();
+				NavigationProperty navigationPropertyLeft = objectStateEntry.GetNavigationProperty(associationEnds[0]);
+				NavigationProperty navigationPropertyRight = objectStateEntry.GetNavigationProperty(associationEnds[1]);
+
+				if (objectStateEntry.State == EntityState.Added)
+				{
+					entryLeft = ObjectContext.ObjectStateManager.GetObjectStateEntry((EntityKey)objectStateEntry.CurrentValues[0]);
+					entryRight = ObjectContext.ObjectStateManager.GetObjectStateEntry((EntityKey)objectStateEntry.CurrentValues[1]);
+				}
+				else if (objectStateEntry.State == EntityState.Deleted)
+				{
+					entryLeft = ObjectContext.ObjectStateManager.GetObjectStateEntry((EntityKey)objectStateEntry.OriginalValues[0]);
+					entryRight = ObjectContext.ObjectStateManager.GetObjectStateEntry((EntityKey)objectStateEntry.OriginalValues[1]);
+				}
+
+				Type entityTypeLeft = entryLeft.Entity.GetType();
+				entityTypeLeft = ObjectContext.GetObjectType(entityTypeLeft);
+				if (Configuration.IsAuditable(entityTypeLeft))
+				{
+					var stateLeft = new AuditEntryState(entryLeft)
+					{
+						AuditLog = auditLog,
+						ObjectContext = ObjectContext,
+						AdditionalModifiedProperty = navigationPropertyLeft,
+						AdditionalModifiedPropertyEnd = ObjectContext.GetObjectByKey(entryRight.EntityKey),
+						AdditionalModifiedPropertyIsAdd = objectStateEntry.State == EntityState.Added
+					};
+
+					if (WriteEntity(stateLeft))
+						auditLog.Entities.Add(stateLeft.AuditEntity);
+				}
+
+				Type entityTypeRight = entryRight.Entity.GetType();
+				entityTypeRight = ObjectContext.GetObjectType(entityTypeRight);
+				if (Configuration.IsAuditable(entityTypeRight))
+				{
+					var stateRight = new AuditEntryState(entryRight)
+					{
+						AuditLog = auditLog,
+						ObjectContext = ObjectContext,
+						AdditionalModifiedProperty = navigationPropertyRight,
+						AdditionalModifiedPropertyEnd = ObjectContext.GetObjectByKey(entryLeft.EntityKey),
+						AdditionalModifiedPropertyIsAdd = objectStateEntry.State == EntityState.Added
+					};
+
+					if (WriteEntity(stateRight))
+						auditLog.Entities.Add(stateRight.AuditEntity);
+				}
+			}
+
+			foreach (ObjectStateEntry objectStateEntry in changes)
+			{
+				if (objectStateEntry.Entity == null)
+					continue;
+
+				Type entityType = objectStateEntry.Entity.GetType();
+
                 entityType = ObjectContext.GetObjectType(entityType);
                 if (!Configuration.IsAuditable(entityType))
                     continue;
@@ -308,7 +365,7 @@ namespace EntityFramework.Audit
             if (!Configuration.IncludeRelationships)
                 return;
 
-            var properties = state.EntityType.NavigationProperties;
+	        var properties = state.EntityType.NavigationProperties.ToList();
             if (properties.Count == 0)
                 return;
 
@@ -316,7 +373,10 @@ namespace EntityFramework.Audit
               .GetModifiedProperties()
               .ToList();
 
-            var type = state.ObjectType;
+	        if (state.AdditionalModifiedProperty != null)
+		        modifiedMembers.Add(state.AdditionalModifiedProperty.Name);
+
+	        var type = state.ObjectType;
 
             var currentValues = state.IsDeleted
                 ? state.ObjectStateEntry.OriginalValues
@@ -328,10 +388,6 @@ namespace EntityFramework.Audit
 
             foreach (NavigationProperty navigationProperty in properties)
             {
-                if (navigationProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many 
-                    || navigationProperty.FromEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many)
-                    continue;
-
                 string name = navigationProperty.Name;
                 if (Configuration.IsNotAudited(type, name))
                     continue;
@@ -343,12 +399,16 @@ namespace EntityFramework.Audit
 
                 bool isModified = IsModifed(navigationProperty, modifiedMembers);
 
+	            if (navigationProperty == state.AdditionalModifiedProperty) isModified = true;
+
                 if (state.IsModified && !isModified
                   && !Configuration.IsAlwaysAudited(type, name))
                     continue; // this means the property was not changed, skip it
 
-                bool isLoaded = IsLoaded(state, navigationProperty, accessor);
-                if (!isLoaded && !Configuration.LoadRelationships)
+	            bool isLoaded = navigationProperty == state.AdditionalModifiedProperty ||
+								IsLoaded(state, navigationProperty, accessor);
+                
+				if (!isLoaded && !Configuration.LoadRelationships)
                     continue;
 
                 var auditProperty = new AuditProperty();
@@ -362,7 +422,13 @@ namespace EntityFramework.Audit
 
                     object currentValue;
 
-                    if (isLoaded)
+					if (isLoaded && navigationProperty == state.AdditionalModifiedProperty)
+					{
+						currentValue = state.AdditionalModifiedPropertyEnd;
+						auditProperty.IsManyToMany = true;
+						auditProperty.IsManyToManyAdd = state.AdditionalModifiedPropertyIsAdd;
+					}
+                    else if (isLoaded)
                     {
                         // get value directly from instance to save db call
                         object valueInstance = accessor.GetValue(state.Entity);
@@ -503,7 +569,7 @@ namespace EntityFramework.Audit
                 return null;
 
             var edmType = referentialConstraint
-              .FromProperties
+              .ToProperties
               .Select(p => p.DeclaringType)
               .FirstOrDefault();
 
@@ -568,13 +634,18 @@ namespace EntityFramework.Audit
         {
             var relationshipManager = state.ObjectStateEntry.RelationshipManager;
             var getEntityReference = _relatedAccessor.Value.MakeGenericMethod(accessor.MemberType);
-            var parameters = new[]
+            var parameters = new object[]
             {
                 navigationProperty.RelationshipType.FullName,
                 navigationProperty.ToEndMember.Name
             };
 
-            var entityReference = getEntityReference.Invoke(relationshipManager, parameters) as EntityReference;
+            EntityReference entityReference = null;
+            try
+            {
+                entityReference = getEntityReference.Invoke(relationshipManager, parameters) as EntityReference;
+            }
+            catch(TargetInvocationException){}
             return (entityReference != null && entityReference.IsLoaded);
         }
 

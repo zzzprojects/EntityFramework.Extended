@@ -56,5 +56,19 @@ namespace EntityFramework.Audit
         /// <value>The original value of the property.</value>
         [XmlElement("original")]
         public object Original { get; set; }
+
+		/// <summary>
+		/// Gets or sets the is many to many value of the property
+		/// </summary>
+		/// <value>True if this represents a change to a many to many relationship</value>
+		[XmlElement("isManyToMany")]
+		public bool IsManyToMany { get; set; }
+
+		/// <summary>
+		/// Gets or sets the is many to many value of the property
+		/// </summary>
+		/// <value>True if this many to many change represents an insert, false if a delete</value>
+		[XmlElement("isManyToManyAdd")]
+		public bool IsManyToManyAdd { get; set; }
     }
 }
