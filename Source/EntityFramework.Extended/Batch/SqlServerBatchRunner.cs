@@ -366,6 +366,9 @@ namespace EntityFramework.Batch
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = objectParameter.Name;
                 parameter.Value = objectParameter.Value;
+                parameter.Value = (objectParameter.Value == null)
+                    ? DBNull.Value
+                    : objectParameter.Value;
 
                 command.Parameters.Add(parameter);
             }
