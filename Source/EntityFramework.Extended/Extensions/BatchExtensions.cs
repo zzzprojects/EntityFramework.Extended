@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Data.Objects;
 using EntityFramework.Batch;
 using EntityFramework.Mapping;
 

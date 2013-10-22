@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Metadata.Edm;
-using System.Data.Objects;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Text;
 using EntityFramework.Reflection;

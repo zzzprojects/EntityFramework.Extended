@@ -1,6 +1,6 @@
 using System;
 using System.Data.Entity;
-using System.Data.Objects;
+using System.Data.Entity.Core.Objects;
 using EntityFramework.Audit;
 
 namespace EntityFramework.Extensions

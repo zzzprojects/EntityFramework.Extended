@@ -651,6 +651,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="True" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
       </DesignerInfoPropertySet>
     </Options>
     <!-- Diagram content (shape and connector positions) -->
@@ -661,7 +662,7 @@
         <EntityTypeShape EntityType="TrackerModel.Role" Width="1.5" PointX="0.75" PointY="4.5" Height="2.3648893229166656" IsExpanded="true" />
         <EntityTypeShape EntityType="TrackerModel.Status" Width="1.5" PointX="6" PointY="8" Height="2.5571907552083317" IsExpanded="true" />
         <EntityTypeShape EntityType="TrackerModel.Task" Width="1.5" PointX="8.25" PointY="3.25" Height="4.8648079427083335" IsExpanded="true" />
-        <EntityTypeShape EntityType="TrackerModel.TaskExtended" Width="1.5" PointX="10.5" PointY="4.5" Height="2.3648893229166674" IsExpanded="true" />
+        <EntityTypeShape EntityType="TrackerModel.TaskExtended" Width="1.5" PointX="10.75" PointY="4.625" Height="2.3648893229166674" IsExpanded="true" />
         <EntityTypeShape EntityType="TrackerModel.User" Width="1.5" PointX="3" PointY="3.25" Height="4.8648079427083317" IsExpanded="true" />
         <AssociationConnector Association="TrackerModel.FK_Audit_Task" ManuallyRouted="false">
           <ConnectorPoint PointX="8.25" PointY="5.7208968098958328" />

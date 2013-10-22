@@ -1,8 +1,8 @@
 using System;
 using System.Data;
 using System.Data.Common;
-using System.Data.EntityClient;
-using System.Data.Objects;
+using System.Data.Entity.Core.EntityClient;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Linq.Dynamic;
 using System.Linq.Expressions;
@@ -252,7 +252,7 @@ namespace EntityFramework.Batch
                         string sql = selectQuery.ToTraceString();
 
                         // parse select part of sql to use as update
-                        string regex = @"SELECT\s*\r\n(?<ColumnValue>.+)?\s*AS\s*(?<ColumnAlias>\[\w+\])\r\nFROM\s*(?<TableName>\[\w+\]\.\[\w+\]|\[\w+\])\s*AS\s*(?<TableAlias>\[\w+\])";
+                        string regex = @"SELECT\s*\r\n\s*(?<ColumnValue>.+)?\s*AS\s*(?<ColumnAlias>\[\w+\])\r\n\s*FROM\s*(?<TableName>\[\w+\]\.\[\w+\]|\[\w+\])\s*AS\s*(?<TableAlias>\[\w+\])";
                         Match match = Regex.Match(sql, regex);
                         if (!match.Success)
                             throw new ArgumentException("The MemberAssignment expression could not be processed.", "updateExpression");
@@ -268,7 +268,7 @@ namespace EntityFramework.Batch
 
                             var parameter = updateCommand.CreateParameter();
                             parameter.ParameterName = parameterName;
-                            parameter.Value = objectParameter.Value;
+                            parameter.Value = objectParameter.Value ?? DBNull.Value;
                             updateCommand.Parameters.Add(parameter);
 
                             value = value.Replace(objectParameter.Name, parameterName);
@@ -365,7 +365,7 @@ namespace EntityFramework.Batch
             {
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = objectParameter.Name;
-                parameter.Value = objectParameter.Value;
+                parameter.Value = objectParameter.Value ?? DBNull.Value;  
 
                 command.Parameters.Add(parameter);
             }

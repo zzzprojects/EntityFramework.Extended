@@ -12,8 +12,8 @@
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets"/>
 
   <PropertyGroup>
-    <Major>5</Major>
-    <Major4>4</Major4>
+    <Major>6</Major>
+    <Major4>5</Major4>
 
     <Minor>0</Minor>
     <Minor4>4</Minor4>
@@ -31,7 +31,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Year>2011</Year>
+    <Year>2013</Year>
   </PropertyGroup>
 
   <ItemGroup>
