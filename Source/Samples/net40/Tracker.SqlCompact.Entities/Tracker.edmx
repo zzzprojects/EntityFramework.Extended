@@ -664,7 +664,7 @@
 </edmx:Runtime>
 <edmx:Designer>
 <edmx:Connection><edmx:DesignerInfoPropertySet><edmx:DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" /></edmx:DesignerInfoPropertySet></edmx:Connection>
-<edmx:Options><edmx:DesignerInfoPropertySet><edmx:DesignerProperty Name="ValidateOnBuild" Value="True" /><edmx:DesignerProperty Name="EnablePluralization" Value="True" /><edmx:DesignerProperty Name="IncludeForeignKeysInModel" Value="True" /><edmx:DesignerProperty Name="CodeGenerationStrategy" Value="Default" /></edmx:DesignerInfoPropertySet></edmx:Options>
+<edmx:Options><edmx:DesignerInfoPropertySet><edmx:DesignerProperty Name="ValidateOnBuild" Value="True" /><edmx:DesignerProperty Name="EnablePluralization" Value="True" /><edmx:DesignerProperty Name="IncludeForeignKeysInModel" Value="True" /><edmx:DesignerProperty Name="CodeGenerationStrategy" Value="None" /></edmx:DesignerInfoPropertySet></edmx:Options>
 <edmx:Diagrams>
       <edmx:Diagram Name="Tracker">
         <edmx:EntityTypeShape EntityType="TrackerModel.Audit" Width="1.5" PointX="5.25" PointY="4.25" Height="2.9417936197916656" IsExpanded="true" />
