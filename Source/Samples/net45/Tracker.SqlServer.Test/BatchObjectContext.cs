@@ -13,7 +13,7 @@ namespace Tracker.SqlServer.Test
         {
             var db = new TrackerEntities();
             string emailDomain = "@test.com";
-            int count = db.Users.Delete(u => u.Email.EndsWith(emailDomain));
+            int count = db.Users.Delete(u => u.EmailAddress.EndsWith(emailDomain));
         }
 
         [TestMethod]
@@ -22,7 +22,7 @@ namespace Tracker.SqlServer.Test
             var db = new TrackerEntities();
             string emailDomain = "@test.com";
             int count = db.Users.Update(
-                u => u.Email.EndsWith(emailDomain),
+                u => u.EmailAddress.EndsWith(emailDomain),
                 u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
         }
     }

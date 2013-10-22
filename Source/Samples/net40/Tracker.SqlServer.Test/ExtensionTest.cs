@@ -21,10 +21,10 @@ namespace Tracker.SqlServer.Test
                 string emailDomain = "@test.com";
 
                 int count = db.Users.Update(
-                    u => u.Email.EndsWith(emailDomain),
+                    u => u.EmailAddress.EndsWith(emailDomain),
                     u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
 
-                count = db.Users.Delete(u => u.Email.EndsWith(emailDomain));
+                count = db.Users.Delete(u => u.EmailAddress.EndsWith(emailDomain));
 
                 tx.Commit();
             }
@@ -38,10 +38,10 @@ namespace Tracker.SqlServer.Test
                 string emailDomain = "@test.com";
 
                 int count = db.Users.Update(
-                    u => u.Email.EndsWith(emailDomain),
+                    u => u.EmailAddress.EndsWith(emailDomain),
                     u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
 
-                count = db.Users.Delete(u => u.Email.EndsWith(emailDomain));
+                count = db.Users.Delete(u => u.EmailAddress.EndsWith(emailDomain));
 
             }
         }
@@ -55,10 +55,10 @@ namespace Tracker.SqlServer.Test
                 string emailDomain = "@test.com";
 
                 int count = db.Users.Update(
-                    u => u.Email.EndsWith(emailDomain),
+                    u => u.EmailAddress.EndsWith(emailDomain),
                     u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
 
-                count = db.Users.Delete(u => u.Email.EndsWith(emailDomain));
+                count = db.Users.Delete(u => u.EmailAddress.EndsWith(emailDomain));
 
                 tx.Complete();
             }

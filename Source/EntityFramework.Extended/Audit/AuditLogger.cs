@@ -328,7 +328,7 @@ namespace EntityFramework.Audit
 
             foreach (NavigationProperty navigationProperty in properties)
             {
-                if (navigationProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many 
+                if (navigationProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many
                     || navigationProperty.FromEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many)
                     continue;
 
@@ -540,7 +540,7 @@ namespace EntityFramework.Audit
             }
 
             var q = state.ObjectContext.CreateQuery<object>(
-                sql.ToString(), 
+                sql.ToString(),
                 parameters.ToArray());
 
             return q.FirstOrDefault();

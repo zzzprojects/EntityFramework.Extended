@@ -44,8 +44,9 @@
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\..\..\packages\EntityFramework.6.0.1\lib\net40\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="FluentAssertions">
-      <HintPath>..\..\..\packages\FluentAssertions.1.7.1.1\Lib\net40\FluentAssertions.dll</HintPath>
+    <Reference Include="FluentAssertions, Version=2.1.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\FluentAssertions.2.1.0.0\lib\net40\FluentAssertions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -73,10 +74,6 @@
     <ProjectReference Include="..\..\..\EntityFramework.Extended\EntityFramework.Extended.net40.csproj">
       <Project>{D390C235-242C-4E92-9E0B-D2463E87B0F0}</Project>
       <Name>EntityFramework.Extended.net40</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tracker.SqlCompact.Entities\Tracker.SqlCompact.Entities.net40.csproj">
-      <Project>{673ABCFA-71ED-4907-8EAC-D0328DB01D8E}</Project>
-      <Name>Tracker.SqlCompact.Entities.net40</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

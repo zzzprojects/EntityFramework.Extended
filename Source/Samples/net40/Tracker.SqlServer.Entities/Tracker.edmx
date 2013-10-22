@@ -1,113 +1,67 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
   <!-- EF Runtime content -->
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="TrackerModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
-        <EntityContainer Name="TrackerModelStoreContainer">
-          <EntitySet Name="Audit" EntityType="TrackerModel.Store.Audit" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="Priority" EntityType="TrackerModel.Store.Priority" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="Role" EntityType="TrackerModel.Store.Role" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="Status" EntityType="TrackerModel.Store.Status" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="Task" EntityType="TrackerModel.Store.Task" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="TaskExtended" EntityType="TrackerModel.Store.TaskExtended" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="User" EntityType="TrackerModel.Store.User" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="UserRole" EntityType="TrackerModel.Store.UserRole" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <AssociationSet Name="FK_Audit_Task" Association="TrackerModel.Store.FK_Audit_Task">
-            <End Role="Task" EntitySet="Task" />
-            <End Role="Audit" EntitySet="Audit" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Audit_User" Association="TrackerModel.Store.FK_Audit_User">
-            <End Role="User" EntitySet="User" />
-            <End Role="Audit" EntitySet="Audit" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Task_Priority" Association="TrackerModel.Store.FK_Task_Priority">
-            <End Role="Priority" EntitySet="Priority" />
-            <End Role="Task" EntitySet="Task" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Task_Status" Association="TrackerModel.Store.FK_Task_Status">
-            <End Role="Status" EntitySet="Status" />
-            <End Role="Task" EntitySet="Task" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Task_User_Assigned" Association="TrackerModel.Store.FK_Task_User_Assigned">
-            <End Role="User" EntitySet="User" />
-            <End Role="Task" EntitySet="Task" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Task_User_Created" Association="TrackerModel.Store.FK_Task_User_Created">
-            <End Role="User" EntitySet="User" />
-            <End Role="Task" EntitySet="Task" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TaskExtended_Task" Association="TrackerModel.Store.FK_TaskExtended_Task">
-            <End Role="Task" EntitySet="Task" />
-            <End Role="TaskExtended" EntitySet="TaskExtended" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserRole_Role" Association="TrackerModel.Store.FK_UserRole_Role">
-            <End Role="Role" EntitySet="Role" />
-            <End Role="UserRole" EntitySet="UserRole" />
-          </AssociationSet>
-          <AssociationSet Name="FK_UserRole_User" Association="TrackerModel.Store.FK_UserRole_User">
-            <End Role="User" EntitySet="User" />
-            <End Role="UserRole" EntitySet="UserRole" />
-          </AssociationSet>
-        </EntityContainer>
+      <Schema Namespace="Tracker.SqlServer.Entities.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Audit">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="UserId" Type="int" />
           <Property Name="TaskId" Type="int" />
           <Property Name="Content" Type="varchar(max)" Nullable="false" />
-          <Property Name="Username" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
-          <Property Name="RowVersion" Type="timestamp" Nullable="false" StoreGeneratedPattern="Computed" />
+          <Property Name="RowVersion" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="Priority">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Order" Type="int" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="200" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
-          <Property Name="RowVersion" Type="timestamp" Nullable="false" StoreGeneratedPattern="Computed" />
+          <Property Name="RowVersion" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="150" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
-          <Property Name="RowVersion" Type="timestamp" Nullable="false" StoreGeneratedPattern="Computed" />
+          <Property Name="RowVersion" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="Status">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="150" />
           <Property Name="Order" Type="int" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
-          <Property Name="RowVersion" Type="timestamp" Nullable="false" StoreGeneratedPattern="Computed" />
+          <Property Name="RowVersion" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="Task">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="StatusId" Type="int" Nullable="false" />
           <Property Name="PriorityId" Type="int" />
           <Property Name="CreatedId" Type="int" Nullable="false" />
-          <Property Name="Summary" Type="nvarchar" Nullable="false" MaxLength="255" />
+          <Property Name="Summary" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Details" Type="nvarchar" MaxLength="2000" />
           <Property Name="StartDate" Type="datetime" />
           <Property Name="DueDate" Type="datetime" />
@@ -115,7 +69,7 @@
           <Property Name="AssignedId" Type="int" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
-          <Property Name="RowVersion" Type="timestamp" Nullable="false" StoreGeneratedPattern="Computed" />
+          <Property Name="RowVersion" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
           <Property Name="LastModifiedBy" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="TaskExtended">
@@ -127,22 +81,22 @@
           <Property Name="OS" Type="nvarchar" MaxLength="150" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
-          <Property Name="RowVersion" Type="timestamp" Nullable="false" StoreGeneratedPattern="Computed" />
+          <Property Name="RowVersion" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="EmailAddress" Type="nvarchar" Nullable="false" MaxLength="250" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmailAddress" Type="nvarchar" MaxLength="250" Nullable="false" />
           <Property Name="FirstName" Type="nvarchar" MaxLength="200" />
           <Property Name="LastName" Type="nvarchar" MaxLength="200" />
           <Property Name="Avatar" Type="varbinary(max)" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
-          <Property Name="RowVersion" Type="timestamp" Nullable="false" StoreGeneratedPattern="Computed" />
-          <Property Name="PasswordHash" Type="char" Nullable="false" MaxLength="86" />
-          <Property Name="PasswordSalt" Type="char" Nullable="false" MaxLength="5" />
+          <Property Name="RowVersion" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="PasswordHash" Type="char" MaxLength="86" Nullable="false" />
+          <Property Name="PasswordSalt" Type="char" MaxLength="5" Nullable="false" />
           <Property Name="Comment" Type="text" />
           <Property Name="IsApproved" Type="bit" Nullable="false" />
           <Property Name="LastLoginDate" Type="datetime" />
@@ -159,8 +113,8 @@
           <Property Name="RoleId" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_Audit_Task">
-          <End Role="Task" Type="TrackerModel.Store.Task" Multiplicity="0..1" />
-          <End Role="Audit" Type="TrackerModel.Store.Audit" Multiplicity="*" />
+          <End Role="Task" Type="Self.Task" Multiplicity="0..1" />
+          <End Role="Audit" Type="Self.Audit" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Task">
               <PropertyRef Name="Id" />
@@ -171,8 +125,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Audit_User">
-          <End Role="User" Type="TrackerModel.Store.User" Multiplicity="0..1" />
-          <End Role="Audit" Type="TrackerModel.Store.Audit" Multiplicity="*" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Audit" Type="Self.Audit" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="Id" />
@@ -183,8 +137,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Task_Priority">
-          <End Role="Priority" Type="TrackerModel.Store.Priority" Multiplicity="0..1" />
-          <End Role="Task" Type="TrackerModel.Store.Task" Multiplicity="*" />
+          <End Role="Priority" Type="Self.Priority" Multiplicity="0..1" />
+          <End Role="Task" Type="Self.Task" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Priority">
               <PropertyRef Name="Id" />
@@ -195,8 +149,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Task_Status">
-          <End Role="Status" Type="TrackerModel.Store.Status" Multiplicity="1" />
-          <End Role="Task" Type="TrackerModel.Store.Task" Multiplicity="*" />
+          <End Role="Status" Type="Self.Status" Multiplicity="1" />
+          <End Role="Task" Type="Self.Task" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Status">
               <PropertyRef Name="Id" />
@@ -207,8 +161,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Task_User_Assigned">
-          <End Role="User" Type="TrackerModel.Store.User" Multiplicity="0..1" />
-          <End Role="Task" Type="TrackerModel.Store.Task" Multiplicity="*" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Task" Type="Self.Task" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="Id" />
@@ -219,8 +173,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Task_User_Created">
-          <End Role="User" Type="TrackerModel.Store.User" Multiplicity="1" />
-          <End Role="Task" Type="TrackerModel.Store.Task" Multiplicity="*" />
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Task" Type="Self.Task" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="Id" />
@@ -231,8 +185,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TaskExtended_Task">
-          <End Role="Task" Type="TrackerModel.Store.Task" Multiplicity="1" />
-          <End Role="TaskExtended" Type="TrackerModel.Store.TaskExtended" Multiplicity="0..1" />
+          <End Role="Task" Type="Self.Task" Multiplicity="1" />
+          <End Role="TaskExtended" Type="Self.TaskExtended" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="Task">
               <PropertyRef Name="Id" />
@@ -243,8 +197,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_UserRole_Role">
-          <End Role="Role" Type="TrackerModel.Store.Role" Multiplicity="1" />
-          <End Role="UserRole" Type="TrackerModel.Store.UserRole" Multiplicity="*" />
+          <End Role="Role" Type="Self.Role" Multiplicity="1" />
+          <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Role">
               <PropertyRef Name="Id" />
@@ -255,8 +209,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_UserRole_User">
-          <End Role="User" Type="TrackerModel.Store.User" Multiplicity="1" />
-          <End Role="UserRole" Type="TrackerModel.Store.UserRole" Multiplicity="*" />
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="Id" />
@@ -266,170 +220,175 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityContainer Name="TrackerSqlServerEntitiesStoreContainer">
+          <EntitySet Name="Audit" EntityType="Self.Audit" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Priority" EntityType="Self.Priority" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Status" EntityType="Self.Status" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Task" EntityType="Self.Task" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TaskExtended" EntityType="Self.TaskExtended" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Audit_Task" Association="Self.FK_Audit_Task">
+            <End Role="Task" EntitySet="Task" />
+            <End Role="Audit" EntitySet="Audit" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Audit_User" Association="Self.FK_Audit_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Audit" EntitySet="Audit" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_Priority" Association="Self.FK_Task_Priority">
+            <End Role="Priority" EntitySet="Priority" />
+            <End Role="Task" EntitySet="Task" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_Status" Association="Self.FK_Task_Status">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="Task" EntitySet="Task" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_User_Assigned" Association="Self.FK_Task_User_Assigned">
+            <End Role="User" EntitySet="User" />
+            <End Role="Task" EntitySet="Task" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_User_Created" Association="Self.FK_Task_User_Created">
+            <End Role="User" EntitySet="User" />
+            <End Role="Task" EntitySet="Task" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TaskExtended_Task" Association="Self.FK_TaskExtended_Task">
+            <End Role="Task" EntitySet="Task" />
+            <End Role="TaskExtended" EntitySet="TaskExtended" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserRole_Role" Association="Self.FK_UserRole_Role">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="UserRole" EntitySet="UserRole" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserRole_User" Association="Self.FK_UserRole_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserRole" EntitySet="UserRole" />
+          </AssociationSet>
+        </EntityContainer>
       </Schema>
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="TrackerModel" Alias="Self" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
-        <EntityContainer Name="TrackerEntities" annotation:LazyLoadingEnabled="true" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
-          <EntitySet Name="Audits" EntityType="TrackerModel.Audit" />
-          <EntitySet Name="Priorities" EntityType="TrackerModel.Priority" />
-          <EntitySet Name="Roles" EntityType="TrackerModel.Role" />
-          <EntitySet Name="Status" EntityType="TrackerModel.Status" />
-          <EntitySet Name="Tasks" EntityType="TrackerModel.Task" />
-          <EntitySet Name="TaskExtendeds" EntityType="TrackerModel.TaskExtended" />
-          <EntitySet Name="Users" EntityType="TrackerModel.User" />
-          <AssociationSet Name="FK_Audit_Task" Association="TrackerModel.FK_Audit_Task">
-            <End Role="Task" EntitySet="Tasks" />
-            <End Role="Audit" EntitySet="Audits" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Audit_User" Association="TrackerModel.FK_Audit_User">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Audit" EntitySet="Audits" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Task_Priority" Association="TrackerModel.FK_Task_Priority">
-            <End Role="Priority" EntitySet="Priorities" />
-            <End Role="Task" EntitySet="Tasks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Task_Status" Association="TrackerModel.FK_Task_Status">
-            <End Role="Status" EntitySet="Status" />
-            <End Role="Task" EntitySet="Tasks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Task_User_Assigned" Association="TrackerModel.FK_Task_User_Assigned">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Task" EntitySet="Tasks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Task_User_Created" Association="TrackerModel.FK_Task_User_Created">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Task" EntitySet="Tasks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TaskExtended_Task" Association="TrackerModel.FK_TaskExtended_Task">
-            <End Role="Task" EntitySet="Tasks" />
-            <End Role="TaskExtended" EntitySet="TaskExtendeds" />
-          </AssociationSet>
-          <AssociationSet Name="UserRole" Association="TrackerModel.UserRole">
-            <End Role="Role" EntitySet="Roles" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
-        </EntityContainer>
+      <Schema Namespace="Tracker.SqlServer.Entities" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="Audit">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Name="Date" Type="DateTime" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="UserId" Type="Int32" />
           <Property Name="TaskId" Type="Int32" />
-          <Property Name="Content" Type="String" Nullable="false" MaxLength="Max" Unicode="false" FixedLength="false" />
-          <Property Name="Username" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" />
-          <Property Name="RowVersion" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <NavigationProperty Name="Task" Relationship="TrackerModel.FK_Audit_Task" FromRole="Audit" ToRole="Task" />
-          <NavigationProperty Name="User" Relationship="TrackerModel.FK_Audit_User" FromRole="Audit" ToRole="User" />
+          <Property Name="Content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="RowVersion" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="Task" Relationship="Self.FK_Audit_Task" FromRole="Audit" ToRole="Task" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Audit_User" FromRole="Audit" ToRole="User" />
         </EntityType>
         <EntityType Name="Priority">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Order" Type="Int32" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" />
-          <Property Name="RowVersion" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <NavigationProperty Name="Tasks" Relationship="TrackerModel.FK_Task_Priority" FromRole="Priority" ToRole="Task" />
+          <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="RowVersion" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="Tasks" Relationship="Self.FK_Task_Priority" FromRole="Priority" ToRole="Task" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
-          <Property Name="Description" Type="String" MaxLength="150" Unicode="true" FixedLength="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" />
-          <Property Name="RowVersion" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <NavigationProperty Name="Users" Relationship="TrackerModel.UserRole" FromRole="Role" ToRole="User" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="RowVersion" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="Users" Relationship="Self.UserRole" FromRole="Role" ToRole="User" />
         </EntityType>
         <EntityType Name="Status">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
-          <Property Name="Description" Type="String" MaxLength="150" Unicode="true" FixedLength="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="Order" Type="Int32" Nullable="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" />
-          <Property Name="RowVersion" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <NavigationProperty Name="Tasks" Relationship="TrackerModel.FK_Task_Status" FromRole="Status" ToRole="Task" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="RowVersion" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="Tasks" Relationship="Self.FK_Task_Status" FromRole="Status" ToRole="Task" />
         </EntityType>
         <EntityType Name="Task">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="StatusId" Type="Int32" Nullable="false" />
           <Property Name="PriorityId" Type="Int32" />
           <Property Name="CreatedId" Type="Int32" Nullable="false" />
-          <Property Name="Summary" Type="String" Nullable="false" MaxLength="255" Unicode="true" FixedLength="false" />
-          <Property Name="Details" Type="String" MaxLength="2000" Unicode="true" FixedLength="false" />
-          <Property Name="StartDate" Type="DateTime" />
-          <Property Name="DueDate" Type="DateTime" />
-          <Property Name="CompleteDate" Type="DateTime" />
+          <Property Name="Summary" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Details" Type="String" MaxLength="2000" FixedLength="false" Unicode="true" />
+          <Property Name="StartDate" Type="DateTime" Precision="3" />
+          <Property Name="DueDate" Type="DateTime" Precision="3" />
+          <Property Name="CompleteDate" Type="DateTime" Precision="3" />
           <Property Name="AssignedId" Type="Int32" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" />
-          <Property Name="RowVersion" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Name="LastModifiedBy" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
-          <NavigationProperty Name="Audits" Relationship="TrackerModel.FK_Audit_Task" FromRole="Task" ToRole="Audit" />
-          <NavigationProperty Name="Priority" Relationship="TrackerModel.FK_Task_Priority" FromRole="Task" ToRole="Priority" />
-          <NavigationProperty Name="Status" Relationship="TrackerModel.FK_Task_Status" FromRole="Task" ToRole="Status" />
-          <NavigationProperty Name="User" Relationship="TrackerModel.FK_Task_User_Assigned" FromRole="Task" ToRole="User" />
-          <NavigationProperty Name="User1" Relationship="TrackerModel.FK_Task_User_Created" FromRole="Task" ToRole="User" />
-          <NavigationProperty Name="TaskExtended" Relationship="TrackerModel.FK_TaskExtended_Task" FromRole="Task" ToRole="TaskExtended" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="RowVersion" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="LastModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Audits" Relationship="Self.FK_Audit_Task" FromRole="Task" ToRole="Audit" />
+          <NavigationProperty Name="Priority" Relationship="Self.FK_Task_Priority" FromRole="Task" ToRole="Priority" />
+          <NavigationProperty Name="Status" Relationship="Self.FK_Task_Status" FromRole="Task" ToRole="Status" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Task_User_Assigned" FromRole="Task" ToRole="User" />
+          <NavigationProperty Name="User1" Relationship="Self.FK_Task_User_Created" FromRole="Task" ToRole="User" />
+          <NavigationProperty Name="TaskExtended" Relationship="Self.FK_TaskExtended_Task" FromRole="Task" ToRole="TaskExtended" />
         </EntityType>
         <EntityType Name="TaskExtended">
           <Key>
             <PropertyRef Name="TaskId" />
           </Key>
           <Property Name="TaskId" Type="Int32" Nullable="false" />
-          <Property Name="Browser" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
-          <Property Name="OS" Type="String" MaxLength="150" Unicode="true" FixedLength="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" />
-          <Property Name="RowVersion" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <NavigationProperty Name="Task" Relationship="TrackerModel.FK_TaskExtended_Task" FromRole="TaskExtended" ToRole="Task" />
+          <Property Name="Browser" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="OS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="RowVersion" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <NavigationProperty Name="Task" Relationship="Self.FK_TaskExtended_Task" FromRole="TaskExtended" ToRole="Task" />
         </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Name="Email" Type="String" Nullable="false" MaxLength="250" Unicode="true" FixedLength="false" />
-          <Property Name="FirstName" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
-          <Property Name="LastName" Type="String" MaxLength="200" Unicode="true" FixedLength="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmailAddress" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FirstName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Avatar" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" />
-          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" />
-          <Property Name="RowVersion" Type="Binary" Nullable="false" MaxLength="8" FixedLength="true" annotation:StoreGeneratedPattern="Computed" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" />
-          <Property Name="PasswordHash" Type="String" Nullable="false" MaxLength="86" Unicode="false" FixedLength="true" />
-          <Property Name="PasswordSalt" Type="String" Nullable="false" MaxLength="5" Unicode="false" FixedLength="true" />
-          <Property Name="Comment" Type="String" MaxLength="Max" Unicode="false" FixedLength="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="RowVersion" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="PasswordHash" Type="String" MaxLength="86" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="PasswordSalt" Type="String" MaxLength="5" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="IsApproved" Type="Boolean" Nullable="false" />
-          <Property Name="LastLoginDate" Type="DateTime" />
-          <Property Name="LastActivityDate" Type="DateTime" Nullable="false" />
-          <Property Name="LastPasswordChangeDate" Type="DateTime" />
-          <Property Name="AvatarType" Type="String" MaxLength="150" Unicode="true" FixedLength="false" />
-          <NavigationProperty Name="Audits" Relationship="TrackerModel.FK_Audit_User" FromRole="User" ToRole="Audit" />
-          <NavigationProperty Name="Tasks" Relationship="TrackerModel.FK_Task_User_Assigned" FromRole="User" ToRole="Task" />
-          <NavigationProperty Name="Tasks1" Relationship="TrackerModel.FK_Task_User_Created" FromRole="User" ToRole="Task" />
-          <NavigationProperty Name="Roles" Relationship="TrackerModel.UserRole" FromRole="User" ToRole="Role" />
+          <Property Name="LastLoginDate" Type="DateTime" Precision="3" />
+          <Property Name="LastActivityDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LastPasswordChangeDate" Type="DateTime" Precision="3" />
+          <Property Name="AvatarType" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Audits" Relationship="Self.FK_Audit_User" FromRole="User" ToRole="Audit" />
+          <NavigationProperty Name="Tasks" Relationship="Self.FK_Task_User_Assigned" FromRole="User" ToRole="Task" />
+          <NavigationProperty Name="Tasks1" Relationship="Self.FK_Task_User_Created" FromRole="User" ToRole="Task" />
+          <NavigationProperty Name="Roles" Relationship="Self.UserRole" FromRole="User" ToRole="Role" />
         </EntityType>
         <Association Name="FK_Audit_Task">
-          <End Role="Task" Type="TrackerModel.Task" Multiplicity="0..1" />
-          <End Role="Audit" Type="TrackerModel.Audit" Multiplicity="*" />
+          <End Role="Task" Type="Self.Task" Multiplicity="0..1" />
+          <End Role="Audit" Type="Self.Audit" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Task">
               <PropertyRef Name="Id" />
@@ -440,8 +399,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Audit_User">
-          <End Role="User" Type="TrackerModel.User" Multiplicity="0..1" />
-          <End Role="Audit" Type="TrackerModel.Audit" Multiplicity="*" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Audit" Type="Self.Audit" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="Id" />
@@ -452,8 +411,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Task_Priority">
-          <End Role="Priority" Type="TrackerModel.Priority" Multiplicity="0..1" />
-          <End Role="Task" Type="TrackerModel.Task" Multiplicity="*" />
+          <End Role="Priority" Type="Self.Priority" Multiplicity="0..1" />
+          <End Role="Task" Type="Self.Task" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Priority">
               <PropertyRef Name="Id" />
@@ -464,8 +423,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Task_Status">
-          <End Role="Status" Type="TrackerModel.Status" Multiplicity="1" />
-          <End Role="Task" Type="TrackerModel.Task" Multiplicity="*" />
+          <End Role="Status" Type="Self.Status" Multiplicity="1" />
+          <End Role="Task" Type="Self.Task" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Status">
               <PropertyRef Name="Id" />
@@ -476,8 +435,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Task_User_Assigned">
-          <End Role="User" Type="TrackerModel.User" Multiplicity="0..1" />
-          <End Role="Task" Type="TrackerModel.Task" Multiplicity="*" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Task" Type="Self.Task" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="Id" />
@@ -488,8 +447,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Task_User_Created">
-          <End Role="User" Type="TrackerModel.User" Multiplicity="1" />
-          <End Role="Task" Type="TrackerModel.Task" Multiplicity="*" />
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Task" Type="Self.Task" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
               <PropertyRef Name="Id" />
@@ -500,8 +459,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TaskExtended_Task">
-          <End Role="Task" Type="TrackerModel.Task" Multiplicity="1" />
-          <End Role="TaskExtended" Type="TrackerModel.TaskExtended" Multiplicity="0..1" />
+          <End Role="Task" Type="Self.Task" Multiplicity="1" />
+          <End Role="TaskExtended" Type="Self.TaskExtended" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="Task">
               <PropertyRef Name="Id" />
@@ -512,17 +471,58 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="UserRole">
-          <End Role="Role" Type="TrackerModel.Role" Multiplicity="*" />
-          <End Role="User" Type="TrackerModel.User" Multiplicity="*" />
+          <End Role="Role" Type="Self.Role" Multiplicity="*" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
         </Association>
+        <EntityContainer Name="TrackerEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Audits" EntityType="Self.Audit" />
+          <EntitySet Name="Priorities" EntityType="Self.Priority" />
+          <EntitySet Name="Roles" EntityType="Self.Role" />
+          <EntitySet Name="Status" EntityType="Self.Status" />
+          <EntitySet Name="Tasks" EntityType="Self.Task" />
+          <EntitySet Name="TaskExtendeds" EntityType="Self.TaskExtended" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="FK_Audit_Task" Association="Self.FK_Audit_Task">
+            <End Role="Task" EntitySet="Tasks" />
+            <End Role="Audit" EntitySet="Audits" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Audit_User" Association="Self.FK_Audit_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Audit" EntitySet="Audits" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_Priority" Association="Self.FK_Task_Priority">
+            <End Role="Priority" EntitySet="Priorities" />
+            <End Role="Task" EntitySet="Tasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_Status" Association="Self.FK_Task_Status">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="Task" EntitySet="Tasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_User_Assigned" Association="Self.FK_Task_User_Assigned">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Task" EntitySet="Tasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_User_Created" Association="Self.FK_Task_User_Created">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Task" EntitySet="Tasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TaskExtended_Task" Association="Self.FK_TaskExtended_Task">
+            <End Role="Task" EntitySet="Tasks" />
+            <End Role="TaskExtended" EntitySet="TaskExtendeds" />
+          </AssociationSet>
+          <AssociationSet Name="UserRole" Association="Self.UserRole">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="TrackerModelStoreContainer" CdmEntityContainer="TrackerEntities">
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="TrackerSqlServerEntitiesStoreContainer" CdmEntityContainer="TrackerEntities">
           <EntitySetMapping Name="Audits">
-            <EntityTypeMapping TypeName="TrackerModel.Audit">
+            <EntityTypeMapping TypeName="Tracker.SqlServer.Entities.Audit">
               <MappingFragment StoreEntitySet="Audit">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
@@ -536,7 +536,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Priorities">
-            <EntityTypeMapping TypeName="TrackerModel.Priority">
+            <EntityTypeMapping TypeName="Tracker.SqlServer.Entities.Priority">
               <MappingFragment StoreEntitySet="Priority">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -549,7 +549,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Roles">
-            <EntityTypeMapping TypeName="TrackerModel.Role">
+            <EntityTypeMapping TypeName="Tracker.SqlServer.Entities.Role">
               <MappingFragment StoreEntitySet="Role">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -561,7 +561,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Status">
-            <EntityTypeMapping TypeName="TrackerModel.Status">
+            <EntityTypeMapping TypeName="Tracker.SqlServer.Entities.Status">
               <MappingFragment StoreEntitySet="Status">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -574,7 +574,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Tasks">
-            <EntityTypeMapping TypeName="TrackerModel.Task">
+            <EntityTypeMapping TypeName="Tracker.SqlServer.Entities.Task">
               <MappingFragment StoreEntitySet="Task">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="StatusId" ColumnName="StatusId" />
@@ -594,7 +594,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="TaskExtendeds">
-            <EntityTypeMapping TypeName="TrackerModel.TaskExtended">
+            <EntityTypeMapping TypeName="Tracker.SqlServer.Entities.TaskExtended">
               <MappingFragment StoreEntitySet="TaskExtended">
                 <ScalarProperty Name="TaskId" ColumnName="TaskId" />
                 <ScalarProperty Name="Browser" ColumnName="Browser" />
@@ -606,10 +606,10 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="TrackerModel.User">
+            <EntityTypeMapping TypeName="Tracker.SqlServer.Entities.User">
               <MappingFragment StoreEntitySet="User">
                 <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Email" ColumnName="EmailAddress" />
+                <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="Avatar" ColumnName="Avatar" />
@@ -627,7 +627,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="UserRole" TypeName="TrackerModel.UserRole" StoreEntitySet="UserRole">
+          <AssociationSetMapping Name="UserRole" TypeName="Tracker.SqlServer.Entities.UserRole" StoreEntitySet="UserRole">
             <EndProperty Name="Role">
               <ScalarProperty Name="Id" ColumnName="RoleId" />
             </EndProperty>
@@ -640,65 +640,22 @@
     </edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
-  <edmx:Designer>
-    <edmx:Connection>
-      <edmx:DesignerInfoPropertySet>
-        <edmx:DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
-      </edmx:DesignerInfoPropertySet>
-    </edmx:Connection>
-    <edmx:Options>
-      <edmx:DesignerInfoPropertySet>
-        <edmx:DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <edmx:DesignerProperty Name="EnablePluralization" Value="True" />
-        <edmx:DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
-        <edmx:DesignerProperty Name="CodeGenerationStrategy" Value="None" />
-      </edmx:DesignerInfoPropertySet>
-    </edmx:Options>
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
     <!-- Diagram content (shape and connector positions) -->
-    <edmx:Diagrams>
-      <edmx:Diagram Name="Tracker">
-        <edmx:EntityTypeShape EntityType="TrackerModel.Audit" Width="1.5" PointX="5.25" PointY="4.25" Height="2.9417936197916656" IsExpanded="true" />
-        <edmx:EntityTypeShape EntityType="TrackerModel.Priority" Width="1.5" PointX="6" PointY="0.75" Height="2.5571907552083326" IsExpanded="true" />
-        <edmx:EntityTypeShape EntityType="TrackerModel.Role" Width="1.5" PointX="0.75" PointY="4.5" Height="2.3648893229166656" IsExpanded="true" />
-        <edmx:EntityTypeShape EntityType="TrackerModel.Status" Width="1.5" PointX="6" PointY="8" Height="2.5571907552083317" IsExpanded="true" />
-        <edmx:EntityTypeShape EntityType="TrackerModel.Task" Width="1.5" PointX="8.25" PointY="3.25" Height="4.8648079427083335" IsExpanded="true" />
-        <edmx:EntityTypeShape EntityType="TrackerModel.TaskExtended" Width="1.5" PointX="10.5" PointY="4.5" Height="2.3648893229166674" IsExpanded="true" />
-        <edmx:EntityTypeShape EntityType="TrackerModel.User" Width="1.5" PointX="3" PointY="3.25" Height="4.8648079427083317" IsExpanded="true" />
-        <edmx:AssociationConnector Association="TrackerModel.FK_Audit_Task" ManuallyRouted="false">
-          <edmx:ConnectorPoint PointX="8.25" PointY="5.7208968098958328" />
-          <edmx:ConnectorPoint PointX="6.75" PointY="5.7208968098958328" />
-        </edmx:AssociationConnector>
-        <edmx:AssociationConnector Association="TrackerModel.FK_Audit_User" ManuallyRouted="false">
-          <edmx:ConnectorPoint PointX="4.5" PointY="5.7208968098958328" />
-          <edmx:ConnectorPoint PointX="5.25" PointY="5.7208968098958328" />
-        </edmx:AssociationConnector>
-        <edmx:AssociationConnector Association="TrackerModel.FK_Task_Priority" ManuallyRouted="false">
-          <edmx:ConnectorPoint PointX="7.5" PointY="1.9999995" />
-          <edmx:ConnectorPoint PointX="9" PointY="1.9999995" />
-          <edmx:ConnectorPoint PointX="9" PointY="3.25" />
-        </edmx:AssociationConnector>
-        <edmx:AssociationConnector Association="TrackerModel.FK_Task_Status" ManuallyRouted="false">
-          <edmx:ConnectorPoint PointX="7.5" PointY="9.3359998489583322" />
-          <edmx:ConnectorPoint PointX="9" PointY="9.3359998489583322" />
-          <edmx:ConnectorPoint PointX="9" PointY="8.1148079427083335" />
-        </edmx:AssociationConnector>
-        <edmx:AssociationConnector Association="TrackerModel.FK_Task_User_Assigned" ManuallyRouted="false">
-          <edmx:ConnectorPoint PointX="4.5" PointY="3.7785953776041663" />
-          <edmx:ConnectorPoint PointX="8.25" PointY="3.7785953776041663" />
-        </edmx:AssociationConnector>
-        <edmx:AssociationConnector Association="TrackerModel.FK_Task_User_Created" ManuallyRouted="false">
-          <edmx:ConnectorPoint PointX="4.5" PointY="7.5958968098958328" />
-          <edmx:ConnectorPoint PointX="8.25" PointY="7.5958968098958328" />
-        </edmx:AssociationConnector>
-        <edmx:AssociationConnector Association="TrackerModel.FK_TaskExtended_Task" ManuallyRouted="false">
-          <edmx:ConnectorPoint PointX="9.75" PointY="5.6824446614583337" />
-          <edmx:ConnectorPoint PointX="10.5" PointY="5.6824446614583337" />
-        </edmx:AssociationConnector>
-        <edmx:AssociationConnector Association="TrackerModel.UserRole" ManuallyRouted="false">
-          <edmx:ConnectorPoint PointX="2.25" PointY="5.6824446614583328" />
-          <edmx:ConnectorPoint PointX="3" PointY="5.6824446614583328" />
-        </edmx:AssociationConnector>
-      </edmx:Diagram>
-    </edmx:Diagrams>
-  </edmx:Designer>
+    <Diagrams></Diagrams>
+  </Designer>
 </edmx:Edmx>

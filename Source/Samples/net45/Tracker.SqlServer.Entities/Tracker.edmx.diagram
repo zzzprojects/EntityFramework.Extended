@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="da8d9e84db6140faa14b46d3ca4a7951" Name="Diagram1">
+        <EntityTypeShape EntityType="Tracker.SqlServer.Entities.Audit" Width="1.5" PointX="5.25" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Tracker.SqlServer.Entities.Priority" Width="1.5" PointX="6" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Tracker.SqlServer.Entities.Role" Width="1.5" PointX="0.75" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Tracker.SqlServer.Entities.Status" Width="1.5" PointX="6" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="Tracker.SqlServer.Entities.Task" Width="1.5" PointX="8.25" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Tracker.SqlServer.Entities.TaskExtended" Width="1.5" PointX="10.5" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Tracker.SqlServer.Entities.User" Width="1.5" PointX="3" PointY="3.25" IsExpanded="true" />
+        <AssociationConnector Association="Tracker.SqlServer.Entities.FK_Audit_Task" ManuallyRouted="false" />
+        <AssociationConnector Association="Tracker.SqlServer.Entities.FK_Audit_User" ManuallyRouted="false" />
+        <AssociationConnector Association="Tracker.SqlServer.Entities.FK_Task_Priority" ManuallyRouted="false" />
+        <AssociationConnector Association="Tracker.SqlServer.Entities.FK_Task_Status" ManuallyRouted="false" />
+        <AssociationConnector Association="Tracker.SqlServer.Entities.FK_Task_User_Assigned" ManuallyRouted="false" />
+        <AssociationConnector Association="Tracker.SqlServer.Entities.FK_Task_User_Created" ManuallyRouted="false" />
+        <AssociationConnector Association="Tracker.SqlServer.Entities.FK_TaskExtended_Task" ManuallyRouted="false" />
+        <AssociationConnector Association="Tracker.SqlServer.Entities.UserRole" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

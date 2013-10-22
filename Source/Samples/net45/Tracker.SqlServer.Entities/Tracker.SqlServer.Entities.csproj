@@ -55,33 +55,33 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Audit.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model1.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Model1.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>Tracker.tt</DependentUpon>
     </Compile>
     <Compile Include="Priority.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>Tracker.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Role.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>Tracker.tt</DependentUpon>
     </Compile>
     <Compile Include="Status.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>Tracker.tt</DependentUpon>
     </Compile>
     <Compile Include="Task.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>Tracker.tt</DependentUpon>
     </Compile>
     <Compile Include="TaskExtended.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>Tracker.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Tracker.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Tracker.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Tracker.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Tracker.tt</DependentUpon>
     </Compile>
     <Compile Include="Tracker.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -89,26 +89,29 @@
       <DependentUpon>Tracker.edmx</DependentUpon>
     </Compile>
     <Compile Include="User.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
+      <DependentUpon>Tracker.tt</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
+    <None Include="packages.config" />
     <EntityDeploy Include="Tracker.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Tracker.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="Model1.Context.tt">
+    <None Include="Tracker.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Model1.Context.cs</LastGenOutput>
+      <DependentUpon>Tracker.edmx</DependentUpon>
+      <LastGenOutput>Tracker.Context.cs</LastGenOutput>
+    </None>
+    <None Include="Tracker.edmx.diagram">
       <DependentUpon>Tracker.edmx</DependentUpon>
     </None>
-    <None Include="Model1.tt">
+    <None Include="Tracker.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Model1.cs</LastGenOutput>
       <DependentUpon>Tracker.edmx</DependentUpon>
+      <LastGenOutput>Tracker.cs</LastGenOutput>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

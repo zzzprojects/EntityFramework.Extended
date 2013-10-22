@@ -74,10 +74,6 @@
       <Project>{D390C235-242C-4E92-9E0B-D2463E87B0F0}</Project>
       <Name>EntityFramework.Extended</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tracker.SqlCompact.Entities\Tracker.SqlCompact.Entities.csproj">
-      <Project>{673ABCFA-71ED-4907-8EAC-D0328DB01D8E}</Project>
-      <Name>Tracker.SqlCompact.Entities</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
