@@ -1,13 +1,13 @@
 ﻿using System;
 using EntityFramework.Reflection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace EntityFramework.Test.Reflection
 {
-  [TestClass]
+  [TestFixture]
   public class DynamicProxyTest
   {
-    [TestMethod]
+    [Test]
     public void TestMethod()
     {
       var t = new TestWrapper();
@@ -36,7 +36,7 @@ namespace EntityFramework.Test.Reflection
 
     }
 
-    [TestMethod]
+    [Test]
     public void TestMethodNulls()
     {
       var t = new TestWrapper();

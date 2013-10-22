@@ -4,16 +4,16 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
 using EntityFramework.Extensions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Tracker.SqlServer.CodeFirst;
 using Tracker.SqlServer.CodeFirst.Entities;
 
 namespace Tracker.SqlServer.Test
 {
-    [TestClass]
+    [TestFixture]
     public class BatchDbContext
     {
-        [TestMethod]
+        [Test]
         public void Delete()
         {
             var db = new TrackerContext();
@@ -21,7 +21,7 @@ namespace Tracker.SqlServer.Test
             int count = db.Users.Delete(u => u.EmailAddress.EndsWith(emailDomain));
         }
 
-        [TestMethod]
+        [Test]
         public void Update()
         {
             var db = new TrackerContext();
@@ -31,7 +31,7 @@ namespace Tracker.SqlServer.Test
                 u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
         }
 
-        [TestMethod]
+        [Test]
         public void UpdateAppend()
         {
             var db = new TrackerContext();
@@ -44,7 +44,7 @@ namespace Tracker.SqlServer.Test
                 u => new User { LastName = u.LastName + newComment });
         }
 
-        [TestMethod]
+        [Test]
         public void UpdateAppendAndNull()
         {
             var db = new TrackerContext();
@@ -62,7 +62,7 @@ namespace Tracker.SqlServer.Test
                 });
         }
 
-        [TestMethod]
+        [Test]
         public void UpdateJoin()
         {
             var db = new TrackerContext();
@@ -74,7 +74,7 @@ namespace Tracker.SqlServer.Test
                 u => new User { LastName = u.FirstName + space + u.LastName });
         }
 
-        [TestMethod]
+        [Test]
         public void UpdateCopy()
         {
             var db = new TrackerContext();

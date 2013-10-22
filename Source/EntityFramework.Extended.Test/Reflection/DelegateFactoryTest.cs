@@ -3,14 +3,14 @@ using System.Diagnostics;
 using System.Net;
 using System.Reflection;
 using EntityFramework.Reflection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace EntityFramework.Test.Reflection
 {
-  [TestClass]
+  [TestFixture]
   public class DelegateFactoryTest
   {
-    [TestMethod]
+    [Test]
     public void CreateGetProperty()
     {
       TestClass.IsStatic = true;
@@ -40,7 +40,7 @@ namespace EntityFramework.Test.Reflection
       Console.WriteLine("Time: {0}ms", watch.ElapsedMilliseconds);
     }
 
-    [TestMethod]
+    [Test]
     public void CreateGetPropertyValueType()
     {
       StructureClass.IsStatic = true;
@@ -71,7 +71,7 @@ namespace EntityFramework.Test.Reflection
       Console.WriteLine("Time: {0}ms", watch.ElapsedMilliseconds);
     }
     
-    [TestMethod]
+    [Test]
     public void CreateGetField()
     {
       TestClass.IsStatic = true;
@@ -102,7 +102,7 @@ namespace EntityFramework.Test.Reflection
 
     }
 
-    [TestMethod]
+    [Test]
     public void CreateGetFieldStructure()
     {
       StructureClass.IsStatic = true;
@@ -134,7 +134,7 @@ namespace EntityFramework.Test.Reflection
     }
 
 
-    [TestMethod]
+    [Test]
     public void CreateSetProperty()
     {
       var testClass = new TestClass();
@@ -189,7 +189,7 @@ namespace EntityFramework.Test.Reflection
       Assert.AreEqual("John", testClass.FirstName);
     }
 
-    [TestMethod]
+    [Test]
     public void CreateSetField()
     {
       TestClass.fieldStaticKey = "field test key";
@@ -233,7 +233,7 @@ namespace EntityFramework.Test.Reflection
     }
 
 
-    [TestMethod]
+    [Test]
     public void CreateConstructorClass()
     {
       Type type = typeof(TestClass);
@@ -249,7 +249,7 @@ namespace EntityFramework.Test.Reflection
       Assert.IsTrue(o.GetType() == type);
     }
 
-    [TestMethod]
+    [Test]
     public void CreateConstructorInternal()
     {
       Type type = typeof(InternalClass);
@@ -266,7 +266,7 @@ namespace EntityFramework.Test.Reflection
 
     }
 
-    [TestMethod]
+    [Test]
     public void PublicMethods()
     {
       var test = new TestClass();
@@ -374,7 +374,7 @@ namespace EntityFramework.Test.Reflection
       
     }
 
-    [TestMethod]
+    [Test]
     public void PrivateMethods()
     {
       BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;

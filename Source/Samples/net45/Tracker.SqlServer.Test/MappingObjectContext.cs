@@ -1,6 +1,6 @@
 ﻿using System;
 using EntityFramework.Mapping;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Tracker.SqlServer.CodeFirst;
 using Tracker.SqlServer.CodeFirst.Entities;
 using Tracker.SqlServer.Entities;
@@ -12,10 +12,10 @@ namespace Tracker.SqlServer.Test
     /// <summary>
     /// Summary description for MappingObjectContext
     /// </summary>
-    [TestClass]
+    [TestFixture]
     public class MappingObjectContext
     {
-        [TestMethod]
+        [Test]
         public void GetEntityMapTask()
         {
             //var db = new TrackerEntities();
@@ -27,7 +27,7 @@ namespace Tracker.SqlServer.Test
         }
 
 
-        [TestMethod]
+        [Test]
         public void GetEntityMapAuditData()
         {
             var db = new TrackerContext();

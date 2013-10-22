@@ -2,14 +2,14 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace EntityFramework.Test
 {
-    [TestClass]
+    [TestFixture]
     public class ContainerTest
     {
-        [TestMethod]
+        [Test]
         public void RegisterResolve()
         {
             var c = new Container();
@@ -17,16 +17,16 @@ namespace EntityFramework.Test
 
             var t1 = c.Resolve<ITest1>();
             Assert.IsNotNull(t1);
-            Assert.IsInstanceOfType(t1, typeof(Test1));
+            Assert.IsInstanceOfType(typeof(Test1), t1);
 
             c.Register<ITest2>(() => new Test2());
 
             var t2 = c.Resolve<ITest2>();
             Assert.IsNotNull(t1);
-            Assert.IsInstanceOfType(t2, typeof(Test2));
+            Assert.IsInstanceOfType(typeof(Test2), t2);
         }
 
-        [TestMethod]
+        [Test]
         public void RegisterResolveArguments()
         {
             var c = new Container();
@@ -34,25 +34,25 @@ namespace EntityFramework.Test
 
             var t1 = c.Resolve<ITest1>();
             Assert.IsNotNull(t1);
-            Assert.IsInstanceOfType(t1, typeof(Test1));
+            Assert.IsInstanceOfType(typeof(Test1), t1);
 
             c.Register<ITest2>(() => new Test2());
 
             var t2 = c.Resolve<ITest2>();
             Assert.IsNotNull(t2);
-            Assert.IsInstanceOfType(t2, typeof(Test2));
+            Assert.IsInstanceOfType(typeof(Test2), t2);
 
             c.Register<ITest3, ITest1, ITest2>((a1, a2) => new Test3(a1, a2));
 
             var t3 = c.Resolve<ITest3>();
             Assert.IsNotNull(t3);
-            Assert.IsInstanceOfType(t3, typeof(Test3));
+            Assert.IsInstanceOfType(typeof(Test3), t3);
 
             Assert.IsNotNull(t3.Test1);
-            Assert.IsInstanceOfType(t3.Test1, typeof(Test1));
+            Assert.IsInstanceOfType(typeof(Test1), t3.Test1);
 
             Assert.IsNotNull(t3.Test2);
-            Assert.IsInstanceOfType(t3.Test2, typeof(Test2));
+            Assert.IsInstanceOfType(typeof(Test2), t3.Test2);
         }
 
 

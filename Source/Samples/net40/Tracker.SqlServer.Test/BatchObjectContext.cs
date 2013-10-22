@@ -2,17 +2,17 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using EntityFramework.Extensions;
 using Tracker.SqlServer.Entities;
 using System.Linq.Dynamic;
 
 namespace Tracker.SqlServer.Test
 {
-    [TestClass]
+    [TestFixture]
     public class BatchObjectContext
     {
-        [TestMethod]
+        [Test]
         public void Delete()
         {
             //var db = new TrackerEntities();
@@ -20,7 +20,7 @@ namespace Tracker.SqlServer.Test
             //int count = db.Users.Delete(u => u.Email.EndsWith(emailDomain));
         }
 
-        [TestMethod]
+        [Test]
         public void Update()
         {
             //var db = new TrackerEntities();

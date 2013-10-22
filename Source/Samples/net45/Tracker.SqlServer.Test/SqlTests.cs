@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Tracker.SqlServer.CodeFirst;
 using Tracker.SqlServer.CodeFirst.Entities;
 
 namespace EntityFramework.Test
 {
-    [TestClass]
+    [TestFixture]
     public class SqlTests
     {
-        [TestMethod]
+        [Test]
         [Ignore]
         public void SelectByKey()
         {

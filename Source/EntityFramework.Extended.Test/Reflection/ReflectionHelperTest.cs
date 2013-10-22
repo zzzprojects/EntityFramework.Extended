@@ -2,34 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using EntityFramework.Reflection;
 
 namespace EntityFramework.Test.Reflection
 {
-  [TestClass]
+  [TestFixture]
   public class ReflectionHelperTest
   {
-    [TestMethod]
+    [Test]
     public virtual void WhenExtractingNameFromAValidPropertyExpression_ThenPropertyNameReturned()
     {
       var propertyName = ReflectionHelper.ExtractPropertyName(() => this.InstanceProperty);
       Assert.AreEqual("InstanceProperty", propertyName);
     }
 
-    [TestMethod]
+    [Test]
     public void WhenExpressionRepresentsAStaticProperty_ThenExceptionThrown()
     {
       ExceptionAssert.Throws<ArgumentException>(() => ReflectionHelper.ExtractPropertyName(() => StaticProperty));
     }
 
-    [TestMethod]
+    [Test]
     public void WhenExpressionIsNull_ThenAnExceptionIsThrown()
     {
       ExceptionAssert.Throws<ArgumentNullException>(() => ReflectionHelper.ExtractPropertyName<int>(null));
     }
 
-    [TestMethod]
+    [Test]
     public void WhenExpressionRepresentsANonMemberAccessExpression_ThenAnExceptionIsThrown()
     {
       ExceptionAssert.Throws<ArgumentException>(
@@ -38,7 +38,7 @@ namespace EntityFramework.Test.Reflection
 
     }
 
-    [TestMethod]
+    [Test]
     public void WhenExpressionRepresentsANonPropertyMemberAccessExpression_ThenAnExceptionIsThrown()
     {
       ExceptionAssert.Throws<ArgumentException>(() => ReflectionHelper.ExtractPropertyName(() => this.InstanceField));

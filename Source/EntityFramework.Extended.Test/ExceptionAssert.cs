@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace EntityFramework.Test
 {
@@ -19,7 +19,7 @@ namespace EntityFramework.Test
       }
       catch (Exception ex)
       {
-        Assert.IsInstanceOfType(ex, expectedExceptionType);
+        Assert.IsInstanceOfType(expectedExceptionType, ex);
         return;
       }
 

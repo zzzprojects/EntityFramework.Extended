@@ -2,14 +2,14 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace EntityFramework.Test
 {
-    [TestClass]
+    [TestFixture]    
     public class IoCTest
     {
-        [TestMethod]
+        [Test]
         public void TestMethod1()
         {
         }
