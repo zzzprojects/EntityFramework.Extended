@@ -24,7 +24,7 @@ namespace EntityFramework.Extensions
         /// <returns>
         /// The result of the query.
         /// </returns>
-        public static IEnumerable<TEntity> FromCache<TEntity>(this IQueryable<TEntity> query, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
+        public static IList<TEntity> FromCache<TEntity>(this IQueryable<TEntity> query, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
             where TEntity : class
         {
             string key = query.GetCacheKey();
@@ -38,7 +38,7 @@ namespace EntityFramework.Extensions
                 cacheKey,
                 k => query.AsNoTracking().ToList(),
                 cachePolicy ?? CachePolicy.Default
-            ) as IEnumerable<TEntity>;
+            ) as IList<TEntity>;
 
             return result;
         }
@@ -54,7 +54,7 @@ namespace EntityFramework.Extensions
         /// <returns>
         /// The result of the query.
         /// </returns>
-        public static async Task<IEnumerable<TEntity>> FromCacheAsync<TEntity>(this IQueryable<TEntity> query, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
+        public static async Task<IList<TEntity>> FromCacheAsync<TEntity>(this IQueryable<TEntity> query, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
             where TEntity : class
         {
             string key = query.GetCacheKey();
@@ -68,7 +68,7 @@ namespace EntityFramework.Extensions
                 cacheKey,
                 async k => await query.AsNoTracking().ToListAsync(),
                 cachePolicy ?? CachePolicy.Default
-            ) as IEnumerable<TEntity>;
+            ) as IList<TEntity>;
 
             return result;
         }
