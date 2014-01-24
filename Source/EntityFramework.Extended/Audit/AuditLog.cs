@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
@@ -13,12 +14,13 @@ namespace EntityFramework.Audit
     /// A class representing a log of the changes.
     /// </summary>
     [XmlRoot(Namespace = AuditNamespace, ElementName = "audit")]
+    [DataContract(Name = "audit", Namespace = AuditNamespace)]
     public class AuditLog
     {
         /// <summary>
         /// The schema namespace for the audit log.
         /// </summary>
-        public const string AuditNamespace = "http://schemas.tempuri.org/ef/audit/1.0";
+        public const string AuditNamespace = "http://schemas.tempuri.org/ef/audit/2.0";
 
         private static readonly Lazy<XmlSerializer> _serializer;
 
@@ -40,21 +42,25 @@ namespace EntityFramework.Audit
         /// Gets or sets the user name that made the changes.
         /// </summary>
         /// <value>The user name that made the changes.</value>
-        [XmlAttribute("username")]
+        [XmlElement("username")]
+        [DataMember(Name = "username", Order = 0)]
         public string Username { get; set; }
 
         /// <summary>
         /// Gets or sets the date when the changes were made.
         /// </summary>
         /// <value>The date when the changes were made.</value>
-        [XmlAttribute("date")]
+        [XmlElement("date")]
+        [DataMember(Name = "date", Order = 1)]
         public DateTime Date { get; set; }
 
         /// <summary>
         /// Gets the list entities that have changes.
         /// </summary>
         /// <value>The list entities that have changes.</value>
-        [XmlElement("entity", typeof(AuditEntity))]
+        [XmlArray("entities")]
+        [XmlArrayItem("entity")]
+        [DataMember(Name = "entities", Order = 2)]
         public List<AuditEntity> Entities { get; set; }
 
         /// <summary>

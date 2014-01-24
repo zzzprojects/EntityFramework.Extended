@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Data.Entity.Infrastructure;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Xml;
 using EntityFramework.Audit;
 using EntityFramework.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using NUnit.Framework;
 using Tracker.SqlServer.CodeFirst;
 using Tracker.SqlServer.CodeFirst.Entities;
@@ -486,10 +492,85 @@ namespace Tracker.SqlServer.Test
             tran.Rollback();
         }
 
+        [Test]
+        public void CompareXml()
+        {
+            var auditConfiguration = AuditConfiguration.Default;
+
+            auditConfiguration.IncludeRelationships = true;
+            auditConfiguration.LoadRelationships = true;
+            auditConfiguration.DefaultAuditable = true;
+
+            // customize the audit for Task entity
+            //auditConfiguration.IsAuditable<Task>()
+            //  .NotAudited(t => t.TaskExtended)
+            //  .FormatWith(t => t.Status, v => FormatStatus(v));
+
+            // set name as the display member when status is a foreign key
+            auditConfiguration.IsAuditable<Status>()
+              .DisplayMember(t => t.Name);
+
+            var db = new TrackerContext();
+            var audit = db.BeginAudit();
+
+            var user = db.Users.Find(1);
+            user.Comment = "Testing: " + DateTime.Now.Ticks;
+
+            var task = new Task()
+            {
+                AssignedId = 1,
+                CreatedId = 1,
+                StatusId = 1,
+                PriorityId = 2,
+                Summary = "Summary: " + DateTime.Now.Ticks
+            };
+            db.Tasks.Add(task);
+
+            var task2 = db.Tasks.Find(1);
+            task2.PriorityId = 2;
+            task2.StatusId = 2;
+            task2.Summary = "Summary: " + DateTime.Now.Ticks;
+
+            var log = audit.CreateLog();
+            Assert.IsNotNull(log);
+
+            string xml = log.ToXml();
+            Assert.IsNotNull(xml);
+            File.WriteAllText(@"test.xml.xml", xml);
+
+            foreach (var property in log.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
+
+            var builder = new StringBuilder();
+            var settings = new XmlWriterSettings { Indent = true, OmitXmlDeclaration = true };
+            var writer = XmlWriter.Create(builder, settings);
+
+            var serializer = new DataContractSerializer(typeof(AuditLog));
+            serializer.WriteStartObject(writer, log);
+            writer.WriteAttributeString("xmlns", "xsd", null, "http://www.w3.org/2001/XMLSchema");
+            serializer.WriteObjectContent(writer, log);
+            serializer.WriteEndObject(writer);
+
+            writer.Flush();
+
+            string xml2 = builder.ToString();
+            File.WriteAllText(@"test.data.xml", xml2);
+
+            string json = JsonConvert.SerializeObject(log, Newtonsoft.Json.Formatting.Indented, new StringEnumConverter());
+            File.WriteAllText(@"test.data.json", json);
+
+
+        }
+
         public static object FormatStatus(AuditPropertyContext auditProperty)
         {
             Console.WriteLine("FormatStatus: {0}", auditProperty.Value);
             return "Status: " + auditProperty.Value;
         }
+
+
     }
 }

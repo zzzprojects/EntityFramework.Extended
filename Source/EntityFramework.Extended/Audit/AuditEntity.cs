@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Core.Objects;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using EntityFramework.Audit;
 
@@ -12,6 +13,7 @@ namespace EntityFramework.Audit
     /// A class for logging the changes to an entity.
     /// </summary>
     [XmlRoot(Namespace = AuditLog.AuditNamespace, ElementName = "entity")]
+    [DataContract(Name = "entity", Namespace = AuditLog.AuditNamespace)]
     [DebuggerDisplay("Action: {Action}, Type: {Type}")]
     public class AuditEntity : IEquatable<AuditEntity>
     {
@@ -47,21 +49,25 @@ namespace EntityFramework.Audit
         /// Gets or sets the action that was taken on the entity.
         /// </summary>
         /// <value>The action that was taken on the entity.</value>
-        [XmlAttribute("action")]
+        [XmlElement("action")]
+        [DataMember(Name = "action", Order = 0)]
         public AuditAction Action { get; set; }
 
         /// <summary>
         /// Gets or sets the data type of the entity.
         /// </summary>
         /// <value>The data type of the entity.</value>
-        [XmlAttribute("type")]
+        [XmlElement("type")]
+        [DataMember(Name = "type", Order = 1)]
         public string Type { get; set; }
 
         /// <summary>
         /// Gets the list of properties that are the key for the entity.
         /// </summary>
         /// <value>The list of properties that are the key for the entity.</value>
-        [XmlElement("key", typeof(AuditKey))]
+        [XmlArray("keys")]
+        [XmlArrayItem("key")]
+        [DataMember(Name = "keys", Order = 2)]
         public AuditKeyCollection Keys { get; set; }
 
         /// <summary>
@@ -89,7 +95,9 @@ namespace EntityFramework.Audit
         /// Gets the list of properties that action was taken on.
         /// </summary>
         /// <value>The list of properties that action was taken on.</value>
-        [XmlElement("property", typeof(AuditProperty))]
+        [XmlArray("properties")]
+        [XmlArrayItem("property")]
+        [DataMember(Name = "properties", Order = 3)]
         public AuditPropertyCollection Properties { get; set; }
 
         /// <summary>
