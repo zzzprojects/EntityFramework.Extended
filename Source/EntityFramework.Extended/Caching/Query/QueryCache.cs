@@ -31,11 +31,13 @@ namespace EntityFramework.Caching
             expression = LocalCollectionExpander.Rewrite(expression);
 
             // use the string representation of the expression for the cache key
-            string key = expression.ToString();
+            var key = expression.ToString();
 
-            // the key is potentially very long, so use an md5 fingerprint
-            // (fine if the query result data isn't critically sensitive)
-            key = key.ToMd5Fingerprint();
+            var cacheKeyProvider = Locator.Current.Resolve<ICacheKeyProvider>();
+            
+            // the key is potentially very long
+            // create key based on cachekeyprovider
+            key = cacheKeyProvider.CreateKey(key);
 
             return key;
         }

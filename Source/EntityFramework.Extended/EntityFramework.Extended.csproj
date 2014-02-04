@@ -81,8 +81,10 @@
     <Compile Include="Caching\CacheKey.cs" />
     <Compile Include="Caching\CacheManager.cs" />
     <Compile Include="Caching\CachePolicy.cs" />
+    <Compile Include="Caching\ICacheKeyProvider.cs" />
     <Compile Include="Caching\ICacheProvider.cs" />
     <Compile Include="Caching\CacheTag.cs" />
+    <Compile Include="Caching\MD5CacheKeyProvider.cs" />
     <Compile Include="Caching\MemoryCacheProvider.cs" />
     <Compile Include="Caching\Query\Evaluator.cs" />
     <Compile Include="Caching\Query\LocalCollectionExpander.cs" />

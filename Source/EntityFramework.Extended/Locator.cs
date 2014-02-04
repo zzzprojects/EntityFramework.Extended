@@ -92,6 +92,7 @@ namespace EntityFramework
             container.Register<IFutureRunner>(() => new FutureRunner());
 
             container.Register<ICacheProvider>(() => new MemoryCacheProvider());
+            container.Register<ICacheKeyProvider>(() => new MD5CacheKeyProvider());
             container.Register(() => CacheManager.Current);                        
         }
     }

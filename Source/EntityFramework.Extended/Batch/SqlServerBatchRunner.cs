@@ -8,6 +8,7 @@ using System.Linq.Dynamic;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using EntityFramework.Extensions;
 using EntityFramework.Mapping;
 using EntityFramework.Reflection;
@@ -29,7 +30,27 @@ namespace EntityFramework.Batch
         /// <returns>
         /// The number of rows deleted.
         /// </returns>
-        public int Delete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query)
+        public int Delete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query) where TEntity : class
+        {
+            return InternalDelete(objectContext, entityMap, query, false).Result;
+        }
+
+        /// <summary>
+        /// Create and run a batch delete statement asynchronously.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="objectContext">The <see cref="ObjectContext"/> to get connection and metadata information from.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for <typeparamref name="TEntity"/>.</param>
+        /// <param name="query">The query to create the where clause from.</param>
+        /// <returns>
+        /// The number of rows deleted.
+        /// </returns>
+        public Task<int> DeleteAsync<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query) where TEntity : class
+        {
+            return InternalDelete(objectContext, entityMap, query, true);
+        }
+
+        private async Task<int> InternalDelete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, bool async = false)
             where TEntity : class
         {
             DbConnection deleteConnection = null;
@@ -89,7 +110,9 @@ namespace EntityFramework.Batch
 
                 deleteCommand.CommandText = sqlBuilder.ToString();
 
-                int result = deleteCommand.ExecuteNonQuery();
+                int result = async
+                    ? await deleteCommand.ExecuteNonQueryAsync()
+                    : deleteCommand.ExecuteNonQuery();
 
                 // only commit if created transaction
                 if (ownTransaction)
@@ -121,7 +144,28 @@ namespace EntityFramework.Batch
         /// <returns>
         /// The number of rows updated.
         /// </returns>
-        public int Update<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression)
+        public int Update<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression) where TEntity : class
+        {
+            return InternalUpdate(objectContext, entityMap, query, updateExpression, false).Result;
+        }
+
+        /// <summary>
+        /// Create and run a batch update statement asynchronously.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="objectContext">The <see cref="ObjectContext"/> to get connection and metadata information from.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for <typeparamref name="TEntity"/>.</param>
+        /// <param name="query">The query to create the where clause from.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <returns>
+        /// The number of rows updated.
+        /// </returns>
+        public Task<int> UpdateAsync<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression) where TEntity : class
+        {
+            return InternalUpdate(objectContext, entityMap, query, updateExpression, true);
+        }
+
+        private async Task<int> InternalUpdate<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression, bool async = false)
             where TEntity : class
         {
             DbConnection updateConnection = null;
@@ -297,7 +341,9 @@ namespace EntityFramework.Batch
 
                 updateCommand.CommandText = sqlBuilder.ToString();
 
-                int result = updateCommand.ExecuteNonQuery();
+                int result = async
+                    ? await updateCommand.ExecuteNonQueryAsync()
+                    : updateCommand.ExecuteNonQuery();
 
                 // only commit if created transaction
                 if (ownTransaction)
@@ -365,7 +411,7 @@ namespace EntityFramework.Batch
             {
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = objectParameter.Name;
-                parameter.Value = objectParameter.Value ?? DBNull.Value;  
+                parameter.Value = objectParameter.Value ?? DBNull.Value;
 
                 command.Parameters.Add(parameter);
             }
