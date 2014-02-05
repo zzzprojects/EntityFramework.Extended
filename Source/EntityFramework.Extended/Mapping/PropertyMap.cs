@@ -17,4 +17,15 @@ namespace EntityFramework.Mapping
         /// </summary>
         public string ColumnName { get; set; }
     }
+    /// <summary>
+    /// A class representing a property map for a constant value
+    /// </summary>
+    [DebuggerDisplay("Property: {PropertyName}, Column: {ColumnName}, Value: {Value}")]
+    public class ConstantPropertyMap : PropertyMap
+    {
+        /// <summary>
+        /// Gets or sets the constant value
+        /// </summary>
+        public object Value { get; set; }
+    }
 }

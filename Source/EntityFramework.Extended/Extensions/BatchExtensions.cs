@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
 using System.Linq;
@@ -231,6 +232,85 @@ namespace EntityFramework.Extensions
             
             var runner = ResolveRunner();
             return runner.Update(objectContext, entityMap, sourceQuery, updateExpression);
+        }
+
+        /// <summary>
+        /// Executes a bulk insert statement, inserting a set of records.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="destination">The <see cref="DbSet"/> to insert the records into.</param>
+        /// <param name="records">Collection of <typeparamref name="TEntity"/> to be inserted</param>
+        /// <returns>The number of row inserted.</returns>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.
+        /// </remarks>
+        public static int BulkInsert<TEntity>(this DbSet<TEntity> destination, IEnumerable<TEntity> records) where TEntity : class
+        {
+            if (destination == null)
+                throw new ArgumentNullException("source");
+            if (records == null)
+                throw new ArgumentNullException("records");
+
+            ObjectQuery<TEntity> sourceQuery = destination.ToObjectQuery();
+            if (sourceQuery == null)
+                throw new ArgumentException("The query must be of type ObjectQuery or DbQuery.", "source");
+
+            ObjectContext objectContext = sourceQuery.Context;
+            if (objectContext == null)
+                throw new ArgumentException("The ObjectContext for the source query can not be null.", "source");
+
+            EntityMap entityMap = sourceQuery.GetEntityMap<TEntity>();
+            if (entityMap == null)
+                throw new ArgumentException("Could not load the entity mapping information for the source.", "source");
+
+            var runner = ResolveRunner();
+            return runner.BulkInsert(objectContext, entityMap, records);
+        }
+
+        /// <summary>
+        /// Executes an insert from statement, inserting a set of records.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the source entity.</typeparam>
+        /// <typeparam name="TEntity">The type of the entity to be inserted.</typeparam>
+        /// <param name="destination">The <see cref="DbSet"/> to insert the records into.</param>
+        /// <param name="source">The query from which to get the <typeparamref name="TSource"/> entities.</param>
+        /// <param name="mappingExpression">The insert expression mapping <typeparamref name="TSource"/> to <typeparamref name="TEntity"/></param>
+        /// <returns>The number of row inserted.</returns>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.
+        /// </remarks>
+        public static int InsertFrom<TSource, TEntity>(this DbSet<TEntity> destination,
+            IQueryable<TSource> source, Expression<Func<TSource, TEntity>> mappingExpression)
+            where TEntity : class
+            where TSource : class
+        {
+            if (destination == null)
+                throw new ArgumentNullException("destination");
+            if (source == null)
+                throw new ArgumentNullException("query");
+            if (mappingExpression == null)
+                throw new ArgumentNullException("insertExpression");
+
+            ObjectQuery<TEntity> destinationQuery = destination.ToObjectQuery();
+            if (destinationQuery == null)
+                throw new ArgumentException("The query must be of type ObjectQuery or DbQuery.", "destination");
+
+            ObjectContext destinationContext = destinationQuery.Context;
+            if (destinationContext == null)
+                throw new ArgumentException("The ObjectContext for the destination query can not be null.", "destination");
+
+            EntityMap destinationEntityMap = destinationQuery.GetEntityMap<TEntity>();
+            if (destinationEntityMap == null)
+                throw new ArgumentException("Could not load the entity mapping information for the destination.", "destination");
+
+            ObjectQuery<TSource> sourceQuery = source.ToObjectQuery();
+            if (sourceQuery == null)
+                throw new ArgumentException("The source must be of type ObjectQuery or DbQuery.", "source");
+
+            var runner = ResolveRunner();
+            return runner.InsertFrom(destinationContext, destinationEntityMap, sourceQuery, mappingExpression);
         }
 
         private static IBatchRunner ResolveRunner()

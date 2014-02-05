@@ -33,5 +33,30 @@ namespace EntityFramework.Batch
         /// <returns>The number of rows updated.</returns>
         int Update<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression) 
             where TEntity : class;
+
+        /// <summary>
+        /// Create and runs a batch insert statement.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity to be inserted</typeparam>
+        /// <param name="objectContext">The <see cref="ObjectContext"/> to get connection and metadata information from.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for <typeparamref name="TEntity"/>.</param>
+        /// <param name="records">Collection of <typeparamref name="TEntity"/> to be inserted</param>
+        /// <returns>The number of rows inserted.</returns>
+        int BulkInsert<TEntity>(ObjectContext objectContext, EntityMap entityMap, IEnumerable<TEntity> records)
+            where TEntity : class;
+
+        /// <summary>
+        /// Create and runs a batch insert from statement.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the source entity.</typeparam>
+        /// <typeparam name="TEntity">The type of the entity to be inserted.</typeparam>
+        /// <param name="destinationContext">The <see cref="ObjectContext"/> to get connection and metadata information from.</param>
+        /// <param name="destinationEntityMap">The <see cref="EntityMap"/> for <typeparamref name="TEntity"/>.</param>
+        /// <param name="sourceQuery">The query from which to get the <typeparamref name="TSource"/> entities.</param>
+        /// <param name="mappingExpression">The insert expression mapping <typeparamref name="TSource"/> to <typeparamref name="TEntity"/></param>
+        /// <returns>The number of rows inserted.</returns>
+        int InsertFrom<TSource, TEntity>(ObjectContext destinationContext, EntityMap destinationEntityMap, ObjectQuery<TSource> sourceQuery, Expression<Func<TSource, TEntity>> mappingExpression)
+            where TEntity : class
+            where TSource : class;
     }
 }
