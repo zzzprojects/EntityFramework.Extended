@@ -44,6 +44,34 @@ namespace EntityFramework.Extensions
         }
 
         /// <summary>
+        /// Returns the result of the <paramref name="query" />; if possible from the cache,
+        /// otherwise the query is materialized and the result cached before being returned.
+        /// </summary>
+        /// <param name="query">The query to be materialized.</param>
+        /// <param name="cachePolicy">The cache policy for the query.</param>
+        /// <param name="tags">The list of tags to use for cache expiration.</param>
+        /// <returns>
+        /// The result of the query.
+        /// </returns>
+        public static IEnumerable<int> FromCache(this IQueryable<int> query, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
+        {
+            string key = query.GetCacheKey();
+            var cacheKey = new CacheKey(key,
+                tags ?? Enumerable.Empty<string>());
+
+            // allow override of CacheManager
+            var manager = Locator.Current.Resolve<CacheManager>();
+
+            var result = manager.GetOrAdd(
+                cacheKey,
+                k => query.ToList(),
+                cachePolicy ?? CachePolicy.Default
+            ) as IEnumerable<int>;
+
+            return result;
+        }
+
+        /// <summary>
         /// Returns the result of the <paramref name="query"/>; if possible from the cache,
         /// otherwise the query is materialized asynchronously and the result cached before being returned.
         /// </summary>
@@ -74,6 +102,34 @@ namespace EntityFramework.Extensions
         }
 
         /// <summary>
+        /// Returns the result of the <paramref name="query" />; if possible from the cache,
+        /// otherwise the query is materialized asynchronously and the result cached before being returned.
+        /// </summary>
+        /// <param name="query">The query to be materialized.</param>
+        /// <param name="cachePolicy">The cache policy for the query.</param>
+        /// <param name="tags">The list of tags to use for cache expiration.</param>
+        /// <returns>
+        /// The result of the query.
+        /// </returns>
+        public static async Task<IEnumerable<int>> FromCacheAsync(this IQueryable<int> query, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
+        {
+            string key = query.GetCacheKey();
+            var cacheKey = new CacheKey(key,
+                tags ?? Enumerable.Empty<string>());
+
+            // allow override of CacheManager
+            var manager = Locator.Current.Resolve<CacheManager>();
+
+            var result = await manager.GetOrAddAsync(
+                cacheKey,
+                async k => await query.ToListAsync(),
+                cachePolicy ?? CachePolicy.Default
+            ) as IEnumerable<int>;
+
+            return result;
+        }
+
+        /// <summary>
         /// Returns the first element of the <paramref name="query"/>; if possible from the cache,
         /// otherwise the query is materialized and the result cached before being returned.
         /// </summary>
@@ -92,6 +148,24 @@ namespace EntityFramework.Extensions
         }
 
         /// <summary>
+        /// Returns the first element of the <paramref name="query" />; if possible from the cache,
+        /// otherwise the query is materialized and the result cached before being returned.
+        /// </summary>
+        /// <param name="query">The query to be materialized.</param>
+        /// <param name="cachePolicy">The cache policy for the query.</param>
+        /// <param name="tags">The list of tags to use for cache expiration.</param>
+        /// <returns>
+        /// default(T) if source is empty; otherwise, the first element in source.
+        /// </returns>
+        public static int FromCacheFirstOrDefault(this IQueryable<int> query, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
+        {
+            return query
+                .Take(1)
+                .FromCache(cachePolicy, tags)
+                .FirstOrDefault();
+        }
+
+        /// <summary>
         /// Returns the first element of the <paramref name="query"/>; if possible from the cache,
         /// otherwise the query is materialized asynchronously and the result cached before being returned.
         /// </summary>
@@ -102,6 +176,24 @@ namespace EntityFramework.Extensions
         /// <returns>default(T) if source is empty; otherwise, the first element in source.</returns>
         public static async Task<TEntity> FromCacheFirstOrDefaultAsync<TEntity>(this IQueryable<TEntity> query, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
             where TEntity : class
+        {
+            return (await query
+                .Take(1)
+                .FromCacheAsync(cachePolicy, tags)
+            ).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Returns the first element of the <paramref name="query" />; if possible from the cache,
+        /// otherwise the query is materialized asynchronously and the result cached before being returned.
+        /// </summary>
+        /// <param name="query">The query to be materialized.</param>
+        /// <param name="cachePolicy">The cache policy for the query.</param>
+        /// <param name="tags">The list of tags to use for cache expiration.</param>
+        /// <returns>
+        /// default(T) if source is empty; otherwise, the first element in source.
+        /// </returns>
+        public static async Task<int> FromCacheFirstOrDefaultAsync(this IQueryable<int> query, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
         {
             return (await query
                 .Take(1)
@@ -142,6 +234,38 @@ namespace EntityFramework.Extensions
             var manager = Locator.Current.Resolve<CacheManager>();
 
             removed = manager.Remove(key) as IEnumerable<TEntity>;
+            return query;
+        }
+
+        /// <summary>
+        /// Removes the cached query from cache.
+        /// </summary>
+        /// <param name="query">The query to be materialized.</param>
+        /// <returns>
+        /// The original <paramref name="query" /> for fluent chaining.
+        /// </returns>
+        public static IQueryable<int> RemoveCache(this IQueryable<int> query)
+        {
+            IEnumerable<int> removed;
+            return RemoveCache(query, out removed);
+        }
+
+        /// <summary>
+        /// Removes the cached query from cache.
+        /// </summary>
+        /// <param name="query">The query to be materialized.</param>
+        /// <param name="removed">The removed items for cache.</param>
+        /// <returns>
+        /// The original <paramref name="query" /> for fluent chaining.
+        /// </returns>
+        public static IQueryable<int> RemoveCache(this IQueryable<int> query, out IEnumerable<int> removed)
+        {
+            string key = query.GetCacheKey();
+
+            // allow override of CacheManager
+            var manager = Locator.Current.Resolve<CacheManager>();
+
+            removed = manager.Remove(key) as IEnumerable<int>;
             return query;
         }
     }
