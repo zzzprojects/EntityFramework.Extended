@@ -151,7 +151,7 @@ namespace EntityFramework.Mapping
 
         private static void SetProperties(EntityMap entityMap, dynamic mappingFragmentProxy)
         {
-			var propertyMaps = mappingFragmentProxy.PropertyMappings;
+            var propertyMaps = mappingFragmentProxy.PropertyMappings;
             foreach (var propertyMap in propertyMaps)
             {
                 // StorageScalarPropertyMapping
