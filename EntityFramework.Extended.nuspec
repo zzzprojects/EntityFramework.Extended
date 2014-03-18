@@ -14,7 +14,7 @@
     <language>en-US</language>
     <tags>EntityFramework</tags>
     <dependencies>
-      <dependency id="EntityFramework" version="6.0.0" />
+      <dependency id="EntityFramework" version="6.1.0" />
     </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="" />
