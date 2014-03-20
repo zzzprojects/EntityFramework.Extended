@@ -151,14 +151,14 @@ namespace EntityFramework.Mapping
 
         private static void SetProperties(EntityMap entityMap, dynamic mappingFragmentProxy)
         {
-            var propertyMaps = mappingFragmentProxy.Properties;
+            var propertyMaps = mappingFragmentProxy.PropertyMappings;
             foreach (var propertyMap in propertyMaps)
             {
                 // StorageScalarPropertyMapping
                 dynamic propertyMapProxy = new DynamicProxy(propertyMap);
 
-                EdmProperty modelProperty = propertyMapProxy.EdmProperty;
-                EdmProperty storeProperty = propertyMapProxy.ColumnProperty;
+                EdmProperty modelProperty = propertyMapProxy.Property;
+                EdmProperty storeProperty = propertyMapProxy.Column;
 
                 var map = new PropertyMap
                 {
