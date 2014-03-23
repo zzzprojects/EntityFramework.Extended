@@ -40,6 +40,7 @@ namespace EntityFramework.Caching
         /// </returns>
         object GetOrAdd(CacheKey cacheKey, Func<CacheKey, object> valueFactory, CachePolicy cachePolicy);
 
+#if net45
         /// <summary>
         /// Gets the cache value for the specified key that is already in the dictionary or the new value for the key as returned asynchronously by <paramref name="valueFactory"/>.
         /// </summary>
@@ -51,6 +52,7 @@ namespace EntityFramework.Caching
         /// or the new value for the key as returned by <paramref name="valueFactory"/> if the key was not in the cache.
         /// </returns>
         Task<object> GetOrAddAsync(CacheKey cacheKey, Func<CacheKey, Task<object>> valueFactory, CachePolicy cachePolicy);
+#endif
 
         /// <summary>
         /// Removes a cache entry from the cache. 

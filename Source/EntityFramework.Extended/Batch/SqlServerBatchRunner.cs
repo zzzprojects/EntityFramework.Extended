@@ -32,9 +32,14 @@ namespace EntityFramework.Batch
         /// </returns>
         public int Delete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query) where TEntity : class
         {
+#if net45
             return InternalDelete(objectContext, entityMap, query, false).Result;
+#else
+            return InternalDelete(objectContext, entityMap, query);
+#endif
         }
 
+#if net45
         /// <summary>
         /// Create and run a batch delete statement asynchronously.
         /// </summary>
@@ -49,9 +54,15 @@ namespace EntityFramework.Batch
         {
             return InternalDelete(objectContext, entityMap, query, true);
         }
+#endif
 
+#if net45
         private async Task<int> InternalDelete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, bool async = false)
             where TEntity : class
+#else
+        private int InternalDelete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query)
+            where TEntity : class
+#endif
         {
             DbConnection deleteConnection = null;
             DbTransaction deleteTransaction = null;
@@ -110,10 +121,13 @@ namespace EntityFramework.Batch
 
                 deleteCommand.CommandText = sqlBuilder.ToString();
 
+#if net45
                 int result = async
                     ? await deleteCommand.ExecuteNonQueryAsync()
                     : deleteCommand.ExecuteNonQuery();
-
+#else
+                int result = deleteCommand.ExecuteNonQuery();
+#endif
                 // only commit if created transaction
                 if (ownTransaction)
                     deleteTransaction.Commit();
@@ -146,9 +160,14 @@ namespace EntityFramework.Batch
         /// </returns>
         public int Update<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression) where TEntity : class
         {
+#if net45
             return InternalUpdate(objectContext, entityMap, query, updateExpression, false).Result;
+#else
+            return InternalUpdate(objectContext, entityMap, query, updateExpression);
+#endif
         }
 
+#if net45
         /// <summary>
         /// Create and run a batch update statement asynchronously.
         /// </summary>
@@ -164,9 +183,14 @@ namespace EntityFramework.Batch
         {
             return InternalUpdate(objectContext, entityMap, query, updateExpression, true);
         }
-
+#endif
+#if net45
         private async Task<int> InternalUpdate<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression, bool async = false)
             where TEntity : class
+#else
+        private int InternalUpdate<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression, bool async = false)
+            where TEntity : class
+#endif
         {
             DbConnection updateConnection = null;
             DbTransaction updateTransaction = null;
@@ -341,10 +365,13 @@ namespace EntityFramework.Batch
 
                 updateCommand.CommandText = sqlBuilder.ToString();
 
+#if net45
                 int result = async
                     ? await updateCommand.ExecuteNonQueryAsync()
                     : updateCommand.ExecuteNonQuery();
-
+#else
+                int result = updateCommand.ExecuteNonQuery();
+#endif
                 // only commit if created transaction
                 if (ownTransaction)
                     updateTransaction.Commit();
@@ -411,7 +438,7 @@ namespace EntityFramework.Batch
             {
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = objectParameter.Name;
-                parameter.Value = objectParameter.Value ?? DBNull.Value;  
+                parameter.Value = objectParameter.Value ?? DBNull.Value;
 
                 command.Parameters.Add(parameter);
             }

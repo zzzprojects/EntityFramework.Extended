@@ -43,6 +43,7 @@ namespace EntityFramework.Extensions
             return result;
         }
 
+#if net45
         /// <summary>
         /// Returns the result of the <paramref name="query"/>; if possible from the cache,
         /// otherwise the query is materialized asynchronously and the result cached before being returned.
@@ -73,6 +74,8 @@ namespace EntityFramework.Extensions
             return result;
         }
 
+#endif
+
         /// <summary>
         /// Returns the first element of the <paramref name="query"/>; if possible from the cache,
         /// otherwise the query is materialized and the result cached before being returned.
@@ -91,6 +94,7 @@ namespace EntityFramework.Extensions
                 .FirstOrDefault();
         }
 
+#if net45
         /// <summary>
         /// Returns the first element of the <paramref name="query"/>; if possible from the cache,
         /// otherwise the query is materialized asynchronously and the result cached before being returned.
@@ -108,6 +112,8 @@ namespace EntityFramework.Extensions
                 .FromCacheAsync(cachePolicy, tags)
                 ).FirstOrDefault();
         }
+
+#endif
 
         /// <summary>
         /// Removes the cached query from cache.
@@ -137,7 +143,7 @@ namespace EntityFramework.Extensions
             where TEntity : class
         {
             string key = query.GetCacheKey();
-            
+
             // allow override of CacheManager
             var manager = Locator.Current.Resolve<CacheManager>();
 
