@@ -152,6 +152,8 @@ namespace EntityFramework.Test.Caching
             var cachedTag = cache.Get(tagKey);
             cachedTag.Should().NotBeNull();
 
+            System.Threading.Thread.Sleep(500);
+
             // expire actually just changes the value for tag key
             provider.Expire(cacheTag);
 
