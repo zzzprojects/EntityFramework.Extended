@@ -108,7 +108,7 @@
     <Compile Include="Extensions\ExpressionExtensions.cs" />
     <Compile Include="Extensions\ObjectQueryExtensions.cs" />
     <Compile Include="Mapping\IMappingProvider.cs" />
-    <Compile Include="Mapping\ReflectionMappingProvider.cs" />
+    <Compile Include="Mapping\MetadataMappingProvider.cs" />
     <Compile Include="Mapping\MappingResolver.cs" />
     <Compile Include="Mapping\PropertyMap.cs" />
     <Compile Include="Future\FutureCount.cs" />

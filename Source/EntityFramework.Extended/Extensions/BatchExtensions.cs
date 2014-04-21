@@ -54,6 +54,7 @@ namespace EntityFramework.Extensions
         /// and is not part of the change tracking system.  Also, changes will not be reflected on 
         /// any entities that have already been materialized in the current context.        
         /// </remarks>
+        [Obsolete("The API was refactored to no longer need this extension method. Use query.Where(expression).Delete() syntax instead.")]
         public static int Delete<TEntity>(
             this IQueryable<TEntity> source,
             Expression<Func<TEntity, bool>> filterExpression)
@@ -125,6 +126,7 @@ namespace EntityFramework.Extensions
         /// and is not part of the change tracking system.  Also, changes will not be reflected on 
         /// any entities that have already been materialized in the current context.        
         /// </remarks>
+        [Obsolete("The API was refactored to no longer need this extension method. Use query.Where(expression).DeleteAsync() syntax instead.")]
         public static Task<int> DeleteAsync<TEntity>(
             this IQueryable<TEntity> source,
             Expression<Func<TEntity, bool>> filterExpression)
@@ -246,6 +248,7 @@ namespace EntityFramework.Extensions
         /// and is not part of the change tracking system.  Also, changes will not be reflected on 
         /// any entities that have already been materialized in the current context.        
         /// </remarks>
+        [Obsolete("The API was refactored to no longer need this extension method. Use query.Where(expression).Update(updateExpression) syntax instead.")]
         public static int Update<TEntity>(
             this IQueryable<TEntity> source,
             Expression<Func<TEntity, bool>> filterExpression,
@@ -330,6 +333,7 @@ namespace EntityFramework.Extensions
         /// and is not part of the change tracking system.  Also, changes will not be reflected on 
         /// any entities that have already been materialized in the current context.        
         /// </remarks>
+        [Obsolete("The API was refactored to no longer need this extension method. Use query.Where(expression).UpdateAsync(updateExpression) syntax instead.")]
         public static Task<int> UpdateAsync<TEntity>(
             this IQueryable<TEntity> source,
             Expression<Func<TEntity, bool>> filterExpression,

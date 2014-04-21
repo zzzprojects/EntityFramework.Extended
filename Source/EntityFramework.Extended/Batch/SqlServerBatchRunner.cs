@@ -391,6 +391,8 @@ namespace EntityFramework.Batch
 
         private static Tuple<DbConnection, DbTransaction> GetStore(ObjectContext objectContext)
         {
+            // TODO, re-eval if this is needed
+
             DbConnection dbConnection = objectContext.Connection;
             var entityConnection = dbConnection as EntityConnection;
 
@@ -413,6 +415,8 @@ namespace EntityFramework.Batch
         private static string GetSelectSql<TEntity>(ObjectQuery<TEntity> query, EntityMap entityMap, DbCommand command)
             where TEntity : class
         {
+            // TODO change to esql?
+
             // changing query to only select keys
             var selector = new StringBuilder(50);
             selector.Append("new(");
