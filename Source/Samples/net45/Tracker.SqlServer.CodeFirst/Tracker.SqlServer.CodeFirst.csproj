@@ -76,6 +76,7 @@
     <Compile Include="Entities\Task.Generated.cs">
       <DependentUpon>Task.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entities\TaskChild.cs" />
     <Compile Include="Entities\TaskExtended.cs" />
     <Compile Include="Entities\TaskExtended.Generated.cs">
       <DependentUpon>TaskExtended.cs</DependentUpon>

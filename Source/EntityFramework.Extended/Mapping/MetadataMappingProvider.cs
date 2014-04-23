@@ -64,9 +64,9 @@ namespace EntityFramework.Mapping
                     .Single(s => s.EntitySet == entitySet);
 
             // Find the storage entity set (table) that the entity is mapped
-            var mappingFragment = mapping
-                .EntityTypeMappings.Single()
-                .Fragments.Single();
+            var mappingFragment =
+                (mapping.EntityTypeMappings.SingleOrDefault(a => a.IsHierarchyMapping) ?? mapping.EntityTypeMappings.Single())
+                    .Fragments.Single();
 
             entityMap.ModelType = entityType;
             entityMap.ModelSet = entitySet;

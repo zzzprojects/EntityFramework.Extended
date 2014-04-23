@@ -40,6 +40,20 @@ namespace Tracker.SqlServer.Test
             Assert.AreEqual("[dbo].[Audit]", map.TableName);
         }
 
+
+        [Test]
+        public void GetInheritedEntityMapAuditData()
+        {
+            var db = new TrackerContext();
+            var resolver = new MetadataMappingProvider();
+
+            var map = resolver.GetEntityMap(typeof(CodeFirst.Entities.Task), db);
+
+            //var map = db.Audits.ToObjectQuery().GetEntityMap<AuditData>();
+
+            Assert.AreEqual("[dbo].[Task]", map.TableName);
+        }
+
     }
 
 
