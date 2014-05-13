@@ -13,10 +13,7 @@
 
   <PropertyGroup>
     <Major>6</Major>
-    <Major4>5</Major4>
-
-    <Minor>0</Minor>
-    <Minor4>4</Minor4>
+    <Minor>1</Minor>
 
     <Build>0</Build>
     <BindBuild>0</BindBuild>
@@ -31,7 +28,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Year>2013</Year>
+    <Year>2014</Year>
   </PropertyGroup>
 
   <ItemGroup>
@@ -79,7 +76,7 @@
                   AssemblyDescription="Entity Framework extensions library. Built for .NET 4.0"
                   AssemblyCompany="LoreSoft"
                   AssemblyCopyright="Copyright © $(Year) LoreSoft"
-                  AssemblyVersion="$(Major4).$(Minor4).$(BindBuild).$(BindRevision)"
+                  AssemblyVersion="$(Major).$(Minor).$(BindBuild).$(BindRevision)"
                   AssemblyFileVersion="$(Major).$(Minor).$(Build).$(Revision)"
                   AssemblyInformationalVersion="$(Major).$(Minor).$(Build).$(Revision)"
                   GenerateClass="true" />

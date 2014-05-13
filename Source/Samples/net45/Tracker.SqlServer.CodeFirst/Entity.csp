@@ -4,7 +4,7 @@
     <add key="TrackerConnectionString" value="Data Source=(local);Initial Catalog=Tracker;Integrated Security=True" />
   </variables>
   <propertySets>
-    <propertySet name="Entity" output="Entity.txt" template="..\..\..\packages\PLINQO.EntityFramework.DbContext.1.0.44\tools\CSharp\Entity.cst">
+    <propertySet name="Entity" output="Entity.txt" template="..\..\..\packages\PLINQO.EntityFramework.DbContext.1.0.47\tools\CSharp\Entity.cst">
       <property name="ContextDirectory">.\</property>
       <property name="EntityDirectory">.\Entities</property>
       <property name="MappingDirectory">.\Mapping</property>

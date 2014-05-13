@@ -87,13 +87,14 @@ namespace EntityFramework
         /// <param name="container">The <see cref="IContainer"/> to register the default service resolvers with.</param>
         public static void RegisterDefaults(IContainer container)
         {
-            container.Register<IMappingProvider>(() => new ReflectionMappingProvider());
+            container.Register<IMappingProvider>(() => new MetadataMappingProvider());
             container.Register<IBatchRunner>(() => new SqlServerBatchRunner());
             container.Register<IFutureRunner>(() => new FutureRunner());
 
             container.Register<ICacheProvider>(() => new MemoryCacheProvider());
             container.Register<ICacheKeyProvider>(() => new MD5CacheKeyProvider());
-            container.Register(() => CacheManager.Current);                        
+            container.Register(() => CacheManager.Current);
+
         }
     }
 }

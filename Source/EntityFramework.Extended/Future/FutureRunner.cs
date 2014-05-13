@@ -27,7 +27,7 @@ namespace EntityFramework.Future
 
             // used to call internal methods
             dynamic contextProxy = new DynamicProxy(context);
-            contextProxy.EnsureConnection();
+            contextProxy.EnsureConnection(false);
 
             try
             {

@@ -38,7 +38,7 @@ namespace EntityFramework.Mapping
         {
             var entityType = typeof(TEntity);
             var metadataWorkspace = objectContext.MetadataWorkspace;
-
+            
             // make sure types are loaded
             Type baseType = entityType;
             do

@@ -43,6 +43,7 @@ namespace EntityFramework.Extensions
         /// <returns>
         /// An object representing the new transaction.
         /// </returns>
+        [Obsolete("Use DbContext.Database.BeginTransaction()")]
         public static DbTransaction BeginTransaction(this DbContext context, IsolationLevel isolationLevel = IsolationLevel.Unspecified)
         {
             if (context == null)

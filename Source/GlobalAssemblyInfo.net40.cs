@@ -18,9 +18,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Entity Framework extensions library. Built for .NET 4.0")]
 [assembly: AssemblyCompany("LoreSoft")]
 [assembly: AssemblyCopyright("Copyright © 2013 LoreSoft")]
-[assembly: AssemblyVersion("5.4.0.0")]
-[assembly: AssemblyFileVersion("6.0.0.0")]
-[assembly: AssemblyInformationalVersion("6.0.0.0")]
+[assembly: AssemblyVersion("6.0.0.0")]
+[assembly: AssemblyFileVersion("6.1.0.0")]
+[assembly: AssemblyInformationalVersion("6.1.0.0")]
 
 
 
@@ -34,11 +34,11 @@ internal sealed partial class ThisAssembly {
     
     internal const string AssemblyCopyright = "Copyright © 2013 LoreSoft";
     
-    internal const string AssemblyVersion = "5.4.0.0";
+    internal const string AssemblyVersion = "6.0.0.0";
     
-    internal const string AssemblyFileVersion = "6.0.0.0";
+    internal const string AssemblyFileVersion = "6.1.0.0";
     
-    internal const string AssemblyInformationalVersion = "6.0.0.0";
+    internal const string AssemblyInformationalVersion = "6.1.0.0";
     
     private ThisAssembly() {
     }

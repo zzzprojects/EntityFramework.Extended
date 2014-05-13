@@ -31,10 +31,27 @@ namespace Tracker.SqlServer.Test
         public void GetEntityMapAuditData()
         {
             var db = new TrackerContext();
+            var resolver = new MetadataMappingProvider();
 
-            var map = db.Audits.ToObjectQuery().GetEntityMap<AuditData>();
+            var map = resolver.GetEntityMap(typeof(AuditData), db);
+
+            //var map = db.Audits.ToObjectQuery().GetEntityMap<AuditData>();
 
             Assert.AreEqual("[dbo].[Audit]", map.TableName);
+        }
+
+
+        [Test]
+        public void GetInheritedEntityMapAuditData()
+        {
+            var db = new TrackerContext();
+            var resolver = new MetadataMappingProvider();
+
+            var map = resolver.GetEntityMap(typeof(CodeFirst.Entities.Task), db);
+
+            //var map = db.Audits.ToObjectQuery().GetEntityMap<AuditData>();
+
+            Assert.AreEqual("[dbo].[Task]", map.TableName);
         }
 
     }
