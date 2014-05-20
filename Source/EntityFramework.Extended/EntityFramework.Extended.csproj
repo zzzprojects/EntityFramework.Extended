@@ -104,10 +104,12 @@
     <Compile Include="Extensions\BatchExtensions.cs" />
     <Compile Include="Extensions\ObjectContextExtensions.cs" />
     <Compile Include="IContainer.cs" />
+    <Compile Include="Mapping\ComplexPropertyMap.cs" />
     <Compile Include="Mapping\EntityMap.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />
     <Compile Include="Extensions\ObjectQueryExtensions.cs" />
     <Compile Include="Mapping\IMappingProvider.cs" />
+    <Compile Include="Mapping\IPropertyMapElement.cs" />
     <Compile Include="Mapping\MetadataMappingProvider.cs" />
     <Compile Include="Mapping\MappingResolver.cs" />
     <Compile Include="Mapping\PropertyMap.cs" />

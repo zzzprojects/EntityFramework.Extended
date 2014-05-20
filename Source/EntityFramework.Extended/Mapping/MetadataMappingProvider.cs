@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Core.Mapping;
 using System.Data.Entity.Core.Metadata.Edm;
@@ -92,14 +93,14 @@ namespace EntityFramework.Mapping
             {
                 var property = entityMap.PropertyMaps.FirstOrDefault(p => p.PropertyName == edmMember.Name);
                 if (property == null)
-                    continue;
+                    throw new InvalidOperationException(string.Format("There is no mapping for key member '{0}'.", edmMember));
 
-                var map = new PropertyMap
-                {
-                    PropertyName = property.PropertyName,
-                    ColumnName = property.ColumnName
-                };
-                entityMap.KeyMaps.Add(map);
+                var propertyMap = property as PropertyMap;
+                if (propertyMap == null)
+                    throw new InvalidOperationException(string.Format("KeyMember {1} of entity {0} cannot be complex.",
+                        entityMap.TableName, edmMember.Name));
+
+                entityMap.KeyMaps.Add(propertyMap);
             }
         }
 
@@ -107,23 +108,33 @@ namespace EntityFramework.Mapping
         {
             foreach (var propertyMapping in mappingFragment.PropertyMappings)
             {
-                var map = new PropertyMap();
-                map.PropertyName = propertyMapping.Property.Name;
-
+                var map = CreatePropertyMap(propertyMapping);
                 entityMap.PropertyMaps.Add(map);
-
-                var scalarPropertyMapping = propertyMapping as ScalarPropertyMapping;
-                if (scalarPropertyMapping != null)
-                {
-                    map.ColumnName = scalarPropertyMapping.Column.Name;
-                    continue;
-                }
-
-                // TODO support complex mapping
-                var complexPropertyMapping = propertyMapping as ComplexPropertyMapping;
             }
         }
-        
+
+        private static IPropertyMapElement CreatePropertyMap(PropertyMapping propertyMapping)
+        {
+            var scalarPropertyMapping = propertyMapping as ScalarPropertyMapping;
+            if (scalarPropertyMapping != null)
+            {
+                return new PropertyMap(propertyMapping.Property.Name, scalarPropertyMapping.Column.Name);
+            }
+
+            var complexPropertyMapping = propertyMapping as ComplexPropertyMapping;
+            if (complexPropertyMapping != null)
+            {
+                var typeElements = 
+                    from typeMapping in complexPropertyMapping.TypeMappings 
+                    from property in typeMapping.PropertyMappings 
+                    select CreatePropertyMap(property);
+
+                return new ComplexPropertyMap(propertyMapping.Property.Name, typeElements.ToList());
+            }
+
+            throw new InvalidOperationException("Invalid or unknown propertyMapping type: " + propertyMapping.GetType());
+        }
+
         private static void SetTableName(EntityMap entityMap)
         {
             var builder = new StringBuilder(50);
