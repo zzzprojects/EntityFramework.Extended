@@ -17,13 +17,13 @@ namespace EntityFramework.Test
 
             var t1 = c.Resolve<ITest1>();
             Assert.IsNotNull(t1);
-            Assert.IsInstanceOfType(typeof(Test1), t1);
+            Assert.That(t1, Is.InstanceOf<Test1>());
 
             c.Register<ITest2>(() => new Test2());
 
             var t2 = c.Resolve<ITest2>();
             Assert.IsNotNull(t1);
-            Assert.IsInstanceOfType(typeof(Test2), t2);
+            Assert.That(t2, Is.InstanceOf<Test2>());
         }
 
         [Test]
@@ -34,25 +34,25 @@ namespace EntityFramework.Test
 
             var t1 = c.Resolve<ITest1>();
             Assert.IsNotNull(t1);
-            Assert.IsInstanceOfType(typeof(Test1), t1);
+            Assert.That(t1, Is.InstanceOf<Test1>());
 
             c.Register<ITest2>(() => new Test2());
 
             var t2 = c.Resolve<ITest2>();
             Assert.IsNotNull(t2);
-            Assert.IsInstanceOfType(typeof(Test2), t2);
+            Assert.That(t2, Is.InstanceOf<Test2>());
 
             c.Register<ITest3, ITest1, ITest2>((a1, a2) => new Test3(a1, a2));
 
             var t3 = c.Resolve<ITest3>();
             Assert.IsNotNull(t3);
-            Assert.IsInstanceOfType(typeof(Test3), t3);
+            Assert.That(t2, Is.InstanceOf<Test3>());
 
             Assert.IsNotNull(t3.Test1);
-            Assert.IsInstanceOfType(typeof(Test1), t3.Test1);
+            Assert.That(t3.Test1, Is.InstanceOf<Test1>());
 
             Assert.IsNotNull(t3.Test2);
-            Assert.IsInstanceOfType(typeof(Test2), t3.Test2);
+            Assert.That(t3.Test2, Is.InstanceOf<Test1>());
         }
 
 
