@@ -77,7 +77,7 @@ namespace EntityFramework.Future
         }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="T:EntityFramework.Future.FutureValue`1"/> to <see cref="T"/>.
+        /// Performs an implicit conversion from <see cref="FutureValue{T}"/> to <typeparamref name="T"/>.
         /// </summary>
         /// <param name="futureValue">The future value.</param>
         /// <returns>The result of forcing this lazy value.</returns>
