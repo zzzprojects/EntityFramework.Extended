@@ -19,7 +19,7 @@ namespace EntityFramework.Test
       }
       catch (Exception ex)
       {
-        Assert.IsInstanceOfType(expectedExceptionType, ex);
+        Assert.That(ex, Is.InstanceOf(expectedExceptionType));
         return;
       }
 
