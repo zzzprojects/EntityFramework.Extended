@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using EntityFramework.Batch;
 using EntityFramework.Mapping;
@@ -150,7 +151,7 @@ namespace EntityFramework.Extensions
         /// <code><![CDATA[
         /// var db = new TrackerContext();
         /// string emailDomain = "@test.com";
-        /// int count = db.Users.Where(u => u.Email.EndsWith(emailDomain)).Delete();
+        /// int count = await db.Users.Where(u => u.Email.EndsWith(emailDomain)).DeleteAsync();
         /// ]]></code>
         /// </example>
         /// <remarks>
@@ -159,6 +160,33 @@ namespace EntityFramework.Extensions
         /// any entities that have already been materialized in the current context.        
         /// </remarks>
         public static Task<int> DeleteAsync<TEntity>(this IQueryable<TEntity> source)
+            where TEntity : class
+        {
+            return source.DeleteAsync(CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Executes a delete statement asynchronously using the query to filter the rows to be deleted.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="source">The <see cref="IQueryable`1"/> used to generate the where clause for the delete statement.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to cancel the operation.</param>
+        /// <returns>The number of row deleted.</returns>
+        /// <example>Delete all users with email domain @test.com, with time-out.
+        /// <code><![CDATA[
+        /// using (var timeoutSource = new CancellationTokenSource(10000)) {
+        ///     var db = new TrackerContext();
+        ///     string emailDomain = "@test.com";
+        ///     int count = await db.Users.Where(u => u.Email.EndsWith(emailDomain)).DeleteAsync(timeoutSource.Token);
+        /// }
+        /// ]]></code>
+        /// </example>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
+        public static Task<int> DeleteAsync<TEntity>(this IQueryable<TEntity> source, CancellationToken cancellationToken)
             where TEntity : class
         {
             ObjectQuery<TEntity> sourceQuery = source.ToObjectQuery();
@@ -174,7 +202,7 @@ namespace EntityFramework.Extensions
                 throw new ArgumentException("Could not load the entity mapping information for the query ObjectSet.", "source");
 
             var runner = ResolveRunner();
-            return runner.DeleteAsync(objectContext, entityMap, sourceQuery);
+            return runner.DeleteAsync(objectContext, entityMap, sourceQuery, cancellationToken);
         }
 
 #endif
@@ -354,14 +382,14 @@ namespace EntityFramework.Extensions
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <param name="source">The query used to generate the where clause.</param>
         /// <param name="updateExpression">The <see cref="MemberInitExpression"/> used to indicate what is updated.</param>
-        /// <returns>The number of row updated.</returns>
+        /// <returns>The number of rows updated.</returns>
         /// <example>Update all users in the test.com domain to be inactive.
         /// <code><![CDATA[
         /// var db = new TrackerContext();
         /// string emailDomain = "@test.com";
-        /// int count = db.Users
+        /// int count = await db.Users
         ///   .Where(u => u.Email.EndsWith(emailDomain))
-        ///   .Update(u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
+        ///   .UpdateAsync(u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
         /// ]]></code>
         /// </example>
         /// <remarks>
@@ -372,6 +400,39 @@ namespace EntityFramework.Extensions
         public static Task<int> UpdateAsync<TEntity>(
             this IQueryable<TEntity> source,
             Expression<Func<TEntity, TEntity>> updateExpression)
+            where TEntity : class
+        {
+            return source.UpdateAsync(updateExpression, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Executes an update statement asynchronously using the query to filter the rows to be updated.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="source">The query used to generate the where clause.</param>
+        /// <param name="updateExpression">The <see cref="MemberInitExpression"/> used to indicate what is updated.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to cancel the operation.</param>
+        /// <returns>The number of rows updated.</returns>
+        /// <example>Update all users in the test.com domain to be inactive, with time-out.
+        /// <code><![CDATA[
+        /// using (var timeoutSource = new CancellationTokenSource(10000)) {
+        ///     var db = new TrackerContext();
+        ///     string emailDomain = "@test.com";
+        ///     int count = await db.Users
+        ///       .Where(u => u.Email.EndsWith(emailDomain))
+        ///       .UpdateAsync(u => new User { IsApproved = false, LastActivityDate = DateTime.Now }, timeoutSource.Token);
+        /// }
+        /// ]]></code>
+        /// </example>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
+        public static Task<int> UpdateAsync<TEntity>(
+            this IQueryable<TEntity> source,
+            Expression<Func<TEntity, TEntity>> updateExpression,
+            CancellationToken cancellationToken)
             where TEntity : class
         {
             if (source == null)
@@ -392,7 +453,7 @@ namespace EntityFramework.Extensions
                 throw new ArgumentException("Could not load the entity mapping information for the source.", "source");
 
             var runner = ResolveRunner();
-            return runner.UpdateAsync(objectContext, entityMap, sourceQuery, updateExpression);
+            return runner.UpdateAsync(objectContext, entityMap, sourceQuery, updateExpression, cancellationToken);
         }
 
 #endif

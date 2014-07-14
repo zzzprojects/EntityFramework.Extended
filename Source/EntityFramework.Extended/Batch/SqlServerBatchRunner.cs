@@ -8,6 +8,7 @@ using System.Linq.Dynamic;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using EntityFramework.Extensions;
 using EntityFramework.Mapping;
@@ -54,10 +55,24 @@ namespace EntityFramework.Batch
         {
             return InternalDelete(objectContext, entityMap, query, true);
         }
+
+        /// <summary>
+        /// Create and runs a batch delete statement asynchronously.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="objectContext">The <see cref="ObjectContext"/> to get connection and metadata information from.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for <typeparamref name="TEntity"/>.</param>
+        /// <param name="query">The query to create the where clause from.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to cancel the operation.</param>
+        /// <returns>The number of rows deleted.</returns>
+        public Task<int> DeleteAsync<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, CancellationToken cancellationToken) where TEntity : class
+        {
+            return InternalDelete(objectContext, entityMap, query, true, cancellationToken);
+        }
 #endif
 
 #if net45
-        private async Task<int> InternalDelete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, bool async = false)
+        private async Task<int> InternalDelete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, bool async = false, CancellationToken? cancellationToken = null)
             where TEntity : class
 #else
         private int InternalDelete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query)
@@ -69,6 +84,9 @@ namespace EntityFramework.Batch
             DbCommand deleteCommand = null;
             bool ownConnection = false;
             bool ownTransaction = false;
+#if net45
+            CancellationToken token = cancellationToken ?? CancellationToken.None;
+#endif
 
             try
             {
@@ -79,12 +97,18 @@ namespace EntityFramework.Batch
 
                 if (deleteConnection.State != ConnectionState.Open)
                 {
+#if net45
+                    token.ThrowIfCancellationRequested();
+#endif
                     deleteConnection.Open();
                     ownConnection = true;
                 }
 
                 if (deleteTransaction == null)
                 {
+#if net45
+                    token.ThrowIfCancellationRequested();
+#endif
                     deleteTransaction = deleteConnection.BeginTransaction();
                     ownTransaction = true;
                 }
@@ -122,14 +146,18 @@ namespace EntityFramework.Batch
                 deleteCommand.CommandText = sqlBuilder.ToString();
 
 #if net45
+                token.ThrowIfCancellationRequested();
                 int result = async
-                    ? await deleteCommand.ExecuteNonQueryAsync()
+                    ? await deleteCommand.ExecuteNonQueryAsync(token)
                     : deleteCommand.ExecuteNonQuery();
 #else
                 int result = deleteCommand.ExecuteNonQuery();
 #endif
                 // only commit if created transaction
                 if (ownTransaction)
+#if net45
+                    token.ThrowIfCancellationRequested();
+#endif
                     deleteTransaction.Commit();
 
                 return result;
@@ -183,9 +211,24 @@ namespace EntityFramework.Batch
         {
             return InternalUpdate(objectContext, entityMap, query, updateExpression, true);
         }
+
+        /// <summary>
+        /// Create and runs a batch update statement asynchronously.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="objectContext">The <see cref="ObjectContext"/> to get connection and metadata information from.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for <typeparamref name="TEntity"/>.</param>
+        /// <param name="query">The query to create the where clause from.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to cancel the operation.</param>
+        /// <returns>The number of rows updated.</returns>
+        public Task<int> UpdateAsync<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression, CancellationToken cancellationToken) where TEntity : class
+        {
+            return InternalUpdate(objectContext, entityMap, query, updateExpression, true, cancellationToken);
+        }
 #endif
 #if net45
-        private async Task<int> InternalUpdate<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression, bool async = false)
+        private async Task<int> InternalUpdate<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression, bool async = false, CancellationToken? cancellationToken = null)
             where TEntity : class
 #else
         private int InternalUpdate<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression, bool async = false)
@@ -197,6 +240,9 @@ namespace EntityFramework.Batch
             DbCommand updateCommand = null;
             bool ownConnection = false;
             bool ownTransaction = false;
+#if net45
+            CancellationToken token = cancellationToken ?? CancellationToken.None;
+#endif
 
             try
             {
@@ -207,6 +253,9 @@ namespace EntityFramework.Batch
 
                 if (updateConnection.State != ConnectionState.Open)
                 {
+#if net45
+                    token.ThrowIfCancellationRequested();
+#endif
                     updateConnection.Open();
                     ownConnection = true;
                 }
@@ -214,6 +263,9 @@ namespace EntityFramework.Batch
                 // use existing transaction or create new
                 if (updateTransaction == null)
                 {
+#if net45
+                    token.ThrowIfCancellationRequested();
+#endif
                     updateTransaction = updateConnection.BeginTransaction();
                     ownTransaction = true;
                 }
@@ -366,14 +418,18 @@ namespace EntityFramework.Batch
                 updateCommand.CommandText = sqlBuilder.ToString();
 
 #if net45
+                token.ThrowIfCancellationRequested();
                 int result = async
-                    ? await updateCommand.ExecuteNonQueryAsync()
+                    ? await updateCommand.ExecuteNonQueryAsync(token)
                     : updateCommand.ExecuteNonQuery();
 #else
                 int result = updateCommand.ExecuteNonQuery();
 #endif
                 // only commit if created transaction
                 if (ownTransaction)
+#if net45
+                    token.ThrowIfCancellationRequested();
+#endif
                     updateTransaction.Commit();
 
                 return result;

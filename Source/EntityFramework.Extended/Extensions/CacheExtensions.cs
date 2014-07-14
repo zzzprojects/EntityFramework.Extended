@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using EntityFramework.Caching;
 
@@ -55,7 +56,25 @@ namespace EntityFramework.Extensions
         /// <returns>
         /// The result of the query.
         /// </returns>
-        public static async Task<IEnumerable<TEntity>> FromCacheAsync<TEntity>(this IQueryable<TEntity> query, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
+        public static Task<IEnumerable<TEntity>> FromCacheAsync<TEntity>(this IQueryable<TEntity> query, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
+            where TEntity : class
+        {
+            return FromCacheAsync(query, CancellationToken.None, cachePolicy, tags);
+        }
+
+        /// <summary>
+        /// Returns the result of the <paramref name="query"/>; if possible from the cache,
+        /// otherwise the query is materialized asynchronously and the result cached before being returned.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the data in the data source.</typeparam>
+        /// <param name="query">The query to be materialized.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to cancel the operation.</param>
+        /// <param name="cachePolicy">The cache policy for the query.</param>
+        /// <param name="tags">The list of tags to use for cache expiration.</param>
+        /// <returns>
+        /// The result of the query.
+        /// </returns>
+        public static async Task<IEnumerable<TEntity>> FromCacheAsync<TEntity>(this IQueryable<TEntity> query, CancellationToken cancellationToken, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
             where TEntity : class
         {
             string key = query.GetCacheKey();
@@ -67,8 +86,9 @@ namespace EntityFramework.Extensions
 
             var result = await manager.GetOrAddAsync(
                 cacheKey,
-                async k => await query.AsNoTracking().ToListAsync(),
-                cachePolicy ?? CachePolicy.Default
+                async (k, token) => await query.AsNoTracking().ToListAsync(token),
+                cachePolicy ?? CachePolicy.Default,
+                cancellationToken
             ) as IEnumerable<TEntity>;
 
             return result;
@@ -113,6 +133,24 @@ namespace EntityFramework.Extensions
                 ).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Returns the first element of the <paramref name="query"/>; if possible from the cache,
+        /// otherwise the query is materialized asynchronously and the result cached before being returned.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the data in the data source.</typeparam>
+        /// <param name="query">The query to be materialized.</param>
+        /// <param name="cachePolicy">The cache policy for the query.</param>
+        /// <param name="tags">The list of tags to use for cache expiration.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to cancel the operation.</param>
+        /// <returns>default(T) if source is empty; otherwise, the first element in source.</returns>
+        public static async Task<TEntity> FromCacheFirstOrDefaultAsync<TEntity>(this IQueryable<TEntity> query, CancellationToken cancellationToken, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
+            where TEntity : class
+        {
+            return (await query
+                .Take(1)
+                .FromCacheAsync(cancellationToken, cachePolicy, tags)
+                ).FirstOrDefault();
+        }
 #endif
 
         /// <summary>

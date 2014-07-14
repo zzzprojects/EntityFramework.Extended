@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EntityFramework.Caching
@@ -299,8 +300,40 @@ namespace EntityFramework.Caching
         /// </returns>
         public virtual Task<object> GetOrAddAsync(CacheKey cacheKey, Func<CacheKey, Task<object>> valueFactory, CachePolicy cachePolicy)
         {
+            return GetOrAddAsync(cacheKey, valueFactory, cachePolicy, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Gets the cache value for the specified key that is already in the dictionary or the new value for the key as returned asynchronously by <paramref name="valueFactory"/>.
+        /// </summary>
+        /// <param name="cacheKey">A unique identifier for the cache entry.</param>
+        /// <param name="valueFactory">The asynchronous function used to generate a value to insert into cache.</param>
+        /// <param name="cachePolicy">An object that contains eviction details for the cache entry.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to cancel the operation.</param>
+        /// <returns>
+        /// The value for the key. This will be either the existing value for the key if the key is already in the dictionary, 
+        /// or the new value for the key as returned by <paramref name="valueFactory"/> if the key was not in the dictionary.
+        /// </returns>
+        public virtual Task<object> GetOrAddAsync(CacheKey cacheKey, Func<CacheKey, Task<object>> valueFactory, CachePolicy cachePolicy, CancellationToken cancellationToken)
+        {
+            return GetOrAddAsync(cacheKey, (key, token) => valueFactory(key), cachePolicy, cancellationToken);
+        }
+
+        /// <summary>
+        /// Gets the cache value for the specified key that is already in the dictionary or the new value for the key as returned asynchronously by <paramref name="valueFactory"/>.
+        /// </summary>
+        /// <param name="cacheKey">A unique identifier for the cache entry.</param>
+        /// <param name="valueFactory">The asynchronous function used to generate a value to insert into cache.</param>
+        /// <param name="cachePolicy">An object that contains eviction details for the cache entry.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to cancel the operation.</param>
+        /// <returns>
+        /// The value for the key. This will be either the existing value for the key if the key is already in the dictionary, 
+        /// or the new value for the key as returned by <paramref name="valueFactory"/> if the key was not in the dictionary.
+        /// </returns>
+        public virtual Task<object> GetOrAddAsync(CacheKey cacheKey, Func<CacheKey, CancellationToken, Task<object>> valueFactory, CachePolicy cachePolicy, CancellationToken cancellationToken)
+        {
             var provider = ResolveProvider();
-            var item = provider.GetOrAddAsync(cacheKey, valueFactory, cachePolicy);
+            var item = provider.GetOrAddAsync(cacheKey, valueFactory, cachePolicy, cancellationToken);
 
             return item;
         }

@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Caching;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EntityFramework.Caching
@@ -78,18 +79,22 @@ namespace EntityFramework.Caching
         }
 
 #if net45
+
         /// <summary>
         /// Gets the cache value for the specified key that is already in the dictionary or the new value for the key as returned asynchronously by <paramref name="valueFactory"/>.
         /// </summary>
         /// <param name="cacheKey">A unique identifier for the cache entry.</param>
         /// <param name="valueFactory">The asynchronous function used to generate a value to insert into cache.</param>
         /// <param name="cachePolicy">A <see cref="CachePolicy"/> that contains eviction details for the cache entry.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to cancel the operation.</param>
         /// <returns>
         /// The value for the key. This will be either the existing value for the key if the key is already in the cache,
         /// or the new value for the key as returned by <paramref name="valueFactory"/> if the key was not in the cache.
         /// </returns>
-        public async Task<object> GetOrAddAsync(CacheKey cacheKey, Func<CacheKey, Task<object>> valueFactory, CachePolicy cachePolicy)
+        public async Task<object> GetOrAddAsync(CacheKey cacheKey, Func<CacheKey, CancellationToken, Task<object>> valueFactory, CachePolicy cachePolicy, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var key = GetKey(cacheKey);
             var cachedResult = MemoryCache.Default.Get(key);
 
@@ -101,9 +106,11 @@ namespace EntityFramework.Caching
 
             Debug.WriteLine("Cache Miss: " + key);
 
+            cancellationToken.ThrowIfCancellationRequested();
+
             // get value and add to cache, not bothered
             // if it succeeds or not just rerturn the value
-            var value = await valueFactory(cacheKey);
+            var value = await valueFactory(cacheKey, cancellationToken);
             this.Add(cacheKey, value, cachePolicy);
 
             return value;
