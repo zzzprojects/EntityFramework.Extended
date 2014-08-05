@@ -29,6 +29,12 @@ namespace EntityFramework.Extensions
           // next try case to DbQuery
           var dbQuery = query as DbQuery<TEntity>;
           if (dbQuery == null)
+          {
+              // Now check if it's a DbQuery inside of a linqKit ExpandableQuery
+              dynamic linqKitProxy = new DynamicProxy(query, false);
+              dbQuery = linqKitProxy.InnerQuery;
+          }
+          if (dbQuery == null)
               return null;
 
           // access internal property InternalQuery
@@ -61,6 +67,12 @@ namespace EntityFramework.Extensions
 
           // next try case to DbQuery
           var dbQuery = query as DbQuery;
+          if (dbQuery == null)
+          {
+              // Now check if it's a DbQuery inside of a linqKit ExpandableQuery
+              dynamic linqKitProxy = new DynamicProxy(query, false);
+              dbQuery = linqKitProxy.InnerQuery;
+          }
           if (dbQuery == null)
               return null;
 
