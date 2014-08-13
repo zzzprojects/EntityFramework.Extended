@@ -7,6 +7,7 @@ using System.Text;
 using System.Xml;
 using EntityFramework.Audit;
 using EntityFramework.Extensions;
+using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using NUnit.Framework;
@@ -563,6 +564,74 @@ namespace Tracker.SqlServer.Test
             File.WriteAllText(@"test.data.json", json);
 
 
+        }
+
+        [Test]
+        public void LogWithNullableRelations()
+        {
+            var auditConfiguration = AuditConfiguration.Default;
+
+            auditConfiguration.IncludeRelationships = true;
+            auditConfiguration.LoadRelationships = true;
+            auditConfiguration.DefaultAuditable = true;
+            auditConfiguration.MaintainAcrossSaves = false;
+
+            auditConfiguration.IsAuditable<Task>();
+            auditConfiguration.IsAuditable<Priority>().DisplayMember(t => t.Name);
+
+            var db = new TrackerContext();
+            var tran = db.BeginTransaction();
+            var audit = db.BeginAudit();
+
+            var task = new Task()
+            {
+                AssignedId = 1,
+                StatusId = 1,
+                PriorityId = 2,
+                Summary = "Summary: " + DateTime.Now.Ticks,
+                CreatedId = 1,
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now,
+                
+            };
+            db.Tasks.Add(task);
+            db.SaveChanges();
+
+            foreach (var property in audit.LastLog.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
+
+            task.PriorityId = null;
+            db.SaveChanges();
+
+            foreach (var property in audit.LastLog.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
+
+            task.PriorityId = 1;
+            db.SaveChanges();
+
+            foreach (var property in audit.LastLog.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
+
+            task.PriorityId = 2;
+            db.SaveChanges();
+
+            foreach (var property in audit.LastLog.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
+
+            //undo work
+            tran.Rollback();
         }
 
         public static object FormatStatus(AuditPropertyContext auditProperty)
