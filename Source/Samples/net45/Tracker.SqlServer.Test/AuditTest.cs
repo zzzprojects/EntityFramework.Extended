@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity.Core.Objects.DataClasses;
 using System.Data.Entity.Infrastructure;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,7 @@ using Newtonsoft.Json.Converters;
 using NUnit.Framework;
 using Tracker.SqlServer.CodeFirst;
 using Tracker.SqlServer.CodeFirst.Entities;
+using System.Data.Entity;
 
 namespace Tracker.SqlServer.Test
 {
@@ -622,6 +624,51 @@ namespace Tracker.SqlServer.Test
             }
 
             task.PriorityId = 2;
+            db.SaveChanges();
+
+            foreach (var property in audit.LastLog.Entities.SelectMany(e => e.Properties))
+            {
+                Assert.AreNotEqual(property.Current, "{error}");
+                Assert.AreNotEqual(property.Original, "{error}");
+            }
+
+            //undo work
+            tran.Rollback();
+        }
+
+        [Test]
+        public void LogWithNullableRelationWithoutValueAndAllreadyLoadedRelation()
+        {
+            var auditConfiguration = AuditConfiguration.Default;
+
+            auditConfiguration.IncludeRelationships = true;
+            auditConfiguration.LoadRelationships = true;
+            auditConfiguration.DefaultAuditable = true;
+            auditConfiguration.MaintainAcrossSaves = false;
+
+            auditConfiguration.IsAuditable<Task>();
+            auditConfiguration.IsAuditable<Priority>().DisplayMember(t => t.Name);
+
+            var db = new TrackerContext();
+            var tran = db.BeginTransaction();
+            var audit = db.BeginAudit();
+            
+            var task = new Task()
+            {
+                AssignedId = 1,
+                StatusId = 1,
+                Priority = null,
+                Summary = "Summary: " + DateTime.Now.Ticks,
+                CreatedId = 1,
+                CreatedDate = DateTime.Now,
+                ModifiedDate = DateTime.Now,
+            };
+            db.Tasks.Add(task);
+
+            var entries = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added);
+            var relation = entries.First().RelationshipManager.GetRelatedReference<Priority>("Tracker.SqlServer.CodeFirst.Task_Priority", "Task_Priority_Target");
+            relation.Load();
+            
             db.SaveChanges();
 
             foreach (var property in audit.LastLog.Entities.SelectMany(e => e.Properties))

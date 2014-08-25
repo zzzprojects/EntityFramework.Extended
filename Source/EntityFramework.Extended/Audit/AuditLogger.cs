@@ -188,7 +188,6 @@ namespace EntityFramework.Audit
             WriteRelationships(state);
 
             return true;
-
         }
 
         private void WriteKeys(AuditEntryState state)
@@ -360,13 +359,14 @@ namespace EntityFramework.Audit
                     auditProperty.IsRelationship = true;
                     auditProperty.ForeignKey = GetForeignKey(navigationProperty);
 
-                    object currentValue;
+                    object currentValue = null;
 
                     if (isLoaded)
                     {
                         // get value directly from instance to save db call
                         object valueInstance = accessor.GetValue(state.Entity);
-                        currentValue = displayMember.GetValue(valueInstance);
+                        if(valueInstance != null)
+                            currentValue = displayMember.GetValue(valueInstance);
                     }
                     else
                     {
