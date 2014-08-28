@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 using Tracker.SqlServer.CodeFirst;
 using Tracker.SqlServer.CodeFirst.Entities;
 
 namespace EntityFramework.Test
-{
-    [TestFixture]
+{    
     public class SqlTests
     {
-        [Test]
-        [Ignore]
+        [Fact]
         public void SelectByKey()
         {
             var db = new TrackerContext();

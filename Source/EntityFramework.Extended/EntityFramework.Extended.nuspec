@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>EntityFramework.Extended</id>
@@ -21,9 +21,10 @@
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="Build\Release\net40\EntityFramework.Extended.dll" target="lib\net40\EntityFramework.Extended.dll" />
-    <file src="Build\Release\net40\EntityFramework.Extended.xml" target="lib\net40\EntityFramework.Extended.xml" />
-    <file src="Build\Release\net45\EntityFramework.Extended.dll" target="lib\net45\EntityFramework.Extended.dll" />
-    <file src="Build\Release\net45\EntityFramework.Extended.xml" target="lib\net45\EntityFramework.Extended.xml" />
+    <file src="bin\Release\v4.0\EntityFramework.Extended.*" target="lib\net40\" />
+    <file src="bin\Release\v4.5\EntityFramework.Extended.*" target="lib\net45\" />
+    <file src="**\*.cs" target="src" />
+    <file src="..\GlobalAssemblyInfo.net40.cs" target="src" />
+    <file src="..\GlobalAssemblyInfo.net45.cs" target="src" />
   </files>
 </package>

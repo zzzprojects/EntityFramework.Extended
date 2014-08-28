@@ -444,6 +444,7 @@
             <Computer>
               <Output TaskParameter="Name" PropertyName="BuildMachineName" />
               <Output TaskParameter="IPAddress" PropertyName="BuildMachineIPAddress" />
+              <Output TaskParameter="IPAddressV4" PropertyName="BuildMachineIPAddressV4" />
               <Output TaskParameter="OSPlatform" PropertyName="BuildMachineOSPlatform" />
               <Output TaskParameter="OSVersion" PropertyName="BuildMachineOSVersion" />
             </Computer>
@@ -471,6 +472,11 @@
         <member name="P:MSBuild.Community.Tasks.Computer.IPAddress">
             <summary>
             Gets the IP address of the build computer.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Computer.IPAddressV4">
+            <summary>
+            Gets the IP v4 address of the build computer.
             </summary>
         </member>
         <member name="P:MSBuild.Community.Tasks.Computer.OSPlatform">
@@ -572,6 +578,37 @@
             </summary>
             <value>The deleted directories.</value>
         </member>
+        <member name="T:MSBuild.Community.Tasks.EmbedNativeResource">
+            <summary>
+            A task for embedded native resource.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.EmbedNativeResource.Execute">
+            <summary>
+            Executes the task.
+            </summary>
+            <returns>Success or failure of the task.</returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.EmbedNativeResource.TargetAssemblyPath">
+            <summary>
+            Gets or sets the target assembly path.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.EmbedNativeResource.ResourcePath">
+            <summary>
+            Gets or sets the resource path.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.EmbedNativeResource.ResourceName">
+            <summary>
+            Gets or sets the resource name.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.EmbedNativeResource.ResourceType">
+            <summary>
+            Gets or sets the resource type.
+            </summary>
+        </member>
         <member name="T:MSBuild.Community.Tasks.FtpUpload">
             <summary>
             Uploads a group of files using File Transfer Protocol (FTP).
@@ -669,6 +706,17 @@
             Gets or sets the behavior of a client application's data transfer process.
             </summary>
             <value><c>true</c> if [use passive]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.FtpUpload.KeepAlive">
+            <summary>
+            Gets or sets a value that indicates whether to make a persistent connection to the Internet resource.
+            </summary>        
+        </member>
+        <member name="P:MSBuild.Community.Tasks.FtpUpload.Timeout">
+            <summary>
+            Gets or sets the time-out value in milliseconds
+            </summary>  
+            <value>The number of milliseconds to wait before the request times out. The default value is 7000 milliseconds (7 seconds).</value>
         </member>
         <member name="T:MSBuild.Community.Tasks.IFtpWebRequest">
             <summary>
@@ -1333,6 +1381,267 @@
             <param name="assemblyName">Name of the assembly.</param>
             <returns>An <see cref="T:System.Reflection.AssemblyName"/> instance.</returns>
         </member>
+        <member name="T:MSBuild.Community.Tasks.Git.GitDescribe">
+            <summary>
+            A task for git to get the most current tag, commit count since tag, and commit hash.
+            </summary>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Git.GitClient">
+            <summary>
+            A task for Git commands.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitClient.#ctor">
+            <summary>
+            Default constructor. Creates a new GitClient task.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitClient.GenerateCommandLineCommands">
+            <summary>
+            Returns a string value containing the command line arguments to pass directly to the executable file.
+            </summary>
+            <returns>
+            A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitClient.GenerateCommand(Microsoft.Build.Utilities.CommandLineBuilder)">
+            <summary>
+            Generates the command.
+            </summary>
+            <param name="builder">The builder.</param>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitClient.GenerateArguments(Microsoft.Build.Utilities.CommandLineBuilder)">
+            <summary>
+            Generates the arguments.
+            </summary>
+            <param name="builder">The builder.</param>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitClient.GenerateFullPathToTool">
+            <summary>
+            Returns the fully qualified path to the executable file.
+            </summary>
+            <returns>
+            The fully qualified path to the executable file.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitClient.LogToolCommand(System.String)">
+            <summary>
+            Logs the starting point of the run to all registered loggers.
+            </summary>
+            <param name="message">A descriptive message to provide loggers, usually the command line and switches.</param>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitClient.ValidateParameters">
+            <summary>
+            Indicates whether all task paratmeters are valid.
+            </summary>
+            <returns>
+            true if all task parameters are valid; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitClient.GetWorkingDirectory">
+            <summary>
+            Returns the directory in which to run the executable file.
+            </summary>
+            <returns>
+            The directory in which to run the executable file, or a null reference (Nothing in Visual Basic) if the executable file should be run in the current directory.
+            </returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitClient.Command">
+            <summary>
+            Gets or sets the command to run.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitClient.Arguments">
+            <summary>
+            Gets or sets the raw arguments to pass to the git command.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitClient.LocalPath">
+            <summary>
+            Gets or sets the local or working path for git command.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitClient.StandardOutputLoggingImportance">
+            <summary>
+            Gets the <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.
+            </summary>
+            <value></value>
+            <returns>The <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.</returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitClient.StandardErrorLoggingImportance">
+            <summary>
+            Gets the <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.
+            </summary>
+            <value></value>
+            <returns>The <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.</returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitClient.ToolName">
+            <summary>
+            Gets the name of the executable file to run.
+            </summary>
+            <returns>
+            The name of the executable file to run.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitDescribe.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MSBuild.Community.Tasks.Git.GitDescribe"/> class.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitDescribe.GenerateArguments(Microsoft.Build.Utilities.CommandLineBuilder)">
+            <summary>
+            Make sure we specify abbrev=40 to get full CommitHash
+            </summary>
+            <param name="builder"></param>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitDescribe.LogEventsFromTextOutput(System.String,Microsoft.Build.Framework.MessageImportance)">
+            <summary>
+            Parses a single line of text to identify any errors or warnings in canonical format.
+            </summary>
+            <param name="singleLine">A single line of text for the method to parse.</param>
+            <param name="messageImportance">A value of <see cref="T:Microsoft.Build.Framework.MessageImportance"/> that indicates the importance level with which to log the message.</param>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitDescribe.CommitCount">
+            <summary>
+            Gets the number of commits in this branch since the last tag
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitDescribe.CommitHash">
+            <summary>
+            Gets or sets the commit hash.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitDescribe.Tag">
+            <summary>
+            Gets the last tagname for this branch
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitDescribe.ErrorMessage">
+            <summary>
+            Not active yet
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitDescribe.SoftErrorMode">
+            <summary>
+            When true, any processing errors will push error status out into <see cref="P:MSBuild.Community.Tasks.Git.GitDescribe.Tag"/>
+            </summary>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Git.GitBranch">
+            <summary>
+            A task to get the name of the branch or tag of git repository
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitBranch.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitBranch.LogEventsFromTextOutput(System.String,Microsoft.Build.Framework.MessageImportance)">
+            <summary>
+            Parse the output of the console and gets the Branch or Tag.
+            </summary>
+            <param name="singleLine">the line being parsed</param>
+            <param name="messageImportance">message importance</param>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitBranch.IsBranchStatusLine(System.String)">
+            <summary>
+            Check if a stdout Git line shows the current branch
+            </summary>
+            <param name="singleLine">the stdout line</param>
+            <returns>true if is branch line</returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitBranch.ParseStatusLineOutput(System.String)">
+            <summary>
+            Parses a branch status line and returns the branch or tag
+            </summary>
+            <param name="singleLine">the stdout line of git command line tool</param>
+            <returns>the branch or tag</returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitBranch.GenerateArguments(Microsoft.Build.Utilities.CommandLineBuilder)">
+            <summary>
+            Generates the arguments.
+            </summary>
+            <param name="builder">The builder.</param>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitBranch.Branch">
+            <summary>
+            Return the branch or tag.
+            </summary>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Git.GitCommits">
+            <summary>
+            A task for git to retrieve the number of commits on a revision.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitCommits.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MSBuild.Community.Tasks.Git.GitCommits"/> class.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitCommits.GenerateArguments(Microsoft.Build.Utilities.CommandLineBuilder)">
+            <summary>
+            Generates the arguments.
+            </summary>
+            <param name="builder">The builder.</param>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitCommits.LogEventsFromTextOutput(System.String,Microsoft.Build.Framework.MessageImportance)">
+            <summary>
+            Parses a single line of text to identify any errors or warnings in canonical format.
+            </summary>
+            <param name="singleLine">A single line of text for the method to parse.</param>
+            <param name="messageImportance">A value of <see cref="T:Microsoft.Build.Framework.MessageImportance"/> that indicates the importance level with which to log the message.</param>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitCommits.Revision">
+            <summary>
+            Gets or sets the revision to get the total number of commits from. Default is HEAD.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitCommits.CommitsCount">
+            <summary>
+            Gets or sets the commitscount.
+            </summary>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Git.GitVersion">
+            <summary>
+            A task for git to get the current commit hash.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitVersion.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MSBuild.Community.Tasks.Git.GitVersion"/> class.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitVersion.GenerateArguments(Microsoft.Build.Utilities.CommandLineBuilder)">
+            <summary>
+            Generates the arguments.
+            </summary>
+            <param name="builder">The builder.</param>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitVersion.LogEventsFromTextOutput(System.String,Microsoft.Build.Framework.MessageImportance)">
+            <summary>
+            Parses a single line of text to identify any errors or warnings in canonical format.
+            </summary>
+            <param name="singleLine">A single line of text for the method to parse.</param>
+            <param name="messageImportance">A value of <see cref="T:Microsoft.Build.Framework.MessageImportance"/> that indicates the importance level with which to log the message.</param>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitVersion.Revision">
+            <summary>
+            Gets or sets the revision to get the version from. Default is HEAD.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitVersion.CommitHash">
+            <summary>
+            Gets or sets the commit hash.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitVersion.Short">
+            <summary>
+            Gets or sets a value indicating whether to abbreviate to a shorter unique name.
+            </summary>
+            <value>
+              <c>true</c> if short; otherwise, <c>false</c>.
+            </value>
+        </member>
         <member name="T:MSBuild.Community.Tasks.HtmlHelp.ChmCompiler">
             <summary>
             Html Help 1x compiler task.
@@ -1683,6 +1992,26 @@
             Default is true.  When true, if the web server returns a status code less than 200 or greater than 299 then the task fails.
             </summary>
         </member>
+        <member name="P:MSBuild.Community.Tasks.Net.HttpRequest.Method">
+            <summary>
+            Optional, default is GET. The HTTP method to use for the request.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Net.HttpRequest.Username">
+            <summary>
+            Optional. The username to use with basic authentication.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Net.HttpRequest.Password">
+            <summary>
+            Optional. The password to use with basic authentication.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Net.HttpRequest.ReadRequestFrom">
+            <summary>
+            Optional; the name of the file to reqd the request from.
+            </summary>
+        </member>
         <member name="P:MSBuild.Community.Tasks.Net.HttpRequest.WriteResponseTo">
             <summary>
             Optional; the name of the file to write the response to.
@@ -1725,9 +2054,28 @@
             <value></value>
             <returns>The name of the executable file to run.</returns>
         </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetBase.StandardOutputLoggingImportance">
+            <summary>
+            Gets the <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log output.
+            </summary>
+            <value></value>
+            <returns>The <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log output.</returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetBase.StandardErrorLoggingImportance">
+            <summary>
+            Gets the <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.
+            </summary>
+            <value></value>
+            <returns>The <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.</returns>
+        </member>
         <member name="T:MSBuild.Community.Tasks.NuGet.NuGetPack">
             <summary>
             Creates a NuGet package based on the specified nuspec or project file.
+            </summary>
+        </member>
+        <member name="F:MSBuild.Community.Tasks.NuGet.NuGetPack._outputFilePathParse">
+            <summary>
+            The Regex used to get the full path to the NuGet Package created by the NuGetPack Task
             </summary>
         </member>
         <member name="M:MSBuild.Community.Tasks.NuGet.NuGetPack.GenerateCommandLineCommands">
@@ -1737,6 +2085,13 @@
             <returns>
             A string value containing the command line arguments to pass directly to the executable file.
             </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.NuGet.NuGetPack.LogEventsFromTextOutput(System.String,Microsoft.Build.Framework.MessageImportance)">
+            <summary>
+            Logs the events from text output.
+            </summary>
+            <param name="singleLine">The single line.</param>
+            <param name="messageImportance">The message importance.</param>
         </member>
         <member name="P:MSBuild.Community.Tasks.NuGet.NuGetPack.File">
             <summary>
@@ -1763,6 +2118,15 @@
             Shows verbose output for package building.
             </summary>
             <value><c>true</c> if verbose; otherwise, <c>false</c>.</value>
+            <remarks>
+            Depricated in NuGet 2.0.  Use <see cref="P:MSBuild.Community.Tasks.NuGet.NuGetPack.Verbosity"/> instead.
+            </remarks>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetPack.Verbosity">
+            <summary>
+            Display this amount of details in the output.
+            </summary>
+            <value><c>normal</c>; <c>quiet</c>; ; <c>detailed</c></value>
         </member>
         <member name="P:MSBuild.Community.Tasks.NuGet.NuGetPack.Symbols">
             <summary>
@@ -1772,6 +2136,16 @@
             <value>
               <c>true</c> if symbols; otherwise, <c>false</c>.
             </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetPack.Properties">
+            <summary>
+            Provides the ability to specify a semicolon ";" delimited list of properties when creating a package.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetPack.OutputFilePath">
+            <summary>
+            The full file path of the NuGet package created by the NuGetPack task
+            </summary>
         </member>
         <member name="T:MSBuild.Community.Tasks.NuGet.NuGetPush">
             <summary>
@@ -2088,6 +2462,13 @@
             <value><c>true</c> if no warning messages; otherwise, <c>false</c>.</value>
         </member>
         <member name="P:MSBuild.Community.Tasks.Sandcastle.SandcastleToolBase.StandardOutputLoggingImportance">
+            <summary>
+            Gets the <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.
+            </summary>
+            <value></value>
+            <returns>The <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.</returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Sandcastle.SandcastleToolBase.StandardErrorLoggingImportance">
             <summary>
             Gets the <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.
             </summary>
@@ -3844,6 +4225,14 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:MSBuild.Community.Tasks.Subversion.SvnClient.Execute">
+            <summary>
+            Runs the exectuable file with the specified task parameters.
+            </summary>
+            <returns>
+            true if the task runs successfully; otherwise, false.
+            </returns>
+        </member>
         <member name="M:MSBuild.Community.Tasks.Subversion.SvnClient.GenerateCommandLineCommands">
             <summary>
             Returns a string value containing the command line arguments to pass directly to the executable file.
@@ -3911,6 +4300,12 @@
             Gets or sets the password.
             </summary>
             <value>The password.</value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Subversion.SvnClient.SanitizePassword">
+            <summary>
+            Allows to sanitize password string from svn command log output.
+            </summary>
+            <value>The sanitize.</value>
         </member>
         <member name="P:MSBuild.Community.Tasks.Subversion.SvnClient.Verbose">
             <summary>
@@ -4015,6 +4410,13 @@
             <value></value>
             <returns>The <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.</returns>
         </member>
+        <member name="P:MSBuild.Community.Tasks.Subversion.SvnClient.StandardErrorLoggingImportance">
+            <summary>
+            Gets the <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.
+            </summary>
+            <value></value>
+            <returns>The <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.</returns>
+        </member>
         <member name="P:MSBuild.Community.Tasks.Subversion.SvnClient.ToolName">
             <summary>
             Gets the name of the executable file to run.
@@ -4049,6 +4451,12 @@
         <member name="P:MSBuild.Community.Tasks.Subversion.SvnCopy.DestinationPath">
             <summary>
             The path to which the SourcePath should be copied
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Subversion.SvnCopy.BuildTree">
+            <summary>
+            Specifies whether to create any missing directories and subdirectories 
+            in the specified <see cref="P:MSBuild.Community.Tasks.Subversion.SvnCopy.DestinationPath"/>
             </summary>
         </member>
         <member name="T:MSBuild.Community.Tasks.Subversion.Info">
@@ -4146,6 +4554,19 @@
         <member name="M:MSBuild.Community.Tasks.Subversion.SvnStatus.#ctor">
             <summary>
              Creates an instance of SvnStatus.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Subversion.SvnStatus.Execute">
+            <summary>
+            Runs the exectuable file with the specified task parameters.
+            </summary>
+            <returns>
+            true if the task runs successfully; otherwise, false.
+            </returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Subversion.SvnStatus.Entries">
+            <summary>
+            Gets or sets the entries.
             </summary>
         </member>
         <member name="T:MSBuild.Community.Tasks.SymbolServer.SymStoreCommands">
@@ -4337,6 +4758,23 @@
             <value></value>
             <returns>The <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.</returns>
         </member>
+        <member name="T:MSBuild.Community.Tasks.Tfs.TfsClient">
+            <summary>
+            A task for Team Foundation Server version control.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Tfs.TfsClient.GenerateCommand(Microsoft.Build.Utilities.CommandLineBuilder)">
+            <summary>
+            Generates the command.
+            </summary>
+            <param name="builder">The <see cref="T:Microsoft.Build.Utilities.CommandLineBuilder"/>.</param>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Tfs.TfsClient.GenerateArguments(Microsoft.Build.Utilities.CommandLineBuilder)">
+            <summary>
+            Generates the arguments.
+            </summary>
+            <param name="builder">The <see cref="T:Microsoft.Build.Utilities.CommandLineBuilder"/>.</param>
+        </member>
         <member name="M:MSBuild.Community.Tasks.Tfs.TfsClient.GenerateFullPathToTool">
             <summary>
             Returns the fully qualified path to the executable file.
@@ -4359,6 +4797,13 @@
             A string value containing the command line arguments to pass directly to the executable file.
             </returns>
         </member>
+        <member name="M:MSBuild.Community.Tasks.Tfs.TfsClient.LogEventsFromTextOutput(System.String,Microsoft.Build.Framework.MessageImportance)">
+            <summary>
+            Parses a single line of text to identify any errors or warnings in canonical format.
+            </summary>
+            <param name="singleLine">A single line of text for the method to parse.</param>
+            <param name="messageImportance">A value of <see cref="T:Microsoft.Build.Framework.MessageImportance"/> that indicates the importance level with which to log the message.</param>
+        </member>
         <member name="M:MSBuild.Community.Tasks.Tfs.TfsClient.ValidateParameters">
             <summary>
             Indicates whether all task paratmeters are valid.
@@ -4367,7 +4812,192 @@
             true if all task parameters are valid; otherwise, false.
             </returns>
         </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Command">
+            <summary>
+            Gets or sets the Team Foundation Server command.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Files">
+            <summary>
+            Gets or sets the files.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Recursive">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:MSBuild.Community.Tasks.Tfs.TfsClient"/> is recursive.
+            </summary>
+            <value>
+              <c>true</c> if recursive; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.All">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:MSBuild.Community.Tasks.Tfs.TfsClient"/> is all.
+            </summary>
+            <value>
+              <c>true</c> if all; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Overwrite">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:MSBuild.Community.Tasks.Tfs.TfsClient"/> is overwrite.
+            </summary>
+            <value>
+              <c>true</c> if overwrite; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Override">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:MSBuild.Community.Tasks.Tfs.TfsClient"/> is override.
+            </summary>
+            <value>
+              <c>true</c> if override; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Force">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:MSBuild.Community.Tasks.Tfs.TfsClient"/> is force.
+            </summary>
+            <value>
+              <c>true</c> if force; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Preview">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:MSBuild.Community.Tasks.Tfs.TfsClient"/> is preview.
+            </summary>
+            <value>
+              <c>true</c> if preview; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Remap">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:MSBuild.Community.Tasks.Tfs.TfsClient"/> is remap.
+            </summary>
+            <value>
+              <c>true</c> if remap; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Silent">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:MSBuild.Community.Tasks.Tfs.TfsClient"/> is silent.
+            </summary>
+            <value>
+              <c>true</c> if silent; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Saved">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:MSBuild.Community.Tasks.Tfs.TfsClient"/> is saved.
+            </summary>
+            <value>
+              <c>true</c> if saved; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Validate">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:MSBuild.Community.Tasks.Tfs.TfsClient"/> is validate.
+            </summary>
+            <value>
+              <c>true</c> if validate; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Bypass">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:MSBuild.Community.Tasks.Tfs.TfsClient"/> is bypass.
+            </summary>
+            <value>
+              <c>true</c> if bypass; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Comment">
+            <summary>
+            Gets or sets the comment.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Version">
+            <summary>
+            Gets or sets the version.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Lock">
+            <summary>
+            Gets or sets the lock.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Type">
+            <summary>
+            Gets or sets the type.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Author">
+            <summary>
+            Gets or sets the author.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Notes">
+            <summary>
+            Gets or sets the notes.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Format">
+            <summary>
+            Gets or sets the format.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Collection">
+            <summary>
+            Gets or sets the collection.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.UserName">
+            <summary>
+            Gets or sets the name of the user.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Password">
+            <summary>
+            Gets or sets the password.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.WorkspaceName">
+            <summary>
+            Gets or sets the name of the workspace.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.WorkspaceOwner">
+            <summary>
+            Gets or sets the workspace owner.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.ShelveSetName">
+            <summary>
+            Gets or sets the name of the shelve set.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.ShelveSetOwner">
+            <summary>
+            Gets or sets the shelve set owner.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Changeset">
+            <summary>
+            Gets or sets the changeset.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.ServerPath">
+            <summary>
+            Gets or sets the server path.
+            </summary>
+        </member>
         <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.StandardOutputLoggingImportance">
+            <summary>
+            Gets the <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.
+            </summary>
+            <value></value>
+            <returns>The <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.</returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.StandardErrorLoggingImportance">
             <summary>
             Gets the <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.
             </summary>
@@ -4529,11 +5159,11 @@
         <code>
           <![CDATA[<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-	<appSettings>
-		<add key="ItemsPerPage" value="10" />
-		<add key="EnableCaching" value="true" />
-		<add key="DefaultServer" value="TIGRIS" />
-	</appSettings>
+  <appSettings>
+    <add key="ItemsPerPage" value="10" />
+    <add key="EnableCaching" value="true" />
+    <add key="DefaultServer" value="TIGRIS" />
+  </appSettings>
     <system.web>
         <compilation defaultLanguage="c#" debug="true" />
         <customErrors mode="Off" />
@@ -4713,10 +5343,15 @@
         <![CDATA[
 <XmlMassUpdate ContentFile="web.config"
   SubstitutionsRoot="/configuration/substitutions"
- 	NamespaceDefinitions = "soap=http://www.w3.org/2001/12/soap-envelope;x=http://www.w3.org/1999/XSL/Transform">
+  NamespaceDefinitions = "soap=http://www.w3.org/2001/12/soap-envelope;x=http://www.w3.org/1999/XSL/Transform">
 />]]>
       </code>
     </example>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Xml.XmlMassUpdate.IgnoreMissingSubstitutionsRoot">
+            <summary>
+            If set to true, the task won't fail if the substitution root is missing
+            </summary>
         </member>
         <member name="P:MSBuild.Community.Tasks.Xml.XmlMassUpdate.ContentPathUsedByTask">
             <summary>
@@ -6382,7 +7017,7 @@
 
 <XmlQuery Lines="@(FileContents)"
     XPath = "/configuration/system.web/compilation/@defaultLanguage">
-	<Output TaskParameter="Values" PropertyName="CompilationLanguage" />
+  <Output TaskParameter="Values" PropertyName="CompilationLanguage" />
 </XmlQuery>
 
 <Message Text="The default language is $(CompilationLanguage)." />
@@ -6394,7 +7029,7 @@
         <![CDATA[
 <XmlQuery XmlFileName="$(MSBuildProjectDirectory)\web.config"
     XPath = "/configuration/system.web/compilation">
-	<Output TaskParameter="Values" ItemName="CompilationElement" />
+  <Output TaskParameter="Values" ItemName="CompilationElement" />
 </XmlQuery>
 
 <Message Text="The default language is: $(CompilationElement.defaultLanguage)." />
@@ -6411,7 +7046,7 @@
 
 <XmlQuery Lines="@(FileContents)"
     XPath = "/configuration/singleValue/LastName">
-	<Output TaskParameter="Values" PropertyName="LastNameElement" />
+  <Output TaskParameter="Values" PropertyName="LastNameElement" />
 </XmlQuery>
 
 <Message Text="The last name is %(LastNameElement._value)" />
@@ -6448,7 +7083,7 @@
         <![CDATA[
 <XmlMassUpdate ContentFile="web.config"
   SubstitutionsRoot="/configuration/substitutions"
- 	NamespaceDefinitions = "soap=http://www.w3.org/2001/12/soap-envelope;x=http://www.w3.org/1999/XSL/Transform">
+  NamespaceDefinitions = "soap=http://www.w3.org/2001/12/soap-envelope;x=http://www.w3.org/1999/XSL/Transform">
 />]]>
       </code>
     </example>
@@ -6646,6 +7281,13 @@
             For example: <code>RootAttributes="foo=bar;date=$(buildDate)"</code>
             </summary>
         </member>
+        <member name="P:MSBuild.Community.Tasks.Xslt.UseTrusted">
+            <summary>
+            Enables a Trusted XSLT processor. Sepcifically enables scripts 
+            in the xsl transformation file
+            For example: <code>UseTrusted="true"</code>
+            </summary>
+        </member>
         <member name="P:MSBuild.Community.Tasks.Xslt.Xsl">
             <summary>
             Gets or sets the path of the
@@ -6678,6 +7320,12 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileUpdate"/> class.
             </summary>
+        </member>
+        <member name="F:MSBuild.Community.Tasks.FileUpdate._useDefaultEncoding">
+            Maintain the behaviour of the original implementation for compatibility
+            (i.e. initialize _useDefaultEncoding with false) and use utf-8-without-bom,  
+            which is Microsoft's default encoding, only when Encoding property is set 
+            to "utf-8-without-bom". 
         </member>
         <member name="M:MSBuild.Community.Tasks.FileUpdate.Execute">
             <summary>
@@ -6725,6 +7373,12 @@
             </summary>
             <value>The replacement count.</value>
         </member>
+        <member name="P:MSBuild.Community.Tasks.FileUpdate.ReplacementTextEmpty">
+            <summary>
+            Gets or sets if replacement text is empty.
+            </summary>
+            <value><c>true</c> if [ignore case]; otherwise, <c>false</c>.</value>
+        </member>
         <member name="P:MSBuild.Community.Tasks.FileUpdate.ReplacementText">
             <summary>
             Gets or sets the replacement text.
@@ -6736,7 +7390,8 @@
             The character encoding used to read and write the file.
             </summary>
             <remarks>Any value returned by <see cref="P:System.Text.Encoding.WebName"/> is valid input.
-            <para>The default is <c>utf-8</c></para></remarks>
+            <para>The default is <c>utf-8</c></para>
+            <para>Additionally, <c>utf-8-without-bom</c>can be used.</para></remarks>
         </member>
         <member name="P:MSBuild.Community.Tasks.FileUpdate.WarnOnNoUpdate">
             <summary>
@@ -7104,23 +7759,6 @@
             one minute.
             </summary>
             <value>The timeout for the command.</value>
-        </member>
-        <member name="T:MSBuild.Community.Tasks.SourceSafe.VssClean">
-            <summary>
-            Task that can strip the source control information from a
-            Visual Studio Solution and subprojects.
-            </summary>
-            <remarks>This task is useful if you keep an archive of the
-            source tree at each build milestone, because it's irritating to have
-            to remove source control binding manually once you've copied a
-            version of the code from your archive.</remarks>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.SourceSafe.VssClean.Execute">
-            <summary>
-            Executes the task.
-            </summary>
-            <returns><see langword="true"/> if the task ran successfully; 
-            otherwise <see langword="false"/>.</returns>
         </member>
         <member name="T:MSBuild.Community.Tasks.IIS.AppPoolCreate">
             <summary>
@@ -8262,24 +8900,24 @@
             true if the task successfully executed; otherwise, false.
             </returns>
         </member>
-        <member name="T:MSBuild.Community.Tasks.Move">
+        <member name="T:MSBuild.Community.Tasks.MV">
             <summary>
             Moves files on the filesystem to a new location.
             </summary>
             <example>
             <para>Move a file to another folder</para>
             <code><![CDATA[
-            <Move SourceFiles="Test\MoveMe.txt"
+            <MV SourceFiles="Test\MoveMe.txt"
                 DestinationFolder="Test\Move" />
             ]]></code>
             <para>Rename a file</para>
             <code><![CDATA[
-            <Move SourceFiles="Test\Move\MoveMe.txt"
+            <MV SourceFiles="Test\Move\MoveMe.txt"
                 DestinationFiles="Test\Move\Renamed.txt" />
             ]]></code>
             </example>
         </member>
-        <member name="M:MSBuild.Community.Tasks.Move.Execute">
+        <member name="M:MSBuild.Community.Tasks.MV.Execute">
             <summary>
             When overridden in a derived class, executes the task.
             </summary>
@@ -8287,13 +8925,13 @@
             true if the task successfully executed; otherwise, false.
             </returns>
         </member>
-        <member name="P:MSBuild.Community.Tasks.Move.MovedFiles">
+        <member name="P:MSBuild.Community.Tasks.MV.MovedFiles">
             <summary>
             Gets the items that were successfully moved.
             </summary>
             <value>The moved files.</value>
         </member>
-        <member name="P:MSBuild.Community.Tasks.Move.DestinationFiles">
+        <member name="P:MSBuild.Community.Tasks.MV.DestinationFiles">
             <summary>
             Gets or sets the list of files to moved the source files to. 
             </summary>
@@ -8305,13 +8943,13 @@
             </remarks>
             <value>The destination files.</value>
         </member>
-        <member name="P:MSBuild.Community.Tasks.Move.DestinationFolder">
+        <member name="P:MSBuild.Community.Tasks.MV.DestinationFolder">
             <summary>
             Gets or sets the directory to which you want to move the files.
             </summary>
             <value>The destination folder.</value>
         </member>
-        <member name="P:MSBuild.Community.Tasks.Move.SourceFiles">
+        <member name="P:MSBuild.Community.Tasks.MV.SourceFiles">
             <summary>
             Gets or sets the source files to move.
             </summary>
@@ -8537,6 +9175,11 @@
         <member name="P:MSBuild.Community.Tasks.NUnit.Framework">
             <summary>
             Determines the framework to run aganist.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NUnit.ShowLabels">
+            <summary>
+            Whether or not to show test labels in output
             </summary>
         </member>
         <member name="P:MSBuild.Community.Tasks.NUnit.ToolName">
@@ -9361,390 +10004,6 @@
             The number of hours to add to the time to sleep.
             </summary>
         </member>
-        <member name="T:MSBuild.Community.Tasks.SourceSafe.VssBase">
-            <summary>
-            Base class for all of the Visual SourceSafe tasks.
-            </summary>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.SourceSafe.VssBase.ConnectToDatabase">
-            <summary>
-            Attempts to connect to the SourceSafe Database and
-            load the specified item, or version of the item, if specified.
-            </summary>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.SourceSafe.VssBase.Execute">
-            <summary>
-            Reserved.
-            </summary>
-            <returns>Reserved.</returns>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.SourceSafe.VssBase.LogErrorFromException(System.Exception)">
-            <summary>
-            Logs an exception using the MSBuild logging framework.
-            </summary>
-            <param name="e">The <see cref="T:System.Exception"/> to log.</param>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssBase.DatabasePath">
-            <summary>
-            The path to the folder that contains the srcsafe.ini file.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssBase.Path">
-            <summary>
-            The Visual SourceSafe project or file to perform the action
-            on (starts with "$/").
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssBase.UserName">
-            <summary>
-            The name of the user accessing the SourceSafe database.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssBase.Version">
-            <summary>
-            A version of the <see cref="P:MSBuild.Community.Tasks.SourceSafe.VssBase.Path"/> to reference.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssBase.Password">
-            <summary>
-            The password to use to log in to SourceSafe.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssBase.Database">
-            <summary>
-            Represents the VSS Database
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssBase.Item">
-            <summary>
-            Represents the VSS item selected (file or project).
-            </summary>
-        </member>
-        <member name="T:MSBuild.Community.Tasks.SourceSafe.VssCheckin">
-            <summary>
-            Task that executes a checkin against a VSS Database.
-            </summary>
-            <example>
-            <para></para>
-            <code><![CDATA[<VssCheckin UserName="ccnet_build"
-              Password="build"
-              LocalPath="C:\Dev\MyProjects\Project\TestFile.cs"
-              Recursive="False"
-              DatabasePath="\\VSSServer\VSS\srcsafe.ini"
-              Path="$/Test/TestFile.cs"
-            />
-            ]]></code>
-            </example>
-        </member>
-        <member name="T:MSBuild.Community.Tasks.SourceSafe.VssRecursiveBase">
-            <summary>
-            Base class for VSS tasks that can act recursively.
-            </summary>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.SourceSafe.VssRecursiveBase.Execute">
-            <summary>
-            Reserved.
-            </summary>
-            <returns>Reserved.</returns>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssRecursiveBase.Recursive">
-            <summary>
-            Determines whether to perform the SourceSafe operation
-            recursively. The default is <see langword="true"/>.
-            </summary>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.SourceSafe.VssCheckin.Execute">
-            <summary>
-            Executes the task.
-            </summary>
-            <returns><see langword="true"/> if the task ran successfully; 
-            otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssCheckin.LocalPath">
-            <summary>
-            The path to the local working directory.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssCheckin.Writable">
-            <summary>
-            Determines whether to leave the file(s) as writable once the
-            checkin is complete. The default is <see langword="false"/>.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssCheckin.Comment">
-            <summary>
-            The checkin comment.
-            </summary>
-        </member>
-        <member name="T:MSBuild.Community.Tasks.SourceSafe.VssCheckout">
-            <summary>
-            Task that executes a checkout of files or projects
-            against a Visual SourceSafe database.
-            </summary>
-            <example>
-            <para></para>
-            <code><![CDATA[<VssCheckout UserName="ccnet_build"
-              Password="build"
-              LocalPath="C:\Dev\MyProjects\Project"
-              Recursive="False"
-              DatabasePath="\\VSSServer\VSS\srcsafe.ini"
-              Path="$/Test/TestFile.cs"
-            />
-            ]]></code>
-            </example>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.SourceSafe.VssCheckout.Execute">
-            <summary>
-            Executes the task.
-            </summary>
-            <returns><see langword="true"/> if the task ran successfully; 
-            otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssCheckout.LocalPath">
-            <summary>
-            The path to the local working directory.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssCheckout.Writable">
-            <summary>
-            Determines whether files will be writable once retrieved from
-            the repository. The default is <see langword="false"/>.
-            </summary>
-        </member>
-        <member name="T:MSBuild.Community.Tasks.SourceSafe.VssAdd">
-            <summary>
-            Task that adds files to a Visual SourceSafe database.
-            </summary>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.SourceSafe.VssAdd.Execute">
-            <summary>
-            Executes the task.
-            </summary>
-            <returns><see langword="true"/> if the task ran successfully; 
-            otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssAdd.Files">
-            <summary>
-            List of files that should be added to SourceSafe.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssAdd.Comment">
-            <summary>
-            The comment to be applied to the newly added file.
-            </summary>
-        </member>
-        <member name="T:MSBuild.Community.Tasks.SourceSafe.VssDiff">
-            <summary>
-            Task that records differences between the latest version
-            of all the items in a Visual SourceSafe project and another version or label
-            to a file.
-            </summary>
-            <example>
-            <para>Generates a file containing all of the differences between the 
-            current version and the label &quot;Test Label&quot;</para>
-            <code><![CDATA[<VssDiff UserName="uid"
-             Password="pwd"
-             DatabasePath="\\VSSServer\VSS2\srcsafe.ini"
-             Path="$/Test"
-             OutputFile="Diff.xml"
-             Label="Test Label"
-            />]]></code>
-            </example>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.SourceSafe.VssDiff.Execute">
-            <summary>
-            Executes the task.
-            </summary>
-            <returns><see langword="true"/> if the task ran successfully; 
-            otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssDiff.Label">
-            <summary>
-            The value of the label to compare to.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssDiff.OutputFile">
-            <summary>
-            The name of the file to send the output to.
-            </summary>
-        </member>
-        <member name="T:MSBuild.Community.Tasks.SourceSafe.VssGet">
-            <summary>
-            Task that retireves an item or project from a Visual SourceSafe database.
-            </summary>
-            <example>
-            <para>Get the latest version (recursive) of a file from a VSS database and place
-            in the specified local folder.</para>
-            <code><![CDATA[
-            <VssGet UserName="user"
-                Password="password"
-                LocalPath="C:\Dev\MyProjects\Project"
-                Recursive="True"
-                DatabasePath="\\VSSServer\VSS\srcsafe.ini"
-                Path="$/Project"
-            ]]></code>
-            </example>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.SourceSafe.VssGet.Execute">
-            <summary>
-            Runs the task using the specified parameters.
-            </summary>
-            <returns><see langword="true"/> if the task ran successfully; 
-            otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssGet.LocalPath">
-            <summary>
-            The path to the local working directory.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssGet.Replace">
-            <summary>
-            Determines whether to replace writable files.
-            The default is <see langword="false"/>.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssGet.Writable">
-            <summary>
-            Determines whether files will be writable once retrieved from
-            the repository. The default is <see langword="false"/>.
-            </summary>
-        </member>
-        <member name="T:MSBuild.Community.Tasks.SourceSafe.VssHistory">
-            <summary>
-            Generates an XML file containing details of all changes made
-            to a Visual SourceSafe project or file between specified labels or dates.
-            </summary>
-            <example>
-            <para>Generates a file containing details of all the changes made to the <c>$/Test</c>
-            project by a user called joe.bloggs</para>
-            <code><![CDATA[<VssHistory UserName="uid"
-             Password="pwd"
-             DatabasePath="\\VSSServer\VSS\srcsafe.ini"
-             Path="$/Test"
-             User="joe.bloggs" 
-             OutputFile="History.xml"
-             Recursive="True"
-            />
-            ]]></code>
-            </example>
-            <example>
-            <para>Generates a file containing details of all the changes made between the
-            labels Build1 and Build2 in the <c>$/Test</c> project.</para>
-            <code><![CDATA[<VssHistory UserName="uid"
-             Password="pwd"
-             DatabasePath="\\VSSServer\VSS\srcsafe.ini"
-             Path="$/Test"
-             FromLabel="Build1"
-             ToLabel="Build2"
-             OutputFile="History.xml"
-             Recursive="True"
-            />
-            ]]></code>
-            </example>
-            <example>
-            <para>Generates a file containing details of all the changes made between the
-            1st December 2005 and 10th December 2005in the <c>$/Test</c> project.</para>
-            <code><![CDATA[<VssHistory UserName="uid"
-             Password="pwd"
-             DatabasePath="\\VSSServer\VSS\srcsafe.ini"
-             Path="$/Test"
-             FromDate="2005-12-01 00:00"
-             ToDate="2005-12-10 00:00"
-             OutputFile="History.xml"
-             Recursive="True"
-            />
-            ]]></code>
-            </example>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.SourceSafe.VssHistory.Execute">
-            <summary>
-            Executes the task.
-            </summary>
-            <returns><see langword="true"/> if the task ran successfully; 
-            otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssHistory.ToLabel">
-            <summary>
-            The label to start comparing to.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssHistory.FromLabel">
-            <summary>
-            The label to compare up to.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssHistory.ToDate">
-            <summary>
-            The Start Date for the history.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssHistory.FromDate">
-            <summary>
-            The End Date for the history.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssHistory.OutputFile">
-            <summary>
-            The name and path of the XML output file.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssHistory.User">
-            <summary>
-            The name of the user whose changes should be listed in 
-            the history.
-            </summary>
-        </member>
-        <member name="T:MSBuild.Community.Tasks.SourceSafe.VssLabel">
-            <summary>
-            Task that applies a label to a Visual SourceSafe item.
-            </summary>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.SourceSafe.VssLabel.Execute">
-            <summary>
-            Executes the task.
-            </summary>
-            <returns><see langword="true"/> if the task ran successfully; 
-            otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssLabel.Label">
-            <summary>
-            The text of the label.
-            </summary>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssLabel.Comment">
-            <summary>
-            An optional comment.
-            </summary>
-        </member>
-        <member name="T:MSBuild.Community.Tasks.SourceSafe.VssUndoCheckout">
-            <summary>
-            Task that undoes a checkout of files or projects
-            against a Visual SourceSafe database.
-            </summary>
-            <example>
-            <para></para>
-            <code><![CDATA[<VssUndoCheckout UserName="ccnet_build"
-              Password="build"
-              LocalPath="C:\Dev\MyProjects\Project"
-              Recursive="False"
-              DatabasePath="\\VSSServer\VSS\srcsafe.ini"
-              Path="$/Test/TestFile.cs"
-            />
-            ]]></code>
-            </example>
-        </member>
-        <member name="M:MSBuild.Community.Tasks.SourceSafe.VssUndoCheckout.Execute">
-            <summary>
-            Executes the task.
-            </summary>
-            <returns><see langword="true"/> if the task ran successfully; 
-            otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="P:MSBuild.Community.Tasks.SourceSafe.VssUndoCheckout.LocalPath">
-            <summary>
-            The path to the local working directory.
-            </summary>
-        </member>
         <member name="T:MSBuild.Community.Tasks.SqlExecute">
             <summary>
             Executes a SQL command.
@@ -10057,6 +10316,12 @@
             Gets or sets a value indicating whether to overwrite any existing files on extraction. Defaults to <c>true</c>.
             </summary>
             <value><c>true</c> to overwrite any existing files on extraction; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Unzip.Quiet">
+            <summary>
+            Gets or sets a value indicating whether to output less information. Defaults to <c>false</c>.
+            </summary>
+            <value><c>false</c> to output a message for every file extracted; otherwise, <c>true</c>.</value>
         </member>
         <member name="P:MSBuild.Community.Tasks.Unzip.ExtractedFiles">
             <summary>
@@ -10469,6 +10734,18 @@
             <value>The zip level.</value>
             <remarks>0 - store only to 9 - means best compression</remarks>
         </member>
+        <member name="P:MSBuild.Community.Tasks.Zip.Zip64">
+            <summary>
+            Gets or sets whether to use ZIP64 extensions.
+            </summary>
+            <value><c>true</c> to use ZIP64 extensions when necessary; otherwise, <c>false</c>.</value>
+            <remarks>
+            When ZIP64 is specified, then ZIP64 extension is used when necessary.
+            For example, when a single entry exceeds 0xFFFFFFFF in size, or when the archive 
+            as a whole exceeds 0xFFFFFFFF in size, or when there are more than 65535 entries 
+            in an archive.
+            </remarks>
+        </member>
         <member name="P:MSBuild.Community.Tasks.Zip.Files">
             <summary>
             Gets or sets the files to zip.
@@ -10515,6 +10792,27 @@
             <remarks>
             Possible values are None, PkzipWeak, WinZipAes128 and WinZipAes256
             </remarks>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Zip.ParallelCompression">
+            <summary>
+            Gets or sets whether parallel compression is used
+            </summary>
+            <value>Whether or not the files will be compressed in parallel.</value>
+            <remarks>
+            This is true by default
+            </remarks>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Zip.MinimalLogging">
+            <summary>
+            'Add' statement won't be logged with MinimalLogging enabled.
+            The default value for MinimalLogging is false.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Zip.Quiet">
+            <summary>
+            Gets or sets a value indicating whether to output less information. Defaults to <c>false</c>.
+            </summary>
+            <value><c>false</c> to output a message for every file added to a zip; otherwise, <c>true</c>.</value>
         </member>
     </members>
 </doc>

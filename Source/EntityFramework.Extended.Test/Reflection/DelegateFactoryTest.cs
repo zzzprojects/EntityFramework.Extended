@@ -3,14 +3,14 @@ using System.Diagnostics;
 using System.Net;
 using System.Reflection;
 using EntityFramework.Reflection;
-using NUnit.Framework;
+using Xunit;
 
 namespace EntityFramework.Test.Reflection
 {
-  [TestFixture]
+  
   public class DelegateFactoryTest
   {
-    [Test]
+    [Fact]
     public void CreateGetProperty()
     {
       TestClass.IsStatic = true;
@@ -29,10 +29,10 @@ namespace EntityFramework.Test.Reflection
       foreach (var propertyInfo in properties)
       {
         var d = DelegateFactory.CreateGet(propertyInfo);
-        Assert.IsNotNull(d);
+        Assert.NotNull(d);
 
         var value = d(testClass);
-        Assert.IsNotNull(value);
+        Assert.NotNull(value);
 
         Console.WriteLine("Property: {0} Value: {1}", propertyInfo.Name, value);
       }
@@ -40,7 +40,7 @@ namespace EntityFramework.Test.Reflection
       Console.WriteLine("Time: {0}ms", watch.ElapsedMilliseconds);
     }
 
-    [Test]
+    [Fact]
     public void CreateGetPropertyValueType()
     {
       StructureClass.IsStatic = true;
@@ -60,10 +60,10 @@ namespace EntityFramework.Test.Reflection
       foreach (var propertyInfo in properties)
       {
         var d = DelegateFactory.CreateGet(propertyInfo);
-        Assert.IsNotNull(d);
+        Assert.NotNull(d);
 
         var value = d(testClass);
-        Assert.IsNotNull(value);
+        Assert.NotNull(value);
 
         Console.WriteLine("Property: {0} Value: {1}", propertyInfo.Name, value);
       }
@@ -71,7 +71,7 @@ namespace EntityFramework.Test.Reflection
       Console.WriteLine("Time: {0}ms", watch.ElapsedMilliseconds);
     }
     
-    [Test]
+    [Fact]
     public void CreateGetField()
     {
       TestClass.IsStatic = true;
@@ -90,10 +90,10 @@ namespace EntityFramework.Test.Reflection
       foreach (var fieldInfo in fieldInfos)
       {
         var d = DelegateFactory.CreateGet(fieldInfo);
-        Assert.IsNotNull(d);
+        Assert.NotNull(d);
 
         var value = d(testClass);
-        Assert.IsNotNull(value);
+        Assert.NotNull(value);
 
         Console.WriteLine("Field: {0} Value: {1}", fieldInfo.Name, value);
       }
@@ -102,7 +102,7 @@ namespace EntityFramework.Test.Reflection
 
     }
 
-    [Test]
+    [Fact]
     public void CreateGetFieldStructure()
     {
       StructureClass.IsStatic = true;
@@ -122,10 +122,10 @@ namespace EntityFramework.Test.Reflection
       foreach (var fieldInfo in fieldInfos)
       {
         var d = DelegateFactory.CreateGet(fieldInfo);
-        Assert.IsNotNull(d);
+        Assert.NotNull(d);
 
         var value = d(testClass);
-        Assert.IsNotNull(value);
+        Assert.NotNull(value);
 
         Console.WriteLine("Field: {0} Value: {1}", fieldInfo.Name, value);
       }
@@ -134,7 +134,7 @@ namespace EntityFramework.Test.Reflection
     }
 
 
-    [Test]
+    [Fact]
     public void CreateSetProperty()
     {
       var testClass = new TestClass();
@@ -143,7 +143,7 @@ namespace EntityFramework.Test.Reflection
       foreach (var propertyInfo in properties)
       {
         var d = DelegateFactory.CreateSet(propertyInfo);
-        Assert.IsNotNull(d);
+        Assert.NotNull(d);
 
         object value = null;
         switch (propertyInfo.Name)
@@ -180,16 +180,16 @@ namespace EntityFramework.Test.Reflection
       watch.Stop();
       Console.WriteLine("Time: {0}ms", watch.ElapsedMilliseconds);
 
-      Assert.AreEqual("Doe", testClass.LastName);
-      Assert.AreEqual(21, testClass.Age);
-      Assert.AreEqual("Private Set", testClass.PrivateSet);
-      Assert.AreEqual("test", testClass.Internal);
-      Assert.AreEqual(true, TestClass.IsStatic);
-      Assert.AreEqual("CreateSetProperty", TestClass.StaticName);
-      Assert.AreEqual("John", testClass.FirstName);
+      Assert.Equal("Doe", testClass.LastName);
+      Assert.Equal(21, testClass.Age);
+      Assert.Equal("Private Set", testClass.PrivateSet);
+      Assert.Equal("test", testClass.Internal);
+      Assert.Equal(true, TestClass.IsStatic);
+      Assert.Equal("CreateSetProperty", TestClass.StaticName);
+      Assert.Equal("John", testClass.FirstName);
     }
 
-    [Test]
+    [Fact]
     public void CreateSetField()
     {
       TestClass.fieldStaticKey = "field test key";
@@ -220,7 +220,7 @@ namespace EntityFramework.Test.Reflection
         }
 
         var d = DelegateFactory.CreateSet(fieldInfo);
-        Assert.IsNotNull(d);
+        Assert.NotNull(d);
 
         d(testClass, value);
 
@@ -229,11 +229,11 @@ namespace EntityFramework.Test.Reflection
       watch.Stop();
       Console.WriteLine("Time: {0}ms", watch.ElapsedMilliseconds);
 
-      Assert.IsNotNull(testClass);
+      Assert.NotNull(testClass);
     }
 
 
-    [Test]
+    [Fact]
     public void CreateConstructorClass()
     {
       Type type = typeof(TestClass);
@@ -242,14 +242,14 @@ namespace EntityFramework.Test.Reflection
       watch.Stop();
       Console.WriteLine("Time: {0}ms", watch.ElapsedMilliseconds);
 
-      Assert.IsNotNull(c);
+      Assert.NotNull(c);
 
       object o = c.Invoke();
-      Assert.IsNotNull(o);
-      Assert.IsTrue(o.GetType() == type);
+      Assert.NotNull(o);
+      Assert.True(o.GetType() == type);
     }
 
-    [Test]
+    [Fact]
     public void CreateConstructorInternal()
     {
       Type type = typeof(InternalClass);
@@ -258,123 +258,123 @@ namespace EntityFramework.Test.Reflection
       watch.Stop();
       Console.WriteLine("Time: {0}ms", watch.ElapsedMilliseconds);
 
-      Assert.IsNotNull(c);
+      Assert.NotNull(c);
 
       object o = c.Invoke();
-      Assert.IsNotNull(o);
-      Assert.IsTrue(o.GetType() == type);
+      Assert.NotNull(o);
+      Assert.True(o.GetType() == type);
 
     }
 
-    [Test]
+    [Fact]
     public void PublicMethods()
     {
       var test = new TestClass();
       Type t = typeof (TestClass);
       
       var m = t.GetMethod("BaseOpen");
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       var d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       var parameters = new object[] { "Test" };
       var r = d.Invoke(test, parameters);
-      Assert.IsNull(r);
+      Assert.Null(r);
 
       m = t.GetMethod("PublicOpen1");
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "Test" };
       r = d.Invoke(test, parameters);
-      Assert.IsNull(r);
+      Assert.Null(r);
 
       m = t.GetMethod("PublicStaticOpen1");
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "Test" };
       r = d.Invoke(test, parameters);
-      Assert.IsNull(r);
+      Assert.Null(r);
 
 
       m = t.GetMethod("PublicOpen2");
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "Test", 2 };
       r = d.Invoke(test, parameters);
-      Assert.IsNull(r);
+      Assert.Null(r);
 
 
       m = t.GetMethod("PublicOpenReturn");
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "Test", 2 };
       r = d.Invoke(test, parameters);
-      Assert.IsNotNull(r);
+      Assert.NotNull(r);
 
 #if !SILVERLIGHT
       m = t.GetMethod("PublicOpenOut");
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "Test", null };
       r = d.Invoke(test, parameters);
-      Assert.IsNull(r);
-      Assert.AreEqual("1234", parameters[1]);
+      Assert.Null(r);
+      Assert.Equal("1234", parameters[1]);
 
       m = t.GetMethod("PublicOpenOutReturn");
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] {"test", null};
       r = d.Invoke(test, parameters);
-      Assert.IsNotNull(r);
-      Assert.AreEqual("1234", parameters[1]);
+      Assert.NotNull(r);
+      Assert.Equal("1234", parameters[1]);
 
 
       m = t.GetMethod("PublicOpenRef");
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "test", "" };
       r = d.Invoke(test, parameters);
-      Assert.IsNull(r);
-      Assert.AreEqual("1234", parameters[1]);
+      Assert.Null(r);
+      Assert.Equal("1234", parameters[1]);
 
 
       m = t.GetMethod("PublicOpenRefReturn");
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "test", "" };
       r = d.Invoke(test, parameters);
-      Assert.IsNotNull(r);
-      Assert.AreEqual("1234", parameters[1]);
+      Assert.NotNull(r);
+      Assert.Equal("1234", parameters[1]);
 #endif
 
       m = t.GetMethod("PublicOpenGeneric");
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       m = m.MakeGenericMethod(typeof (string));
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "test" };
       r = d.Invoke(test, parameters);
-      Assert.IsNull(r);
+      Assert.Null(r);
 
       m = t.GetMethod("PublicOpenReturnGeneric");
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       m = m.MakeGenericMethod(typeof(string));
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "test", 1 };
       r = d.Invoke(test, parameters);
-      Assert.IsNotNull(r);
+      Assert.NotNull(r);
       
     }
 
-    [Test]
+    [Fact]
     public void PrivateMethods()
     {
       BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
@@ -383,97 +383,97 @@ namespace EntityFramework.Test.Reflection
       Type t = typeof(TestClass);
 
       var m = t.GetMethod("PrivateOpen1", flags);
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       var d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       var parameters = new object[] { "Test" };
       var r = d.Invoke(test, parameters);
-      Assert.IsNull(r);
+      Assert.Null(r);
 
       m = t.GetMethod("PrivateStaticOpen1", flags);
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "Test" };
       r = d.Invoke(test, parameters);
-      Assert.IsNull(r);
+      Assert.Null(r);
 
 
       m = t.GetMethod("PrivateOpen2", flags);
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "Test", 2 };
       r = d.Invoke(test, parameters);
-      Assert.IsNull(r);
+      Assert.Null(r);
 
 
       m = t.GetMethod("PrivateOpenReturn", flags);
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "Test", 2 };
       r = d.Invoke(test, parameters);
-      Assert.IsNotNull(r);
+      Assert.NotNull(r);
 
 #if !SILVERLIGHT
       m = t.GetMethod("PrivateOpenOut", flags);
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "Test", null };
       r = d.Invoke(test, parameters);
-      Assert.IsNull(r);
-      Assert.AreEqual("1234", parameters[1]);
+      Assert.Null(r);
+      Assert.Equal("1234", parameters[1]);
 
 
       m = t.GetMethod("PrivateOpenOutReturn", flags);
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "test", null };
       r = d.Invoke(test, parameters);
-      Assert.IsNotNull(r);
-      Assert.AreEqual("1234", parameters[1]);
+      Assert.NotNull(r);
+      Assert.Equal("1234", parameters[1]);
 
 
       m = t.GetMethod("PrivateOpenRef", flags);
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "test", "" };
       r = d.Invoke(test, parameters);
-      Assert.IsNull(r);
-      Assert.AreEqual("1234", parameters[1]);
+      Assert.Null(r);
+      Assert.Equal("1234", parameters[1]);
 
 
       m = t.GetMethod("PrivateOpenRefReturn", flags);
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "test", "" };
       r = d.Invoke(test, parameters);
-      Assert.IsNotNull(r);
-      Assert.AreEqual("1234", parameters[1]);
+      Assert.NotNull(r);
+      Assert.Equal("1234", parameters[1]);
 #endif
 
       m = t.GetMethod("PrivateOpenGeneric", flags);
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       m = m.MakeGenericMethod(typeof(string));
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "test" };
       r = d.Invoke(test, parameters);
-      Assert.IsNull(r);
+      Assert.Null(r);
 
       m = t.GetMethod("PrivateOpenReturnGeneric", flags);
-      Assert.IsNotNull(m);
+      Assert.NotNull(m);
       m = m.MakeGenericMethod(typeof(string));
       d = DelegateFactory.CreateMethod(m);
-      Assert.IsNotNull(d);
+      Assert.NotNull(d);
       parameters = new object[] { "test", 1 };
       r = d.Invoke(test, parameters);
-      Assert.IsNotNull(r);
+      Assert.NotNull(r);
 
     }
   }

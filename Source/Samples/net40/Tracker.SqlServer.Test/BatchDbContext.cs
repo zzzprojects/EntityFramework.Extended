@@ -4,24 +4,37 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
 using EntityFramework.Extensions;
-using NUnit.Framework;
+using Xunit;
 using Tracker.SqlServer.CodeFirst;
 using Tracker.SqlServer.CodeFirst.Entities;
 
 namespace Tracker.SqlServer.Test
 {
-    [TestFixture]
+    
     public class BatchDbContext
     {
-        [Test]
+        [Fact]
         public void Delete()
         {
             var db = new TrackerContext();
             string emailDomain = "@test.com";
-            int count = db.Users.Delete(u => u.EmailAddress.EndsWith(emailDomain));
+            int count = db.Users
+                .Delete(u => u.EmailAddress.EndsWith(emailDomain));
+        }
+        [Fact]
+        public void DeleteWhere()
+        {
+            var db = new TrackerContext();
+            string emailDomain = "@test.com";
+
+            //var user = db.Users.Select(u => new User { FirstName = u.FirstName, LastName = u.LastName });
+
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Delete();
         }
 
-        [Test]
+        [Fact]
         public void Update()
         {
             var db = new TrackerContext();
@@ -31,7 +44,7 @@ namespace Tracker.SqlServer.Test
                 u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
         }
 
-        [Test]
+        [Fact]
         public void UpdateAppend()
         {
             var db = new TrackerContext();
@@ -44,7 +57,7 @@ namespace Tracker.SqlServer.Test
                 u => new User { LastName = u.LastName + newComment });
         }
 
-        [Test]
+        [Fact]
         public void UpdateAppendAndNull()
         {
             var db = new TrackerContext();
@@ -62,7 +75,7 @@ namespace Tracker.SqlServer.Test
                 });
         }
 
-        [Test]
+        [Fact]
         public void UpdateJoin()
         {
             var db = new TrackerContext();
@@ -74,7 +87,7 @@ namespace Tracker.SqlServer.Test
                 u => new User { LastName = u.FirstName + space + u.LastName });
         }
 
-        [Test]
+        [Fact]
         public void UpdateCopy()
         {
             var db = new TrackerContext();

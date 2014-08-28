@@ -1,26 +1,24 @@
 ﻿using System.Runtime.Caching;
 using EntityFramework.Caching;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 using System;
 
 namespace EntityFramework.Test
 {
 
 
-    [TestFixture]
+    
     public class CacheManagerTest
     {
-        public TestContext TestContext { get; set; }
-
-        [Test]
+        [Fact]
         public void ConstructorTest()
         {
             var cacheManager = new CacheManager();
             cacheManager.Should().NotBeNull();
         }
 
-        [Test]
+        [Fact]
         public void AddTest()
         {
             var cacheManager = new CacheManager();
@@ -32,7 +30,7 @@ namespace EntityFramework.Test
             result.Should().BeTrue();
         }
 
-        [Test]
+        [Fact]
         public void ExpireTest()
         {
             var cacheManager = new CacheManager();
@@ -91,7 +89,7 @@ namespace EntityFramework.Test
             expiredValue3.Should().NotBeNull();
         }
 
-        [Test]
+        [Fact]
         public void GetTest()
         {
             var cacheManager = new CacheManager();
@@ -108,7 +106,7 @@ namespace EntityFramework.Test
 
         }
 
-        [Test]
+        [Fact]
         public void GetOrAddTest()
         {
             var cacheManager = new CacheManager();
@@ -138,7 +136,7 @@ namespace EntityFramework.Test
 
         }
 
-        [Test]
+        [Fact]
         public void RemoveTest()
         {
             var cacheManager = new CacheManager();
@@ -164,7 +162,7 @@ namespace EntityFramework.Test
         }
 
 
-        [Test]
+        [Fact]
         public void SetTest()
         {
             var cacheManager = new CacheManager();

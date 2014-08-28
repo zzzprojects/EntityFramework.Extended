@@ -1,67 +1,67 @@
 ﻿using System;
 using EntityFramework.Reflection;
-using NUnit.Framework;
+using Xunit;
 
 namespace EntityFramework.Test.Reflection
 {
-  [TestFixture]
+  
   public class DynamicProxyTest
   {
-    [Test]
+    [Fact]
     public void TestMethod()
     {
       var t = new TestWrapper();
       dynamic w = new DynamicProxy(t);
 
       string r = w.Name;
-      Assert.AreEqual("Test", r);
+      Assert.Equal("Test", r);
 
       r = w.Internal;
-      Assert.AreEqual("InternalTest", r);
+      Assert.Equal("InternalTest", r);
 
       r = w.Private;
-      Assert.AreEqual("PrivateTest", r);
+      Assert.Equal("PrivateTest", r);
 
       r = w.EchoPublic("Tester");
-      Assert.AreEqual("Public: Tester", r);
+      Assert.Equal("Public: Tester", r);
 
       r = w.EchoPrivate("Tester");
-      Assert.AreEqual("Private: Tester", r);
+      Assert.Equal("Private: Tester", r);
 
       r = w.EchoInternal("Tester");
-      Assert.AreEqual("Internal: Tester", r);
+      Assert.Equal("Internal: Tester", r);
 
       r = w.EchoInternal(null);
-      Assert.AreEqual("Internal: ", r);
+      Assert.Equal("Internal: ", r);
 
     }
 
-    [Test]
+    [Fact]
     public void TestMethodNulls()
     {
       var t = new TestWrapper();
       dynamic w = new DynamicProxy(t);
 
       string r = w.EchoInternal(null);
-      Assert.AreEqual("Internal: ", r);
+      Assert.Equal("Internal: ", r);
 
       r = w.EchoInternal2(1);
-      Assert.AreEqual("Int: 1", r);
+      Assert.Equal("Int: 1", r);
       r = w.EchoInternal2("Test");
-      Assert.AreEqual("String: Test", r);
+      Assert.Equal("String: Test", r);
 
       r = w.EchoInternal2("Test", "Testing");
-      Assert.AreEqual("Name: Test Value: Testing", r);
+      Assert.Equal("Name: Test Value: Testing", r);
 
       r = w.EchoInternal2("Test", null);
-      Assert.AreEqual("Name: Test Value: ", r);
+      Assert.Equal("Name: Test Value: ", r);
 
 
       r = w.EchoInternal3("Test", "Testing", null);
-      Assert.AreEqual("Name: Test Value: Testing Value2: ", r);
+      Assert.Equal("Name: Test Value: Testing Value2: ", r);
 
       r = w.EchoInternal3("Test", 1, null);
-      Assert.AreEqual("Name: Test Value: 1 Value2: ", r);
+      Assert.Equal("Name: Test Value: 1 Value2: ", r);
 
     }
   }

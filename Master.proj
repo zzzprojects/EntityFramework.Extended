@@ -2,54 +2,38 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <BuildConfiguration>Release</BuildConfiguration>
-    <BuildFolder>Build\$(BuildConfiguration)</BuildFolder>
-    <TestFolder>Build\Test</TestFolder>
-    <LibraryFolder>Libraries</LibraryFolder>
-    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\$(LibraryFolder)</MSBuildCommunityTasksPath>
+    <BuildFolder>$(MSBuildProjectDirectory)\Build</BuildFolder>
+    <ToolFolder>$(MSBuildProjectDirectory)\Tools</ToolFolder>
+    <SourceFolder>$(MSBuildProjectDirectory)\Source</SourceFolder>
+
+    <MSBuildCommunityTasksPath>$(ToolFolder)\MSBuildTasks\tools</MSBuildCommunityTasksPath>
+    <XUnitTasksPath>$(ToolFolder)\xunit.runners\tools</XUnitTasksPath>
   </PropertyGroup>
 
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets"/>
+  <UsingTask AssemblyFile="$(XUnitTasksPath)\xunit.runner.msbuild.dll" TaskName="Xunit.Runner.MSBuild.xunit" />
 
+  <!-- Version Number -->
   <PropertyGroup>
-    <Major>6</Major>
-    <Minor>1</Minor>
+    <BuildNumber Condition=" '$(APPVEYOR_BUILD_NUMBER)' != '' ">$(APPVEYOR_BUILD_NUMBER)</BuildNumber>
+    <BuildNumber Condition=" '$(BUILD_NUMBER)' != '' ">$(BUILD_NUMBER)</BuildNumber>
+    <BuildNumber Condition=" '$(BuildNumber)' == '' ">0</BuildNumber>
+  
+    <BuildConfiguration  Condition=" '$(BuildConfiguration)' == '' ">Release</BuildConfiguration>
+    
+    <Major Condition=" '$(Major)' == '' ">6</Major>
+    <Minor Condition=" '$(Minor)' == '' ">1</Minor>
+    <Revision Condition=" '$(Revision)' == '' ">0</Revision>
 
-    <Build>0</Build>
-    <BindBuild>0</BindBuild>
-
-    <Revision>0</Revision>
-    <BindRevision>0</BindRevision>
+    <AssemblyVersion>$(Major).0.0.0</AssemblyVersion>
+    <AssemblyFileVersion>$(Major).$(Minor).$(Revision).$(BuildNumber)</AssemblyFileVersion>
+    <AssemblyInformationalVersion>$(Major).$(Minor).$(Revision).$(BuildNumber)</AssemblyInformationalVersion>
+    <PackageVersion>$(Major).$(Minor).$(Revision).$(BuildNumber)</PackageVersion>    
   </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(BUILD_NUMBER)' != '' ">
-    <!-- TeamCity Build Number -->
-    <Revision>$(BUILD_NUMBER)</Revision>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <Year>2014</Year>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <DefaultExclude Include="**\.svn\**" />
-    <DefaultExclude Include="**\.git\**" />
-    <DefaultExclude Include="**\bin\**" />
-    <DefaultExclude Include="**\obj\**" />
-    <DefaultExclude Include="**\.gitignore" />
-    <DefaultExclude Include="**\_resharper*\**" />
-    <DefaultExclude Include="**\*.resharper" />
-    <DefaultExclude Include="**\*.dotCover" />
-    <DefaultExclude Include="**\*.user" />
-    <DefaultExclude Include="**\*.suo" />
-    <DefaultExclude Include="**\*.zip" />
-    <DefaultExclude Include="**\*.msi" />
-    <DefaultExclude Include="**\*.log" />
-  </ItemGroup>
 
   <Target Name="Clean">
-    <DeleteTree Directories="$(BuildFolder)" />
-    <DeleteTree Directories="$(TestFolder)" />
+    <DeleteTree Directories="**\obj\**;**\bin\**" />
+    <DeleteTree Directories="$(BuildFolder)" ContinueOnError="true" />
   </Target>
 
   <Target Name="Version">
@@ -60,50 +44,111 @@
     <Message Text="Version: $(Major).$(Minor).$(Build).$(Revision)"/>
 
     <AssemblyInfo CodeLanguage="CS"
-                  OutputFile="Source\GlobalAssemblyInfo.cs"
+                  OutputFile="Source\GlobalAssemblyInfo.net45.cs"
                   AssemblyProduct="EntityFramework.Extended (.NET 4.5)"
                   AssemblyDescription="Entity Framework extensions library. Built for .NET 4.5"
                   AssemblyCompany="LoreSoft"
                   AssemblyCopyright="Copyright © $(Year) LoreSoft"
-                  AssemblyVersion="$(Major).$(Minor).$(BindBuild).$(BindRevision)"
-                  AssemblyFileVersion="$(Major).$(Minor).$(Build).$(Revision)"
-                  AssemblyInformationalVersion="$(Major).$(Minor).$(Build).$(Revision)"
+                  AssemblyVersion="$(AssemblyVersion)"
+                  AssemblyFileVersion="$(AssemblyFileVersion)"
+                  AssemblyInformationalVersion="$(AssemblyInformationalVersion)"
                   GenerateClass="true" />
-    
+
     <AssemblyInfo CodeLanguage="CS"
                   OutputFile="Source\GlobalAssemblyInfo.net40.cs"
                   AssemblyProduct="EntityFramework.Extended (.NET 4.0)"
                   AssemblyDescription="Entity Framework extensions library. Built for .NET 4.0"
                   AssemblyCompany="LoreSoft"
                   AssemblyCopyright="Copyright © $(Year) LoreSoft"
-                  AssemblyVersion="$(Major).$(Minor).$(BindBuild).$(BindRevision)"
-                  AssemblyFileVersion="$(Major).$(Minor).$(Build).$(Revision)"
-                  AssemblyInformationalVersion="$(Major).$(Minor).$(Build).$(Revision)"
+                  AssemblyVersion="$(AssemblyVersion)"
+                  AssemblyFileVersion="$(AssemblyFileVersion)"
+                  AssemblyInformationalVersion="$(AssemblyInformationalVersion)"
                   GenerateClass="true" />
   </Target>
 
   <Target Name="Compile" DependsOnTargets="Clean;Version">
-        <DeleteTree Directories="**\obj\**;**\bin\**" />
-        <MSBuild Projects="Source\EntityFramework.Extended.sln"
-                 Properties="Configuration=$(BuildConfiguration)"/>
-             
-        <DeleteTree Directories="**\obj\**;**\bin\**" />
-        <MSBuild Projects="Source\EntityFramework.Extended.net40.sln"
-                 Properties="Configuration=$(BuildConfiguration)"/>
+    <MSBuild Projects="$(SourceFolder)\EntityFramework.Extended.net45.sln"
+             Properties="Configuration=$(BuildConfiguration)"/>
+    <MSBuild Projects="$(SourceFolder)\EntityFramework.Extended.net40.sln"
+             Properties="Configuration=$(BuildConfiguration)"/>
   </Target>
 
   <Target Name="Zip" DependsOnTargets="Compile">
-    <CreateItem Include="$(BuildFolder)\**\EntityFramework.Extended.*" Exclude="@(DefaultExclude)" >
-      <Output TaskParameter="Include" ItemName="ZipFiles" />
-    </CreateItem>
+    <ItemGroup>
+      <ZipFiles Include="$(SourceFolder)\EntityFramework.Extended\bin\$(BuildConfiguration)\**\EntityFramework.Extended.*" />
+    </ItemGroup>
 
     <Zip Files="@(ZipFiles)"
-         WorkingDirectory="$(BuildFolder)"
-         ZipFileName="EntityFramework.Extended.v$(Major).$(Minor).$(Build).$(Revision).zip" />
+         WorkingDirectory="$(SourceFolder)\EntityFramework.Extended\bin\$(BuildConfiguration)"
+         ZipFileName="EntityFramework.Extended.v$(PackageVersion).zip" />
+  </Target>
+  
+  <Target Name="Test" DependsOnTargets="Compile">
+    <ItemGroup>
+      <TestAssemblies Include="$(SourceFolder)\EntityFramework.Extended.Test\bin\$(BuildConfiguration)\**\*.Test.dll"/>
+    </ItemGroup>
+
+    <xunit Assemblies="@(TestAssemblies)" Xml="xunit.xml" />
   </Target>
 
+  <Target Name="Package" DependsOnTargets="Test">
+    <MakeDir Directories="$(BuildFolder)" Condition="!EXISTS($(BuildFolder))" />
+
+    <ItemGroup>
+      <NuGetFiles Include="$(SourceFolder)\**\*.nuspec"/>
+    </ItemGroup>
+
+    <NuGetPack ToolPath="$(ToolFolder)"
+               File="%(NuGetFiles.Identity)"
+               OutputDirectory="$(BuildFolder)"
+               Version="$(PackageVersion)"
+               Symbols="true"  />
+  </Target>
+
+  <Target Name="Publish" DependsOnTargets="Package">
+
+    <!-- 
+      Requires API key to be set ...
+      nuget.exe setapikey <myget-key> -Source https://www.myget.org/F/loresoft/
+    -->
+
+    <ItemGroup>
+      <NuGetPackages Include="$(BuildFolder)\*.nupkg" Exclude="$(BuildFolder)\*.symbols.nupkg"/>
+      <NuGetSymbols Include="$(BuildFolder)\*.symbols.nupkg" />
+    </ItemGroup>
+
+    <!-- Push to MyGet on Build -->
+    <NuGetPush ToolPath="$(ToolFolder)"
+               File="%(NuGetPackages.Identity)"
+               Source="https://www.myget.org/F/loresoft/" />
+
+    <!-- Push to Symbols on Build -->
+    <NuGetPush ToolPath="$(ToolFolder)"
+               File="%(NuGetSymbols.Identity)"
+               Source="https://nuget.symbolsource.org/MyGet/loresoft" />
+
+  </Target>
+  
   <Target Name="Build">
-    <CallTarget Targets="Zip" />
+    <CallTarget Targets="Package" />
+  </Target>
+
+  <Target Name="Refresh">
+    <!-- Update NuGet dependencies to match package version -->
+
+    <!-- EntityFramework -->
+    <XmlRead XmlFileName="$(SourceFolder)\EntityFramework.Extended\packages.config"
+             XPath="/packages/package[@id='EntityFramework']/@version">
+      <Output TaskParameter="Value" ItemName="EntityFrameworkVersion" />
+    </XmlRead>
+
+    <Message Text="EntityFramework Version: @(EntityFrameworkVersion)"/>
+
+    <XmlUpdate XmlFileName="$(SourceFolder)\EntityFramework.Extended\EntityFramework.Extended.nuspec"
+               Prefix="d" Namespace="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"
+               XPath="/d:package/d:metadata/d:dependencies/d:dependency[@id='EntityFramework']/@version"
+               Value="@(EntityFrameworkVersion)" />
+
   </Target>
 
 </Project>

@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
 using EntityFramework.Extensions;
-using NUnit.Framework;
+using Xunit;
 using Tracker.SqlServer.Entities;
 
 namespace Tracker.SqlServer.Test
 {
-    [TestFixture]
+    
     public class ExtensionTest
     {
-        [Test]
+        [Fact]
         public void BeginTransactionObjectContext()
         {
             using (var db = new TrackerEntities())
@@ -30,7 +30,7 @@ namespace Tracker.SqlServer.Test
             }
         }
 
-        [Test]
+        [Fact]
         public void NoTransactionObjectContext()
         {
             using (var db = new TrackerEntities())
@@ -46,7 +46,7 @@ namespace Tracker.SqlServer.Test
             }
         }
 
-        [Test]
+        [Fact]
         public void TransactionScopeObjectContext()
         {
             using (var tx = new TransactionScope())

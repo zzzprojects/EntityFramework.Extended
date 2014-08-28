@@ -2,32 +2,27 @@
 using System.Globalization;
 using EntityFramework.Caching;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 namespace EntityFramework.Test.Caching
 {
-
-
-    [TestFixture]
     public class CacheKeyTest
-    {
-        public TestContext TestContext { get; set; }
-        
-        [Test]
+    {       
+        [Fact]
         public void CacheKeyConstructorNullKeyTest()
         {
             Action action = () => new CacheKey(null);
             action.ShouldThrow<ArgumentNullException>();
         }
 
-        [Test]
+        [Fact]
         public void CacheKeyConstructorNullTagsTest()
         {
             Action action = () => new CacheKey("test", null);
             action.ShouldThrow<ArgumentNullException>();
         }
 
-        [Test]
+        [Fact]
         public void CacheKeyConstructorTest1()
         {
             string key = string.Empty;
@@ -37,7 +32,7 @@ namespace EntityFramework.Test.Caching
             target.Key.Should().Be(string.Empty);
         }
 
-        [Test]
+        [Fact]
         public void KeyTest()
         {
             string key = DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);
@@ -47,7 +42,7 @@ namespace EntityFramework.Test.Caching
             target.Key.Should().Be(key);
         }
 
-        [Test]
+        [Fact]
         public void TagsTest()
         {
             string key = DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);

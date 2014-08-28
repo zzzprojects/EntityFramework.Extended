@@ -21,36 +21,36 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;net40</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\EntityFramework.Extended.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Build\Release\net40\</OutputPath>
-    <DefineConstants>TRACE;net40</DefineConstants>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Build\Release\net40\EntityFramework.Extended.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
     <AssemblyOriginatorKeyFile>..\EntityFramework.Extended.snk</AssemblyOriginatorKeyFile>
+    <DefineConstants>NET40;$(DefineConstants)</DefineConstants>
+    <OutputPath>bin\$(Configuration)\$(TargetFrameworkVersion)</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\$(TargetFrameworkVersion)</IntermediateOutputPath>
+    <DocumentationFile>$(OutputPath)\EntityFramework.Extended.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.1.0\lib\net40\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net40\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.1.0\lib\net40\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net40\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -144,12 +144,13 @@
     <None Include="..\EntityFramework.Extended.snk">
       <Link>EntityFramework.Extended.snk</Link>
     </None>
+    <None Include="App.config" />
     <None Include="Audit\Audit.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="EntityFramework.Extended.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

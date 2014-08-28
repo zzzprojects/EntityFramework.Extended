@@ -2,14 +2,15 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Xunit;
+
 
 namespace EntityFramework.Test
 {
-    [TestFixture]    
+        
     public class IoCTest
     {
-        [Test]
+        [Fact]
         public void TestMethod1()
         {
         }

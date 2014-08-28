@@ -1,0 +1,23 @@
+version: 6.1.0.{build}
+
+os: Windows Server 2012
+
+environment:
+  Major: 6
+  Minor: 1
+  Revision: 0
+
+services:
+  - mssql2012sp1
+
+install:
+
+platform: Any CPU
+configuration: Release
+
+build:
+  project: Master.proj
+  verbosity: normal
+  
+artifacts:
+- path: Build\*.nupkg

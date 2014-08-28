@@ -9,7 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.Extended.Te
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BE12C461-E0A7-43E3-B304-8D80D7E3D046}"
 	ProjectSection(SolutionItems) = preProject
-		..\EntityFramework.Extended.nuspec = ..\EntityFramework.Extended.nuspec
 		..\Master.proj = ..\Master.proj
 		..\readme.md = ..\readme.md
 	EndProjectSection
