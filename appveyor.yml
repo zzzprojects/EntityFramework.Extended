@@ -12,9 +12,6 @@ services:
 
 install:
 
-platform: Any CPU
-configuration: Release
-
 build:
   project: Master.proj
   verbosity: normal
