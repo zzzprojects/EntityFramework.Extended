@@ -89,6 +89,7 @@
     </ItemGroup>
 
     <xunit Assemblies="@(TestAssemblies)" Xml="xunit.xml" />
+    <exec Command="xunit.console.exe %(TestAssemblies.Identity) /appveyor"/>
   </Target>
 
   <Target Name="Package" DependsOnTargets="Test">
