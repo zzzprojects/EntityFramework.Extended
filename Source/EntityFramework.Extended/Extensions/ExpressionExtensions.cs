@@ -4,6 +4,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
+#pragma warning disable 1591
+
 namespace EntityFramework.Extensions
 {
     public static class ExpressionExtensions
@@ -57,3 +59,4 @@ namespace EntityFramework.Extensions
 
     }
 }
+#pragma warning restore 1591
