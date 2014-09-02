@@ -88,7 +88,7 @@
       <TestAssemblies Include="$(SourceFolder)\EntityFramework.Extended.Test\bin\$(BuildConfiguration)\**\*.Test.dll"/>
     </ItemGroup>
 
-    <exec Command="xunit.console.exe %(TestAssemblies.Identity) /appveyor"/>
+    <exec Command="xunit.console.clr4.x86.exe &quot;%(TestAssemblies.Identity)&quot; /appveyor"/>
   </Target>
 
   <Target Name="Package" DependsOnTargets="Test">
