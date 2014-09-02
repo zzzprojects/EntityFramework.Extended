@@ -11,14 +11,13 @@ services:
   - mssql2012sp1
 
 install:
+  - cmd: sqlcmd -S "(local)\SQL2014" -E -i "%APPVEYOR_BUILD_FOLDER%\Database\SqlServer\Tracker.sql"
 
 build:
   project: Master.proj
   verbosity: normal
   
 test: off
-before_test:
-- sqlcmd -S "(local)\SQL2014" -E -i "%APPVEYOR_BUILD_FOLDER%\Database\SqlServer\Tracker.sql"
 
 artifacts:
-- path: Build\*.nupkg
+  - path: Build\*.nupkg
