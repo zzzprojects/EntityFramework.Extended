@@ -85,7 +85,7 @@
   
   <Target Name="Test" DependsOnTargets="Compile">
     <ItemGroup>
-      <TestAssemblies Include="$(SourceFolder)\EntityFramework.Extended.Test\bin\$(BuildConfiguration)\**\*.Test.dll"/>
+      <TestAssemblies Include="$(SourceFolder)\**\*.Test\bin\$(BuildConfiguration)\**\*.Test.dll"/>
     </ItemGroup>
 
     <exec Command="xunit.console.clr4.x86.exe &quot;%(TestAssemblies.Identity)&quot; /appveyor"/>
