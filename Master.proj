@@ -86,17 +86,16 @@
          ZipFileName="EntityFramework.Extended.v$(PackageVersion).zip" />
   </Target>
   
-  <Target Name="Test" DependsOnTargets="Compile">
-    <PropertyGroup>
-        <XunitConsole Condition=" '$(APPVEYOR_BUILD_NUMBER)' != '' ">xunit.console.clr4.x86.exe  /appveyor </XunitConsole>
-        <XunitConsole Condition=" '$(APPVEYOR_BUILD_NUMBER)' == '' ">$(XUnitTasksPath)\xunit.console.clr4.x86.exe</XunitConsole>
-    </PropertyGroup>
-    
+  <Target Name="Test" DependsOnTargets="Compile">   
     <ItemGroup>
       <TestAssemblies Include="$(SourceFolder)\**\*.Test\bin\$(BuildConfiguration)\**\*.Test.dll"/>
     </ItemGroup>
 
-    <exec Command="$(XunitConsole) &quot;%(TestAssemblies.Identity)&quot;"/>
+    <exec Condition=" '$(APPVEYOR_BUILD_NUMBER)' != '' " 
+          Command="xunit.console.clr4.x86.exe &quot;%(TestAssemblies.Identity)&quot;  /appveyor "/>
+          
+    <exec Condition=" '$(APPVEYOR_BUILD_NUMBER)' == '' " 
+          Command="$(XUnitTasksPath)\xunit.console.clr4.x86.exe &quot;%(TestAssemblies.Identity)&quot;"/>
   </Target>
 
   <Target Name="Package" DependsOnTargets="Test">
