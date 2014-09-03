@@ -12,13 +12,14 @@ environment:
 services:
   - mssql2014
   
-install:
+before_build:
   - cmd: sqlcmd -S "(local)\SQL2014" -U sa -P %SqlPass% -i "%APPVEYOR_BUILD_FOLDER%\Database\SqlServer\Tracker.sql"
 
 build:
   project: Master.proj
   verbosity: normal
-  
+
+
 test: off
 
 artifacts:
