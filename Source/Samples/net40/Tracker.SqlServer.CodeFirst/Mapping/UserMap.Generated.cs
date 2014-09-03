@@ -66,7 +66,6 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
                 .IsRequired();
             Property(t => t.Comment)
                 .HasColumnName("Comment")
-                .HasMaxLength(16)
                 .IsOptional();
             Property(t => t.IsApproved)
                 .HasColumnName("IsApproved")
@@ -91,4 +90,3 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
         }
     }
 }
-

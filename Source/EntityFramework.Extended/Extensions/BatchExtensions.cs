@@ -73,7 +73,7 @@ namespace EntityFramework.Extensions
         /// Executes a delete statement using the query to filter the rows to be deleted.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <param name="source">The <see cref="IQueryable`1"/> used to generate the where clause for the delete statement.</param>
+        /// <param name="source">The <see cref="T:IQueryable`1"/> used to generate the where clause for the delete statement.</param>
         /// <returns>The number of row deleted.</returns>
         /// <example>Delete all users with email domain @test.com.
         /// <code><![CDATA[

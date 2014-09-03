@@ -18,7 +18,7 @@ using System.Data.Entity;
 
 namespace Tracker.SqlServer.Test
 {
-    
+
     public class AuditTest
     {
         [Fact]
@@ -445,7 +445,7 @@ namespace Tracker.SqlServer.Test
               .DisplayMember(t => t.Name);
 
             var db = new TrackerContext();
-            var tran = db.BeginTransaction();
+            var tran = db.Database.BeginTransaction();
             var audit = db.BeginAudit();
 
             var user = db.Users.Find(1);
@@ -582,7 +582,7 @@ namespace Tracker.SqlServer.Test
             auditConfiguration.IsAuditable<Priority>().DisplayMember(t => t.Name);
 
             var db = new TrackerContext();
-            var tran = db.BeginTransaction();
+            var tran = db.Database.BeginTransaction();
             var audit = db.BeginAudit();
 
             var task = new Task()
@@ -594,7 +594,7 @@ namespace Tracker.SqlServer.Test
                 CreatedId = 1,
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now,
-                
+
             };
             db.Tasks.Add(task);
             db.SaveChanges();
@@ -650,9 +650,9 @@ namespace Tracker.SqlServer.Test
             auditConfiguration.IsAuditable<Priority>().DisplayMember(t => t.Name);
 
             var db = new TrackerContext();
-            var tran = db.BeginTransaction();
+            var tran = db.Database.BeginTransaction();
             var audit = db.BeginAudit();
-            
+
             var task = new Task()
             {
                 AssignedId = 1,
@@ -668,7 +668,7 @@ namespace Tracker.SqlServer.Test
             var entries = ((IObjectContextAdapter)db).ObjectContext.ObjectStateManager.GetObjectStateEntries(EntityState.Added);
             var relation = entries.First().RelationshipManager.GetRelatedReference<Priority>("Tracker.SqlServer.CodeFirst.Task_Priority", "Task_Priority_Target");
             relation.Load();
-            
+
             db.SaveChanges();
 
             foreach (var property in audit.LastLog.Entities.SelectMany(e => e.Properties))

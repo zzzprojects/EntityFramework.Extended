@@ -11,7 +11,6 @@
   </PropertyGroup>
 
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.targets"/>
-  <UsingTask AssemblyFile="$(XUnitTasksPath)\xunit.runner.msbuild.dll" TaskName="Xunit.Runner.MSBuild.xunit" />
 
   <!-- Version Number -->
   <PropertyGroup>
@@ -67,8 +66,12 @@
   </Target>
 
   <Target Name="Compile" DependsOnTargets="Clean;Version">
+
+    <NuGetRestore Solution="$(SourceFolder)\EntityFramework.Extended.net45.sln" />
     <MSBuild Projects="$(SourceFolder)\EntityFramework.Extended.net45.sln"
              Properties="Configuration=$(BuildConfiguration)"/>
+
+    <NuGetRestore Solution="$(SourceFolder)\EntityFramework.Extended.net40.sln" />  
     <MSBuild Projects="$(SourceFolder)\EntityFramework.Extended.net40.sln"
              Properties="Configuration=$(BuildConfiguration)"/>
   </Target>
@@ -84,11 +87,16 @@
   </Target>
   
   <Target Name="Test" DependsOnTargets="Compile">
+    <PropertyGroup>
+        <XunitConsole Condition=" '$(APPVEYOR_BUILD_NUMBER)' != '' ">xunit.console.clr4.x86.exe  /appveyor </XunitConsole>
+        <XunitConsole Condition=" '$(APPVEYOR_BUILD_NUMBER)' == '' ">$(XUnitTasksPath)\xunit.console.clr4.x86.exe</XunitConsole>
+    </PropertyGroup>
+    
     <ItemGroup>
       <TestAssemblies Include="$(SourceFolder)\**\*.Test\bin\$(BuildConfiguration)\**\*.Test.dll"/>
     </ItemGroup>
 
-    <exec Command="xunit.console.clr4.x86.exe &quot;%(TestAssemblies.Identity)&quot; /appveyor"/>
+    <exec Command="$(XunitConsole) &quot;%(TestAssemblies.Identity)&quot;"/>
   </Target>
 
   <Target Name="Package" DependsOnTargets="Test">

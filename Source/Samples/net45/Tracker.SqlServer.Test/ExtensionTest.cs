@@ -9,22 +9,24 @@ using Tracker.SqlServer.Entities;
 
 namespace Tracker.SqlServer.Test
 {
-    
+
     public class ExtensionTest
     {
         [Fact]
         public void BeginTransactionObjectContext()
         {
             using (var db = new TrackerEntities())
-            using (var tx = db.BeginTransaction())
+            using (var tx = db.Database.BeginTransaction())
             {
                 string emailDomain = "@test.com";
 
-                int count = db.Users.Update(
-                    u => u.EmailAddress.EndsWith(emailDomain),
-                    u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
+                int count = db.Users
+                    .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                    .Update(u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
 
-                count = db.Users.Delete(u => u.EmailAddress.EndsWith(emailDomain));
+                count = db.Users
+                    .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                    .Delete();
 
                 tx.Commit();
             }
@@ -37,11 +39,13 @@ namespace Tracker.SqlServer.Test
             {
                 string emailDomain = "@test.com";
 
-                int count = db.Users.Update(
-                    u => u.EmailAddress.EndsWith(emailDomain),
-                    u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
+                int count = db.Users
+                    .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                    .Update(u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
 
-                count = db.Users.Delete(u => u.EmailAddress.EndsWith(emailDomain));
+                count = db.Users
+                    .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                    .Delete();
 
             }
         }
@@ -54,11 +58,13 @@ namespace Tracker.SqlServer.Test
             {
                 string emailDomain = "@test.com";
 
-                int count = db.Users.Update(
-                    u => u.EmailAddress.EndsWith(emailDomain),
-                    u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
+                int count = db.Users
+                    .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                    .Update(u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
 
-                count = db.Users.Delete(u => u.EmailAddress.EndsWith(emailDomain));
+                count = db.Users
+                    .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                    .Delete();
 
                 tx.Complete();
             }

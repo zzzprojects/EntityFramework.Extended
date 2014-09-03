@@ -64,8 +64,6 @@ namespace Tracker.SqlServer.Test
         {
             var db = new TrackerContext();
 
-            int myUserId = 0;
-
             //query result is now cached 300 seconds
             var tasks = db.Tasks
                 .Select(t => new TaskLookup

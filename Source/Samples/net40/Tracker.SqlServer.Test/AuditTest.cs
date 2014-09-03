@@ -445,7 +445,7 @@ namespace Tracker.SqlServer.Test
               .DisplayMember(t => t.Name);
 
             var db = new TrackerContext();
-            var tran = db.BeginTransaction();
+            var tran = db.Database.BeginTransaction();
             var audit = db.BeginAudit();
 
             var user = db.Users.Find(1);
@@ -582,7 +582,7 @@ namespace Tracker.SqlServer.Test
             auditConfiguration.IsAuditable<Priority>().DisplayMember(t => t.Name);
 
             var db = new TrackerContext();
-            var tran = db.BeginTransaction();
+            var tran = db.Database.BeginTransaction();
             var audit = db.BeginAudit();
 
             var task = new Task()
@@ -650,7 +650,7 @@ namespace Tracker.SqlServer.Test
             auditConfiguration.IsAuditable<Priority>().DisplayMember(t => t.Name);
 
             var db = new TrackerContext();
-            var tran = db.BeginTransaction();
+            var tran = db.Database.BeginTransaction();
             var audit = db.BeginAudit();
             
             var task = new Task()

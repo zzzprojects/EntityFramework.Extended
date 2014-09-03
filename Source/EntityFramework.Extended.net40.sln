@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.Extended.net40", "EntityFramework.Extended\EntityFramework.Extended.net40.csproj", "{D390C235-242C-4E92-9E0B-D2463E87B0F0}"
 EndProject
@@ -20,13 +20,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlServer.Test.net40", "Samples\net40\Tracker.SqlServer.Test\Tracker.SqlServer.Test.net40.csproj", "{ACB6E31F-C2B8-48BF-97C5-22FED0F6D6AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlServer.Entities.net40", "Samples\net40\Tracker.SqlServer.Entities\Tracker.SqlServer.Entities.net40.csproj", "{60743577-CDBD-4E89-AC63-F46CF914458D}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{0E3BC071-9F05-44AF-AA3E-4373EF1390A1}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

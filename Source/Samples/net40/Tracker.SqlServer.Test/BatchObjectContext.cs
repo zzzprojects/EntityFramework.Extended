@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Xunit;
 using EntityFramework.Extensions;
 using Tracker.SqlServer.Entities;
@@ -13,7 +14,9 @@ namespace Tracker.SqlServer.Test
         {
             var db = new TrackerEntities();
             string emailDomain = "@test.com";
-            int count = db.Users.Delete(u => u.EmailAddress.EndsWith(emailDomain));
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Delete();
         }
 
         [Fact]
@@ -21,9 +24,9 @@ namespace Tracker.SqlServer.Test
         {
             var db = new TrackerEntities();
             string emailDomain = "@test.com";
-            int count = db.Users.Update(
-                u => u.EmailAddress.EndsWith(emailDomain),
-                u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Update(u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
         }
     }
 }

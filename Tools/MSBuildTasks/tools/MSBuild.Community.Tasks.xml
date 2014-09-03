@@ -821,6 +821,12 @@
             Login to the FTP server with the specified credentials.
             </summary>
         </member>
+        <member name="M:MSBuild.Community.Tasks.Ftp.FtpClientTaskBase.SetFileTransferType(System.String)">
+            <summary>
+            Sets the type of file to be transferred.
+            </summary>
+            <param name="mode">File transfer type: BINARY or ASCII</param>
+        </member>
         <member name="M:MSBuild.Community.Tasks.Ftp.FtpClientTaskBase.ChangeWorkingDirectory(System.String)">
             <summary>
             Changes the working directory.
@@ -1292,6 +1298,12 @@
             </summary>
             <value>The remote directory.</value>
         </member>
+        <member name="P:MSBuild.Community.Tasks.Ftp.FtpUploadDirectoryContent.FilesTransferType">
+            <summary>
+            Gets or sets the type of files to be transferred. Accepts either 'BINARY' or 'ASCII' value.
+            </summary>
+            <value>Files transfer type.</value>
+        </member>
         <member name="P:MSBuild.Community.Tasks.Ftp.FtpUploadDirectoryContent.Recursive">
             <summary>
             Gets or sets a value indicating whether the subdirectories of the local directory should be created remotely and the content of these should also be uploaded.
@@ -1446,6 +1458,13 @@
             The directory in which to run the executable file, or a null reference (Nothing in Visual Basic) if the executable file should be run in the current directory.
             </returns>
         </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitClient.LogEventsFromTextOutput(System.String,Microsoft.Build.Framework.MessageImportance)">
+            <summary>
+            Parses a single line of text to identify any errors or warnings in canonical format.
+            </summary>
+            <param name="singleLine">A single line of text for the method to parse.</param>
+            <param name="messageImportance">A value of <see cref="T:Microsoft.Build.Framework.MessageImportance"/> that indicates the importance level with which to log the message.</param>
+        </member>
         <member name="P:MSBuild.Community.Tasks.Git.GitClient.Command">
             <summary>
             Gets or sets the command to run.
@@ -1459,6 +1478,11 @@
         <member name="P:MSBuild.Community.Tasks.Git.GitClient.LocalPath">
             <summary>
             Gets or sets the local or working path for git command.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitClient.ConsoleOutput">
+            <summary>
+            Gets command console output messages.
             </summary>
         </member>
         <member name="P:MSBuild.Community.Tasks.Git.GitClient.StandardOutputLoggingImportance">
@@ -1599,6 +1623,34 @@
         <member name="P:MSBuild.Community.Tasks.Git.GitCommits.CommitsCount">
             <summary>
             Gets or sets the commitscount.
+            </summary>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Git.GitPendingChanges">
+            <summary>
+            A task for git to detect if there are pending changes
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitPendingChanges.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MSBuild.Community.Tasks.Git.GitPendingChanges"/> class.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitPendingChanges.GenerateArguments(Microsoft.Build.Utilities.CommandLineBuilder)">
+            <summary>
+            Generates the arguments.
+            </summary>
+            <param name="builder">The builder.</param>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Git.GitPendingChanges.LogEventsFromTextOutput(System.String,Microsoft.Build.Framework.MessageImportance)">
+            <summary>
+            Parses a single line of text to identify any errors or warnings in canonical format.
+            </summary>
+            <param name="singleLine">A single line of text for the method to parse.</param>
+            <param name="messageImportance">A value of <see cref="T:Microsoft.Build.Framework.MessageImportance"/> that indicates the importance level with which to log the message.</param>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Git.GitPendingChanges.HasPendingChanges">
+            <summary>
+            Gets or sets whether the working directory has pending changes.
             </summary>
         </member>
         <member name="T:MSBuild.Community.Tasks.Git.GitVersion">
@@ -2068,6 +2120,69 @@
             <value></value>
             <returns>The <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.</returns>
         </member>
+        <member name="T:MSBuild.Community.Tasks.NuGet.NuGetInstall">
+            <summary>
+            Installs a package using the specified sources.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.NuGet.NuGetInstall.GenerateCommandLineCommands">
+            <summary>
+            Returns a string value containing the command line arguments to pass directly to the executable file.
+            </summary>
+            <returns>
+            A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetInstall.Package">
+            <summary>
+            Specify the id of the package to install. If a path to a packages.config file is used instead of an id, all the packages it contains are installed.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetInstall.Source">
+            <summary>
+            A list of packages sources to use for the install.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetInstall.OutputDirectory">
+            <summary>
+            The directory in which packages will be installed. If none specified, uses the current directory.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetInstall.Version">
+            <summary>
+            The version of the package to install.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetInstall.ExcludeVersion">
+            <summary>
+            If set, the destination directory will contain only the package name, not the version number
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetInstall.Prerelease">
+            <summary>
+            Allows prerelease packages to be installed. This flag is not required when restoring packages by installing from packages.config.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetInstall.NoCache">
+            <summary>
+            Disable looking up packages from local machine cache.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetInstall.SolutionDirectory">
+            <summary>
+            Solution root for package restore.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetInstall.ConfigFile">
+            <summary>
+            The NuGet configuation file. If not specified, file %AppData%\NuGet\NuGet.config is used as configuration file.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetInstall.Verbosity">
+            <summary>
+            Display this amount of details in the output: normal, quiet, detailed.
+            </summary>
+        </member>
         <member name="T:MSBuild.Community.Tasks.NuGet.NuGetPack">
             <summary>
             Creates a NuGet package based on the specified nuspec or project file.
@@ -2182,6 +2297,61 @@
             <value>
               <c>true</c> if create only; otherwise, <c>false</c>.
             </value>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.NuGet.NuGetRestore">
+            <summary>
+            Downloads and unzips (restores) any packages missing from the packages folder.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.NuGet.NuGetRestore.GenerateCommandLineCommands">
+            <summary>
+            Returns a string value containing the command line arguments to pass directly to the executable file.
+            </summary>
+            <returns>
+            A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetRestore.Solution">
+            <summary>
+            If a solution is specified, this command restores NuGet packages that are 
+            installed in the solution and in projects contained in the solution. Otherwise, 
+            the command restores packages listed in the specified packages.config file.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetRestore.Source">
+            <summary>
+            A list of packages sources to use for the install.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetRestore.PackagesDirectory">
+            <summary>
+            The directory in which packages will be installed. If none specified, uses the current directory.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetRestore.DisableParallelProcessing">
+            <summary>
+            Disable parallel nuget package restores.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetRestore.NoCache">
+            <summary>
+            Disable looking up packages from local machine cache.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetRestore.SolutionDirectory">
+            <summary>
+            Solution root for package restore.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetRestore.ConfigFile">
+            <summary>
+            The NuGet configuation file. If not specified, file %AppData%\NuGet\NuGet.config is used as configuration file.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NuGet.NuGetRestore.Verbosity">
+            <summary>
+            Display this amount of details in the output: normal, quiet, detailed.
+            </summary>
         </member>
         <member name="M:MSBuild.Community.Tasks.PathUtil.RelativePathTo(System.String,System.String)">
             <summary>  
@@ -3660,6 +3830,11 @@
         <member name="F:MSBuild.Community.Tasks.SourceServer.SourceIndexBase.Skipped">
             <remarks />
         </member>
+        <member name="F:MSBuild.Community.Tasks.SourceServer.SourceIndexBase.CandidateSdkPath">
+            <summary>
+            Default install locations for the debugger tools if installed with the windows sdk (which I think is now the only option?).
+            </summary>
+        </member>
         <member name="M:MSBuild.Community.Tasks.SourceServer.SourceIndexBase.Execute">
             <summary>
             When overridden in a derived class, executes the task.
@@ -3723,12 +3898,6 @@
             </summary>
             <value>The source server SDK path.</value>
         </member>
-        <member name="P:MSBuild.Community.Tasks.SourceServer.SourceIndexBase.SourceServerName">
-            <summary>
-            Gets or sets the name of the source server.
-            </summary>
-            <value>The name of the source server.</value>
-        </member>
         <member name="P:MSBuild.Community.Tasks.SourceServer.SourceIndexBase.SourceCommandFormat">
             <summary>
             Gets or sets the source command format. The SRCSRVCMD environment variable.
@@ -3749,6 +3918,30 @@
             Describes how to build the target path for the extracted file. 
             See srcsrv.doc for full documentation on SRCSRVTRG.
             </remarks>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.SourceServer.SourceIndexBase.FailOnNoSourceInformationFound">
+            <summary>
+            Gets or sets the fail on no source information found flag.
+            </summary>
+            <value><code>true</code> if finding no source information in a pdb should be treated as an error;
+            otherwise <code>false</code>.</value>
+            <remarks>
+            Assemblies that only contain classes with auto properties, enums or constants may not contain
+            any source information in the pdb.
+            </remarks>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.SourceServer.SourceIndexBase.NoSourceInformationInPdb">
+            <summary>
+            Gets the no source information found in 
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.SourceServer.SourceIndexBase.KeepTempFileForDebugging">
+            <summary>
+            Gets or sets a value indicating whether to keep temporary source index file created during index for debugging purposes.
+            </summary>
+            <value>
+            <c>true</c> to keep the temporary file; otherwise, <c>false</c>.
+            </value>
         </member>
         <member name="T:MSBuild.Community.Tasks.SourceServer.SrcTool">
             <summary>
@@ -3891,6 +4084,12 @@
             	<c>true</c> if successful; otherwise <c>false</c>.
             </returns>
         </member>
+        <member name="P:MSBuild.Community.Tasks.SourceServer.SvnSourceIndex.SourceServerName">
+            <summary>
+            Gets or sets the name of the source server.
+            </summary>
+            <value>The name of the source server.</value>
+        </member>
         <member name="T:MSBuild.Community.Tasks.SourceServer.SymbolFile">
             <summary>
             A class representing a symbol file.
@@ -3926,6 +4125,62 @@
             </summary>
             <value>
             	<c>true</c> if this instance is indexed; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.SourceServer.TfsSourceIndex">
+            <summary>
+            Task to index pdb files and entries to retrieve source files from Team Foundation Server source control.
+            </summary>
+            <remarks>
+            This implementation is based on a pdb indexed by Team Foundation Build 2013 and has not been tested on other versions
+            of TFS.
+            </remarks>
+            <example>Index a PDB.
+            <code><![CDATA[
+            <TfsSourceIndex SymbolFiles="@(Symbols)" TeamProjectCollectionUri="http://my-tfsserver/tfs/DefaultCollection" />
+            ]]></code>
+            </example>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.SourceServer.TfsSourceIndex.Execute">
+            <inheritdoc />
+        </member>
+        <member name="M:MSBuild.Community.Tasks.SourceServer.TfsSourceIndex.AddSourceProperties(MSBuild.Community.Tasks.SourceServer.SymbolFile)">
+            <inheritdoc />
+        </member>
+        <member name="M:MSBuild.Community.Tasks.SourceServer.TfsSourceIndex.CreateSourceIndexFile(MSBuild.Community.Tasks.SourceServer.SymbolFile,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="P:MSBuild.Community.Tasks.SourceServer.TfsSourceIndex.TeamProjectCollectionUri">
+            <summary>
+            Path to the root of the team collection hosting your project 
+            </summary>
+            <example>http://my-tfsserver/tfs/DefaultCollection</example>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.SourceServer.TfsSourceIndex.WorkspaceDirectory">
+            <summary>
+            Gets or sets the root of the workspace where the <see cref="P:MSBuild.Community.Tasks.SourceServer.SourceIndexBase.SymbolFiles"/>.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.SourceServer.TfsSourceIndex.Collection">
+            <summary>
+            Gets or sets the tfs collection uri to use. 
+            When this options is set pdb source information is retrieved from the server, rather
+            that using local workspace information.
+            </summary>
+            <value>
+            The collection.
+            </value>
+            <remarks>
+            Also set the <see cref="P:MSBuild.Community.Tasks.SourceServer.TfsSourceIndex.ChangesetVersion"/> to retrieve the correct changeset
+            </remarks>
+            <example>http://mytfs.com:8080/tfs/DefaultCollection</example>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.SourceServer.TfsSourceIndex.ChangesetVersion">
+            <summary>
+            Gets or sets the change set used to retrieve file information.
+            </summary>
+            <value>
+            The change set number.
             </value>
         </member>
         <member name="T:MSBuild.Community.Tasks.SqlServer.SqlPubCommands">
@@ -4758,10 +5013,209 @@
             <value></value>
             <returns>The <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.</returns>
         </member>
+        <member name="T:MSBuild.Community.Tasks.Tfs.InfoCommandResponse">
+            <summary>
+            Represents the response from a tf.exe info command
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Tfs.InfoCommandResponse.#ctor(System.String)">
+            <summary>
+            Creates a new instance of <see cref="T:MSBuild.Community.Tasks.Tfs.InfoCommandResponse"/>
+            </summary>
+            <param name="output">The raw output from tf.exe info [itemspces]</param>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Tfs.InfoCommandResponse.Parse">
+            <summary>
+            Parses the response from a 'tf.exe info' command
+            </summary>
+            <example>
+            Local information:
+             Local path : c:\dev\file.cs
+             Server path: $/Main/file.cs
+             Changeset  : 5
+             Change     : none
+             Type       : file
+            Server information:
+             Server path  : $/Main/file.cs
+             Changeset    : 5
+             Deletion ID  : 0
+             Lock         : none
+             Lock owner   :
+             Last modified: 20 January 2014 11:22:27
+             Type         : file
+             File type    : utf-8
+             Size         : 578           
+            </example>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.InfoCommandResponse.LocalInformation">
+            <summary>
+            Gets or sets the local information.
+            </summary>
+            <value>
+            The local information.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.InfoCommandResponse.ServerInformation">
+            <summary>
+            Gets or sets the server information.
+            </summary>
+            <value>
+            The server information.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.InfoCommandResponse.Response">
+            <summary>
+            Gets or sets the response, the raw output of the tf.exe info command.
+            </summary>
+            <value>
+            The response.
+            </value>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Tfs.ServerInformation">
+            <summary>
+            Represents the server information section created by a tf.exe info command
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.IItemInformation.ServerPath">
+            <summary>
+            Gets or sets the server path.
+            </summary>
+            <value>
+            The server path.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.IItemInformation.Changeset">
+            <summary>
+            Gets or sets the changeset.
+            </summary>
+            <value>
+            The changeset.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.ServerInformation.ServerPath">
+            <summary>
+            Gets or sets the server path.
+            </summary>
+            <value>
+            The server path.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.ServerInformation.Changeset">
+            <summary>
+            Gets or sets the changeset.
+            </summary>
+            <value>
+            The changeset.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.ServerInformation.DeletionID">
+            <summary>
+            Gets or sets the deletion identifier.
+            </summary>
+            <value>
+            The deletion identifier.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.ServerInformation.Lock">
+            <summary>
+            Gets or sets the lock.
+            </summary>
+            <value>
+            The lock.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.ServerInformation.LockOwner">
+            <summary>
+            Gets or sets the lock owner.
+            </summary>
+            <value>
+            The lock owner.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.ServerInformation.LastModified">
+            <summary>
+            Gets or sets the last modified.
+            </summary>
+            <value>
+            The last modified.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.ServerInformation.Type">
+            <summary>
+            Gets or sets the type.
+            </summary>
+            <value>
+            The type.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.ServerInformation.FileType">
+            <summary>
+            Gets or sets the type of the file.
+            </summary>
+            <value>
+            The type of the file.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.ServerInformation.Size">
+            <summary>
+            Gets or sets the size.
+            </summary>
+            <value>
+            The size.
+            </value>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Tfs.LocalInformation">
+            <summary>
+            Represents the local information section from a tf.exe info command
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.LocalInformation.LocalPath">
+            <summary>
+            Gets or sets the local path.
+            </summary>
+            <value>
+            The local path.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.LocalInformation.ServerPath">
+            <summary>
+            Gets or sets the server path.
+            </summary>
+            <value>
+            The server path.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.LocalInformation.Changeset">
+            <summary>
+            Gets or sets the changeset.
+            </summary>
+            <value>
+            The changeset.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.LocalInformation.Change">
+            <summary>
+            Gets or sets the change.
+            </summary>
+            <value>
+            The change.
+            </value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.LocalInformation.Type">
+            <summary>
+            Gets or sets the type.
+            </summary>
+            <value>
+            The type.
+            </value>
+        </member>
         <member name="T:MSBuild.Community.Tasks.Tfs.TfsClient">
             <summary>
             A task for Team Foundation Server version control.
             </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Tfs.TfsClient.GetWorkingDirectory">
+            <inheritdoc />
         </member>
         <member name="M:MSBuild.Community.Tasks.Tfs.TfsClient.GenerateCommand(Microsoft.Build.Utilities.CommandLineBuilder)">
             <summary>
@@ -4795,7 +5249,7 @@
             </summary>
             <returns>
             A string value containing the command line arguments to pass directly to the executable file.
-            </returns>
+            </returns>        
         </member>
         <member name="M:MSBuild.Community.Tasks.Tfs.TfsClient.LogEventsFromTextOutput(System.String,Microsoft.Build.Framework.MessageImportance)">
             <summary>
@@ -4803,6 +5257,9 @@
             </summary>
             <param name="singleLine">A single line of text for the method to parse.</param>
             <param name="messageImportance">A value of <see cref="T:Microsoft.Build.Framework.MessageImportance"/> that indicates the importance level with which to log the message.</param>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Tfs.TfsClient.Execute">
+            <inheritdoc />
         </member>
         <member name="M:MSBuild.Community.Tasks.Tfs.TfsClient.ValidateParameters">
             <summary>
@@ -4980,10 +5437,31 @@
             Gets or sets the shelve set owner.
             </summary>
         </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Output">
+            <summary>
+            Gets the output resulting from executing this command.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.WorkingDirectory">
+            <summary>
+            Gets or sets the working directory used when executing this tool.
+            </summary>
+        </member>
         <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.Changeset">
             <summary>
             Gets or sets the changeset.
             </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.ChangesetVersion">
+            <summary>
+            Gets or sets the changeset version passed in the version spec parameter
+            </summary>
+            <value>
+            The changeset version.
+            </value>
+            <example>
+            /v:C{ChangesetVersion}
+            </example>
         </member>
         <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.ServerPath">
             <summary>
@@ -5011,6 +5489,12 @@
             <returns>
             The name of the executable file to run.
             </returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Tfs.TfsClient.BatchRequired">
+            <summary>
+            Gets a value determining if this command must be processed in batch mode, due
+            to the length of the commandline arguments.
+            </summary>
         </member>
         <member name="T:MSBuild.Community.Tasks.Services.IRegistry">
             <summary>
@@ -5139,6 +5623,75 @@
         <member name="P:MSBuild.Community.Tasks.User.FullName">
             <summary>
             Gets the full name of the build user in "[First name] [Middle initial]. [Last name]" format .
+            </summary>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.WebUpload">
+            <summary>
+            Upload a local file to a remote URI. 
+            </summary>
+            <example>Upload the xml file.
+            <code><![CDATA[
+            <WebUpload RemoteUri="http://intranet/upload" FileName="page.xml" />
+            ]]></code>
+            </example>
+            <example>Upload the xml file to a protected by Windows Authentication
+            <code><![CDATA[
+            <WebUpload RemoteUri="http://intranet/upload" FileName="page.xml" UseDefaultCredentials="True" />
+            ]]></code>
+            </example>
+            <example>Upload the xml file to a password protected website
+            <code><![CDATA[
+            <WebUpload RemoteUri="http://intranet/upload" FileName="page.xml" Username="joeuser" Password="password123" />
+            ]]></code>
+            </example>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.WebUpload.Execute">
+            <summary>
+            When overridden in a derived class, executes the task.
+            </summary>
+            <returns>
+            true if the task successfully executed; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.WebUpload.GetConfiguredCredentials">
+            <summary>
+            Determines which credentials to pass with the web request
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.WebUpload.FileName">
+            <summary>
+            Gets or sets the name of the local file that is to receive the data.
+            </summary>
+            <value>The name of the file.</value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.WebUpload.RemoteUri">
+            <summary>
+            Gets or sets the URI from which to upload data to.
+            </summary>
+            <value>The remote URI.</value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.WebUpload.UseDefaultCredentials">
+            <summary>
+            When true, the current user's credentials are used to authenticate against the remote web server
+            </summary>
+            <remarks>
+            This value is ignored if the <see cref="P:MSBuild.Community.Tasks.WebUpload.Username"/> property is set to a non-empty value.
+            </remarks>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.WebUpload.Username">
+            <summary>
+            The username used to authenticate against the remote web server
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.WebUpload.Password">
+            <summary>
+            The password used to authenticate against the remote web server. A value for <see cref="P:MSBuild.Community.Tasks.WebUpload.Username"/> must also be provided.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.WebUpload.Domain">
+            <summary>
+            The domain of the user being used to authenticate against the remote web server. A value for <see cref="P:MSBuild.Community.Tasks.WebUpload.Username"/> must also be provided.
             </summary>
         </member>
         <member name="T:MSBuild.Community.Tasks.Xml.XmlMassUpdate">
@@ -5796,6 +6349,16 @@
             <para>This parameter is mutually exclusive with <see cref="P:MSBuild.Community.Tasks.ILMerge.AttributeFile"/>.</para>
             <para>Corresponds to command line option "/copyattrs".</para>
             <para>The default value is <c>false</c>.</para>
+            </remarks>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.ILMerge.AllowDuplicateAttributes">
+            <summary>
+            Gets or sets a value indicating whether to copy assembly attributes from all merged assemblies
+            into the unified assembly even if duplicate assembly attributes would result.
+            </summary>
+            <remarks>
+            <para>Applicable only when <see cref="P:MSBuild.Community.Tasks.ILMerge.CopyAttributes"/> is <c>true</c></para>
+            <para>Corresponds to command line option "/allowMultiple".</para>
             </remarks>
         </member>
         <member name="P:MSBuild.Community.Tasks.ILMerge.DebugInfo">
@@ -6704,7 +7267,7 @@
             	</Tokens>
             </ItemGroup>
             
-            <TemplateFile TemplateFile="ATemplateFile.template" OutputFile="ReplacedFile.txt" Tokens="@(Tokens)" />
+            <TemplateFile Template="ATemplateFile.template" OutputFilename="ReplacedFile.txt" Tokens="@(Tokens)" />
             ]]></code>
             </example>
             <remarks>Tokens in the template file are formatted using ${var} syntax and names are not 
@@ -7593,6 +8156,13 @@
             <c>true</c>.
             </summary>
             <value><c>true</c> if verbose; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.FxCop.IgnoreGeneratedCode">
+            <summary>
+            Gets or sets a value indicating whether FxCop should ignore 
+            generated code. Defaults to <c>false</c>.
+            </summary>
+            <value><c>true</c> if ignore generated code; otherwise, <c>false</c>.</value>
         </member>
         <member name="P:MSBuild.Community.Tasks.FxCop.ToolName">
             <summary>
@@ -9138,6 +9708,11 @@
         <member name="P:MSBuild.Community.Tasks.NUnit.ErrorOutputFile">
             <summary>
             The file to receive test error details.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.NUnit.TextOutputFile">
+            <summary>
+            The file to redirect standard output to.
             </summary>
         </member>
         <member name="P:MSBuild.Community.Tasks.NUnit.WorkingDirectory">

@@ -19,7 +19,8 @@ namespace Tracker.SqlServer.Test
             var db = new TrackerContext();
             string emailDomain = "@test.com";
             int count = db.Users
-                .Delete(u => u.EmailAddress.EndsWith(emailDomain));
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Delete();
         }
         [Fact]
         public void DeleteWhere()
@@ -39,9 +40,9 @@ namespace Tracker.SqlServer.Test
         {
             var db = new TrackerContext();
             string emailDomain = "@test.com";
-            int count = db.Users.Update(
-                u => u.EmailAddress.EndsWith(emailDomain),
-                u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Update(u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
         }
 
         [Fact]
@@ -52,9 +53,9 @@ namespace Tracker.SqlServer.Test
             string emailDomain = "@test.com";
             string newComment = " New Comment";
 
-            int count = db.Users.Update(
-                u => u.EmailAddress.EndsWith(emailDomain),
-                u => new User { LastName = u.LastName + newComment });
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Update(u => new User { LastName = u.LastName + newComment });
         }
 
         [Fact]
@@ -65,9 +66,9 @@ namespace Tracker.SqlServer.Test
             string emailDomain = "@test.com";
             string newComment = " New Comment";
 
-            int count = db.Users.Update(
-                u => u.EmailAddress.EndsWith(emailDomain),
-                u => new User
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Update(u => new User
                 {
                     FirstName = "Test",
                     LastName = u.LastName + newComment,
@@ -82,9 +83,9 @@ namespace Tracker.SqlServer.Test
             string emailDomain = "@test.com";
             string space = " ";
 
-            int count = db.Users.Update(
-                u => u.EmailAddress.EndsWith(emailDomain),
-                u => new User { LastName = u.FirstName + space + u.LastName });
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Update(u => new User { LastName = u.FirstName + space + u.LastName });
         }
 
         [Fact]
@@ -92,11 +93,10 @@ namespace Tracker.SqlServer.Test
         {
             var db = new TrackerContext();
             string emailDomain = "@test.com";
-            string space = " ";
 
-            int count = db.Users.Update(
-                u => u.EmailAddress.EndsWith(emailDomain),
-                u => new User { Comment = u.LastName });
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Update(u => new User { Comment = u.LastName });
         }
 
     }

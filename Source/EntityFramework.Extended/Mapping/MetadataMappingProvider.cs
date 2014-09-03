@@ -30,6 +30,14 @@ namespace EntityFramework.Mapping
             return GetEntityMap(type, context);
         }
 
+        /// <summary>
+        /// Gets the <see cref="EntityMap" /> for the specified <paramref name="type" />.
+        /// </summary>
+        /// <param name="type">The type of the entity.</param>
+        /// <param name="dbContext">The database context to load metadata from.</param>
+        /// <returns>
+        /// An <see cref="EntityMap" /> with the mapping data.
+        /// </returns>
         public EntityMap GetEntityMap(Type type, DbContext dbContext)
         {
             var objectContextAdapter = dbContext as IObjectContextAdapter;
@@ -37,6 +45,14 @@ namespace EntityFramework.Mapping
             return GetEntityMap(type, objectContext);
         }
 
+        /// <summary>
+        /// Gets the <see cref="EntityMap" /> for the specified <paramref name="type" />.
+        /// </summary>
+        /// <param name="type">The type of the entity.</param>
+        /// <param name="objectContext">The object context to load metadata from.</param>
+        /// <returns>
+        /// An <see cref="EntityMap" /> with the mapping data.
+        /// </returns>
         public EntityMap GetEntityMap(Type type, ObjectContext objectContext)
         {
             var entityMap = new EntityMap(type);
