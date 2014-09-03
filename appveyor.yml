@@ -10,8 +10,8 @@ environment:
     secure: 0gZDzNpTgeoXGnBaTbkpeg==
     
 services:
-  - mssql2012sp1
-
+  - mssql2014
+  
 install:
   - cmd: sqlcmd -S "(local)\SQL2014" -U sa -P %SqlPass% -i "%APPVEYOR_BUILD_FOLDER%\Database\SqlServer\Tracker.sql"
 
