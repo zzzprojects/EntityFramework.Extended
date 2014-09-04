@@ -11,7 +11,7 @@ services:
   - mssql2014
   
 before_build:
-  - cmd: "C:\Program Files (x86)\Microsoft SQL Server\120\DAC\bin\SqlPackage.exe" /a:Publish /sf:"%APPVEYOR_BUILD_FOLDER%\Database\SqlServer\Tracker.dacpac" /tcs:"Data Source=(local)\SQL2014;Initial Catalog=Tracker;User ID=sa;Password=Password12!"
+  - cmd: "\"C:\\Program Files (x86)\\Microsoft SQL Server\\120\\DAC\\bin\\SqlPackage.exe\" /a:Publish /sf:\"%APPVEYOR_BUILD_FOLDER%\\Database\\SqlServer\\Tracker.dacpac\" /tcs:\"Data Source=(local)\\SQL2014;Initial Catalog=Tracker;User ID=sa;Password=Password12!\""
 
 build:
   project: Master.proj
