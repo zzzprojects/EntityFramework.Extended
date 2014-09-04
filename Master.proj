@@ -17,9 +17,9 @@
     <BuildNumber Condition=" '$(APPVEYOR_BUILD_NUMBER)' != '' ">$(APPVEYOR_BUILD_NUMBER)</BuildNumber>
     <BuildNumber Condition=" '$(BUILD_NUMBER)' != '' ">$(BUILD_NUMBER)</BuildNumber>
     <BuildNumber Condition=" '$(BuildNumber)' == '' ">0</BuildNumber>
-  
+
     <BuildConfiguration  Condition=" '$(BuildConfiguration)' == '' ">Release</BuildConfiguration>
-    
+
     <Major Condition=" '$(Major)' == '' ">6</Major>
     <Minor Condition=" '$(Minor)' == '' ">1</Minor>
     <Revision Condition=" '$(Revision)' == '' ">0</Revision>
@@ -27,7 +27,7 @@
     <AssemblyVersion>$(Major).0.0.0</AssemblyVersion>
     <AssemblyFileVersion>$(Major).$(Minor).$(Revision).$(BuildNumber)</AssemblyFileVersion>
     <AssemblyInformationalVersion>$(Major).$(Minor).$(Revision).$(BuildNumber)</AssemblyInformationalVersion>
-    <PackageVersion>$(Major).$(Minor).$(Revision).$(BuildNumber)</PackageVersion>    
+    <PackageVersion>$(Major).$(Minor).$(Revision).$(BuildNumber)</PackageVersion>
   </PropertyGroup>
 
   <Target Name="Clean">
@@ -71,7 +71,7 @@
     <MSBuild Projects="$(SourceFolder)\EntityFramework.Extended.net45.sln"
              Properties="Configuration=$(BuildConfiguration)"/>
 
-    <NuGetRestore Solution="$(SourceFolder)\EntityFramework.Extended.net40.sln" />  
+    <NuGetRestore Solution="$(SourceFolder)\EntityFramework.Extended.net40.sln" />
     <MSBuild Projects="$(SourceFolder)\EntityFramework.Extended.net40.sln"
              Properties="Configuration=$(BuildConfiguration)"/>
   </Target>
@@ -85,16 +85,19 @@
          WorkingDirectory="$(SourceFolder)\EntityFramework.Extended\bin\$(BuildConfiguration)"
          ZipFileName="EntityFramework.Extended.v$(PackageVersion).zip" />
   </Target>
-  
-  <Target Name="Test" DependsOnTargets="Compile">   
+
+  <Target Name="Test" DependsOnTargets="Compile">
     <ItemGroup>
       <TestAssemblies Include="$(SourceFolder)\**\*.Test\bin\$(BuildConfiguration)\**\*.Test.dll"/>
     </ItemGroup>
 
-    <exec Condition=" '$(APPVEYOR_BUILD_NUMBER)' != '' " 
-          Command="xunit.console.clr4.x86.exe &quot;%(TestAssemblies.Identity)&quot;  /appveyor "/>
-          
-    <exec Condition=" '$(APPVEYOR_BUILD_NUMBER)' == '' " 
+    <exec Condition=" '$(APPVEYOR_BUILD_NUMBER)' != '' "
+          Command="$(ToolFolder)\ctt.exe s:&quot;%(TestAssemblies.Identity).config&quot; t:&quot;$(SourceFolder)\%(TestAssemblies.RecursiveDir)App.AppVeyor.config&quot; d:&quot;%(TestAssemblies.Identity).config&quot; pw"/>
+
+    <exec Condition=" '$(APPVEYOR_BUILD_NUMBER)' != '' "
+          Command="xunit.console.clr4.x86.exe &quot;%(TestAssemblies.Identity)&quot; /appveyor"/>
+
+    <exec Condition=" '$(APPVEYOR_BUILD_NUMBER)' == '' "
           Command="$(XUnitTasksPath)\xunit.console.clr4.x86.exe &quot;%(TestAssemblies.Identity)&quot;"/>
   </Target>
 
@@ -135,7 +138,7 @@
                Source="https://nuget.symbolsource.org/MyGet/loresoft" />
 
   </Target>
-  
+
   <Target Name="Build">
     <CallTarget Targets="Package" />
   </Target>

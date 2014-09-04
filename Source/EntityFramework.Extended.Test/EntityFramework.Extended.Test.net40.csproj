@@ -104,6 +104,11 @@
     <None Include="..\EntityFramework.Extended.snk">
       <Link>EntityFramework.Extended.snk</Link>
     </None>
+    <None Include="App.AppVeyor.config">
+      <DependentUpon>App.config</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
