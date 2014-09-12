@@ -28,11 +28,20 @@ namespace Tracker.SqlServer.Test
             var db = new TrackerContext();
             string emailDomain = "@test.com";
 
-            //var user = db.Users.Select(u => new User { FirstName = u.FirstName, LastName = u.LastName });
-
             int count = db.Users
                 .Where(u => u.EmailAddress.EndsWith(emailDomain))
                 .Delete();
+        }
+
+        [Fact]
+        public async void DeleteAsync()
+        {
+            var db = new TrackerContext();
+            string emailDomain = "@test.com";
+
+            int count = await db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .DeleteAsync();
         }
 
         [Fact]
@@ -43,6 +52,16 @@ namespace Tracker.SqlServer.Test
             int count = db.Users
                 .Where(u => u.EmailAddress.EndsWith(emailDomain))
                 .Update(u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
+        }
+
+        [Fact]
+        public async void UpdateAsync()
+        {
+            var db = new TrackerContext();
+            string emailDomain = "@test.com";
+            int count = await db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .UpdateAsync(u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
         }
 
         [Fact]

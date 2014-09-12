@@ -286,7 +286,7 @@ namespace EntityFramework.Caching
             return item;
         }
 
-#if net45
+#if NET45
         /// <summary>
         /// Gets the cache value for the specified key that is already in the dictionary or the new value for the key as returned asynchronously by <paramref name="valueFactory"/>.
         /// </summary>
