@@ -4,23 +4,21 @@ using System.Globalization;
 using System.Runtime.Caching;
 using EntityFramework.Caching;
 using FluentAssertions;
-using NUnit.Framework;
+using Xunit;
 
 namespace EntityFramework.Test.Caching
 {
-    [TestFixture]
+    
     public class MemoryCacheProviderTest
     {
-        public TestContext TestContext { get; set; }
-
-        [Test]
+        [Fact]
         public void MemoryCacheProviderConstructorTest()
         {
             Action action = () => new MemoryCacheProvider();
             action.ShouldNotThrow();
         }
 
-        [Test]
+        [Fact]
         public void AddTest()
         {
             var provider = new MemoryCacheProvider();
@@ -38,7 +36,7 @@ namespace EntityFramework.Test.Caching
             cachedValue.Should().Be(value);
         }
 
-        [Test]
+        [Fact]
         public void AddWithTagsTest()
         {
             var provider = new MemoryCacheProvider();
@@ -66,7 +64,7 @@ namespace EntityFramework.Test.Caching
             cachedTag.Should().NotBeNull();
         }
 
-        [Test]
+        [Fact]
         public void AddWithExistingTagTest()
         {
             var provider = new MemoryCacheProvider();
@@ -103,7 +101,7 @@ namespace EntityFramework.Test.Caching
             cachedTag2.Should().Be(cachedTag);
         }
 
-        [Test]
+        [Fact]
         public void ExpireTest()
         {
             var cache = MemoryCache.Default;
@@ -174,7 +172,7 @@ namespace EntityFramework.Test.Caching
             cache.GetCount().Should().Be(4);
         }
 
-        [Test]
+        [Fact]
         public void GetTest()
         {
             var provider = new MemoryCacheProvider();
@@ -190,7 +188,7 @@ namespace EntityFramework.Test.Caching
             existing.Should().BeSameAs(value);
         }
 
-        [Test]
+        [Fact]
         public void GetOrAddTest()
         {
             var provider = new MemoryCacheProvider();
@@ -221,7 +219,7 @@ namespace EntityFramework.Test.Caching
             callCount.Should().Be(0);
         }
 
-        [Test]
+        [Fact]
         public void RemoveTest()
         {
             var provider = new MemoryCacheProvider();
@@ -247,7 +245,7 @@ namespace EntityFramework.Test.Caching
             previous.Should().BeNull();
         }
 
-        [Test]
+        [Fact]
         public void SetTest()
         {
             var provider = new MemoryCacheProvider();
@@ -273,7 +271,7 @@ namespace EntityFramework.Test.Caching
             cachedValue2.Should().Be(value2);
         }
 
-        [Test]
+        [Fact]
         public void CreateChangeMonitorTest()
         {
             string key = DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);
@@ -292,7 +290,7 @@ namespace EntityFramework.Test.Caching
             monitor.CacheKeys.Should().Contain(tagKey);
         }
 
-        [Test]
+        [Fact]
         public void CreatePolicyAbsoluteTest()
         {
             string key = DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);
@@ -312,7 +310,7 @@ namespace EntityFramework.Test.Caching
             policy.ChangeMonitors.Should().ContainItemsAssignableTo<CacheEntryChangeMonitor>();
         }
 
-        [Test]
+        [Fact]
         public void CreatePolicySlidingTest()
         {
             string key = DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);

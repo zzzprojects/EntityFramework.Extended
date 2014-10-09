@@ -16,6 +16,13 @@ namespace Tracker.SqlServer.CodeFirst.Entities
     {
         public User()
         {
+            CreatedDate = DateTime.Now;
+            ModifiedDate = DateTime.Now;
+            PasswordHash = "";
+            PasswordSalt = "";
+            IsApproved = true;
+            LastLoginDate = DateTime.Now;
+            LastActivityDate = DateTime.Now;
             Audits = new List<AuditData>();
             AssignedTasks = new List<Task>();
             CreatedTasks = new List<Task>();

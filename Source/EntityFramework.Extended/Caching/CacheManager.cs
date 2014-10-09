@@ -16,7 +16,7 @@ namespace EntityFramework.Caching
     /// </para>
     /// <para>
     /// The CacheManager also supports tagging the cache entry to support expiring by tag. <see cref="CacheKey"/> supports a list
-    /// of tags to associate with the cache entry.  Use <see cref="Expire"/> to evict the cache entry by <see cref="CacheTag"/>.
+    /// of tags to associate with the cache entry.  Use <see cref="F:Expire"/> to evict the cache entry by <see cref="CacheTag"/>.
     /// </para>
     /// </remarks>
     /// <example>
@@ -287,7 +287,7 @@ namespace EntityFramework.Caching
             return item;
         }
 
-#if net45
+#if NET45
         /// <summary>
         /// Gets the cache value for the specified key that is already in the dictionary or the new value for the key as returned asynchronously by <paramref name="valueFactory"/>.
         /// </summary>

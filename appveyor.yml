@@ -1,0 +1,24 @@
+version: 6.1.0.{build}
+
+os: Windows Server 2012
+
+environment:
+  Major: 6
+  Minor: 1
+  Revision: 0
+    
+services:
+  - mssql2014
+  
+before_build:
+  - cmd: "\"C:\\Program Files (x86)\\Microsoft SQL Server\\120\\DAC\\bin\\SqlPackage.exe\" /a:Publish /sf:\"%APPVEYOR_BUILD_FOLDER%\\Database\\SqlServer\\Tracker.dacpac\" /tcs:\"Data Source=(local)\\SQL2014;Initial Catalog=Tracker;User ID=sa;Password=Password12!\""
+
+build:
+  project: Master.proj
+  verbosity: normal
+
+
+test: off
+
+artifacts:
+  - path: Build\*.nupkg

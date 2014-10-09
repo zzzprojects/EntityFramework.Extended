@@ -188,7 +188,6 @@ namespace EntityFramework.Audit
             WriteRelationships(state);
 
             return true;
-
         }
 
         private void WriteKeys(AuditEntryState state)
@@ -360,13 +359,14 @@ namespace EntityFramework.Audit
                     auditProperty.IsRelationship = true;
                     auditProperty.ForeignKey = GetForeignKey(navigationProperty);
 
-                    object currentValue;
+                    object currentValue = null;
 
                     if (isLoaded)
                     {
                         // get value directly from instance to save db call
                         object valueInstance = accessor.GetValue(state.Entity);
-                        currentValue = displayMember.GetValue(valueInstance);
+                        if(valueInstance != null)
+                            currentValue = displayMember.GetValue(valueInstance);
                     }
                     else
                     {
@@ -523,7 +523,7 @@ namespace EntityFramework.Audit
             var parameters = new List<ObjectParameter>();
             for (int index = 0; index < fromProperties.Count; index++)
             {
-                if (parameters.Count > 1)
+                if (index > 0)
                     sql.Append(" AND ");
 
                 string fromProperty = fromProperties[index];
@@ -531,12 +531,16 @@ namespace EntityFramework.Audit
                 var value = values.GetValue(toProperty);
                 var name = "@" + fromProperty;
 
-                sql.Append(" t.")
-                    .Append(fromProperty)
-                    .Append(" == ")
-                    .Append(name);
-
-                parameters.Add(new ObjectParameter(fromProperty, value));
+                sql.Append(" t.").Append(fromProperty);
+                if (value != null)
+                {
+                    sql.Append(" == ").Append(name);
+                    parameters.Add(new ObjectParameter(fromProperty, value));
+                }
+                else
+                {
+                    sql.Append(" is null");
+                }
             }
 
             var q = state.ObjectContext.CreateQuery<object>(

@@ -16,6 +16,8 @@ namespace Tracker.SqlServer.CodeFirst.Entities
     {
         public Task()
         {
+            CreatedDate = DateTime.Now;
+            ModifiedDate = DateTime.Now;
             Audits = new List<AuditData>();
         }
 

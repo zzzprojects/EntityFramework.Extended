@@ -24,7 +24,7 @@ namespace EntityFramework.Batch
         int Delete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query)
             where TEntity : class;
 
-#if net45
+#if NET45
         /// <summary>
         /// Create and runs a batch delete statement asynchronously.
         /// </summary>
@@ -60,7 +60,7 @@ namespace EntityFramework.Batch
         int Update<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression)
             where TEntity : class;
 
-#if net45
+#if NET45
         /// <summary>
         /// Create and runs a batch update statement asynchronously.
         /// </summary>

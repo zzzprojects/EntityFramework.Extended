@@ -27,6 +27,7 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
             // Properties
             Property(t => t.Id)
                 .HasColumnName("Id")
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)
                 .IsRequired();
             Property(t => t.Name)
                 .HasColumnName("Name")
@@ -58,4 +59,3 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
         }
     }
 }
-

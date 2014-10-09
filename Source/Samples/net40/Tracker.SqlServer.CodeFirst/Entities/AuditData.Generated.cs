@@ -16,6 +16,7 @@ namespace Tracker.SqlServer.CodeFirst.Entities
     {
         public AuditData()
         {
+            CreatedDate = DateTime.Now;
         }
 
         public int Id { get; set; }

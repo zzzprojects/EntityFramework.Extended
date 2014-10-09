@@ -74,7 +74,7 @@ namespace EntityFramework.Extensions
         /// Executes a delete statement using the query to filter the rows to be deleted.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <param name="source">The <see cref="IQueryable`1"/> used to generate the where clause for the delete statement.</param>
+        /// <param name="source">The <see cref="T:IQueryable`1"/> used to generate the where clause for the delete statement.</param>
         /// <returns>The number of row deleted.</returns>
         /// <example>Delete all users with email domain @test.com.
         /// <code><![CDATA[
@@ -107,7 +107,7 @@ namespace EntityFramework.Extensions
             return runner.Delete(objectContext, entityMap, sourceQuery);
         }
 
-#if net45
+#if NET45
         /// <summary>
         /// Executes a delete statement asynchronously using an expression to filter the rows to be deleted.
         /// </summary>
@@ -145,7 +145,7 @@ namespace EntityFramework.Extensions
         /// Executes a delete statement asynchronously using the query to filter the rows to be deleted.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <param name="source">The <see cref="IQueryable`1"/> used to generate the where clause for the delete statement.</param>
+        /// <param name="source">The <see cref="T:IQueryable`1"/> used to generate the where clause for the delete statement.</param>
         /// <returns>The number of row deleted.</returns>
         /// <example>Delete all users with email domain @test.com.
         /// <code><![CDATA[
@@ -338,7 +338,7 @@ namespace EntityFramework.Extensions
             return runner.Update(objectContext, entityMap, sourceQuery, updateExpression);
         }
 
-#if net45
+#if NET45
         /// <summary>
         /// Executes an update statement asynchronously using an expression to filter the rows that are updated.
         /// </summary>

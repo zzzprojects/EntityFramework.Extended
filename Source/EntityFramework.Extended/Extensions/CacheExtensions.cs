@@ -44,7 +44,7 @@ namespace EntityFramework.Extensions
             return result;
         }
 
-#if net45
+#if NET45
         /// <summary>
         /// Returns the result of the <paramref name="query"/>; if possible from the cache,
         /// otherwise the query is materialized asynchronously and the result cached before being returned.
@@ -114,7 +114,7 @@ namespace EntityFramework.Extensions
                 .FirstOrDefault();
         }
 
-#if net45
+#if NET45
         /// <summary>
         /// Returns the first element of the <paramref name="query"/>; if possible from the cache,
         /// otherwise the query is materialized asynchronously and the result cached before being returned.

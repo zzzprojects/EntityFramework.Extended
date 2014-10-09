@@ -461,6 +461,13 @@ namespace EntityFramework.Reflection
       return typeAccessor.Create();
     }
 
+    /// <summary>
+    /// Invokes a method by <paramref name="name"/>.
+    /// </summary>
+    /// <param name="target">The target instance to invoke the method on.</param>
+    /// <param name="name">The name of the method to invoke.</param>
+    /// <param name="arguments">The arguments for the method.</param>
+    /// <returns>The result of the method call</returns>
     public static object InvokeMethod(object target, string name, params object[] arguments)
     {
       if (target == null)
