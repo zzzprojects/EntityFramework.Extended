@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace EntityFramework.Future
 {
@@ -31,7 +32,7 @@ namespace EntityFramework.Future
         /// </summary>
         /// <param name="query">The query source to use when materializing.</param>
         /// <param name="loadAction">The action to execute when the query is accessed.</param>
-        internal FutureCount(IQueryable query, Action loadAction)
+        internal FutureCount(IQueryable query, Func<Task> loadAction)
             : base(query, loadAction)
         { }
 

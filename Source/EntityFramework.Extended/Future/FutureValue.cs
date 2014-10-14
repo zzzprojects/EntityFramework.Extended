@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace EntityFramework.Future
 {
@@ -30,7 +31,7 @@ namespace EntityFramework.Future
         /// </summary>
         /// <param name="query">The query source to use when materializing.</param>
         /// <param name="loadAction">The action to execute when the query is accessed.</param>
-        internal FutureValue(IQueryable query, Action loadAction)
+        internal FutureValue(IQueryable query, Func<Task> loadAction)
             : base(query, loadAction)
         { }
 
@@ -60,7 +61,7 @@ namespace EntityFramework.Future
                 {
                     _hasValue = true;
 
-                    var result = GetResult() ?? Enumerable.Empty<T>();
+                    var result = GetResultAsync().Result ?? Enumerable.Empty<T>();
                     UnderlyingValue = result.FirstOrDefault();
                 }
 
@@ -75,6 +76,12 @@ namespace EntityFramework.Future
                 _hasValue = true;
             }
         }
+
+        public async Task<T> ValueAsync()
+        {
+            return (await GetResultAsync()).FirstOrDefault();
+        }
+        
 
         /// <summary>
         /// Performs an implicit conversion from <see cref="T:EntityFramework.Future.FutureValue`1" /> to T.

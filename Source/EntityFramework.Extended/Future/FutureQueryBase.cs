@@ -5,6 +5,7 @@ using System.Data.Entity.Core.Objects;
 using System.Diagnostics;
 using System.Linq;
 using EntityFramework.Reflection;
+using System.Threading.Tasks;
 
 namespace EntityFramework.Future
 {
@@ -15,7 +16,7 @@ namespace EntityFramework.Future
     [DebuggerDisplay("IsLoaded={IsLoaded}")]
     public abstract class FutureQueryBase<T> : IFutureQuery
     {
-        private readonly Action _loadAction;
+        private readonly Func<Task> _loadAction;
         private readonly IQueryable _query;
         private IEnumerable<T> _result;
         private bool _isLoaded;
@@ -25,7 +26,7 @@ namespace EntityFramework.Future
         /// </summary>
         /// <param name="query">The query source to use when materializing.</param>
         /// <param name="loadAction">The action to execute when the query is accessed.</param>
-        protected FutureQueryBase(IQueryable query, Action loadAction)
+        protected FutureQueryBase(IQueryable query, Func<Task> loadAction)
         {
             _query = query;
             _loadAction = loadAction;
@@ -36,7 +37,7 @@ namespace EntityFramework.Future
         /// Gets the action to execute when the query is accessed.
         /// </summary>
         /// <value>The load action.</value>
-        protected Action LoadAction
+        protected Func<Task> LoadAction
         {
             get { return _loadAction; }
         }
@@ -71,7 +72,7 @@ namespace EntityFramework.Future
         /// <returns>
         /// An <see cref="T:System.Collections.Generic.IEnumerable`1"/> that can be used to iterate through the collection.
         /// </returns>
-        protected virtual IEnumerable<T> GetResult()
+        protected virtual async Task<IEnumerable<T>> GetResultAsync()
         {
             if (IsLoaded)
                 return _result;
@@ -86,7 +87,7 @@ namespace EntityFramework.Future
 
             // invoke the load action on the datacontext
             // result will be set with a callback to SetResult
-            LoadAction.Invoke();
+            await LoadAction.Invoke();
             return _result ?? Enumerable.Empty<T>();
         }
 

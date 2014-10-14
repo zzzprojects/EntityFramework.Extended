@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace EntityFramework.Future
 {
@@ -30,7 +31,7 @@ namespace EntityFramework.Future
         /// </summary>
         /// <param name="query">The query source to use when materializing.</param>
         /// <param name="loadAction">The action to execute when the query is accessed.</param>
-        internal FutureQuery(IQueryable query, Action loadAction)
+        internal FutureQuery(IQueryable query, Func<Task> loadAction)
             : base(query, loadAction)
         { }
 
@@ -43,13 +44,22 @@ namespace EntityFramework.Future
         public IEnumerator<T> GetEnumerator()
         {
             // triggers loading future queries  
-            var result = GetResult() ?? Enumerable.Empty<T>();
+            var result = GetResultAsync().Result?? Enumerable.Empty<T>();
 
             if (Exception != null)
                 throw new FutureException("An error occurred executing the future query.", Exception);
 
             return result.GetEnumerator();
         }
+
+        public async Task<List<T>> ToListAsync()
+        {
+            var result = await GetResultAsync();
+
+            return result.ToList();
+
+        }
+
 
         /// <summary>
         /// Returns an enumerator that iterates through a collection.

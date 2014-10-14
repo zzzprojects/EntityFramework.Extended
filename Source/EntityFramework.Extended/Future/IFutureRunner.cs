@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Objects;
+using System.Threading.Tasks;
 
 namespace EntityFramework.Future
 {
@@ -15,5 +16,12 @@ namespace EntityFramework.Future
         /// <param name="context">The <see cref="ObjectContext"/> to run the queries against.</param>
         /// <param name="futureQueries">The future queries list.</param>
         void ExecuteFutureQueries(ObjectContext context, IList<IFutureQuery> futureQueries);
+
+        /// <summary>
+        /// Executes the future queries.
+        /// </summary>
+        /// <param name="context">The <see cref="ObjectContext"/> to run the queries against.</param>
+        /// <param name="futureQueries">The future queries list.</param>
+        Task ExecuteFutureQueriesAsync(ObjectContext context, IList<IFutureQuery> futureQueries);
     }
 }
