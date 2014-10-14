@@ -15,10 +15,7 @@ namespace EntityFramework.Future
         /// <value>The future queries.</value>
         IList<IFutureQuery> FutureQueries { get; }
 
-        /// <summary>
-        /// Executes the future queries.
-        /// </summary>
-        void ExecuteFutureQueries();
+       
 
         /// <summary>
         /// Executes the future queries.

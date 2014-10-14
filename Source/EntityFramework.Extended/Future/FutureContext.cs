@@ -70,21 +70,7 @@ namespace EntityFramework.Future
             get { return _objectContext.IsAlive; }
         }
 
-        /// <summary>
-        /// Executes the future queries as a single batch.
-        /// </summary>
-        public void ExecuteFutureQueries()
-        {
-            ObjectContext context = ObjectContext;
-            if (context == null)
-                throw new ObjectDisposedException("ObjectContext", "The ObjectContext for the future queries has been displosed.");
-
-            var runner = Locator.Current.Resolve<IFutureRunner>();
-            if (runner == null)
-                throw new InvalidOperationException("Could not resolve the IFutureRunner. Make sure IFutureRunner is registered in the Locator.Current container.");
-
-            runner.ExecuteFutureQueries(context, FutureQueries);
-        }
+        
 
         /// <summary>
         /// Executes the future queries as a single batch.
