@@ -38,7 +38,7 @@ namespace EntityFramework.Extensions
               if (prop == null)
                   return null;
 
-              return (ObjectQuery<TEntity>)prop.GetValue(query);
+              return (ObjectQuery<TEntity>)prop.GetValue(query, null);
           }
 
           // access internal property InternalQuery
