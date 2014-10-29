@@ -86,8 +86,6 @@
     <Compile Include="Caching\ICacheProvider.cs" />
     <Compile Include="Caching\CacheTag.cs" />
     <Compile Include="Caching\MemoryCacheProvider.cs" />
-    <Compile Include="Caching\Query\Evaluator.cs" />
-    <Compile Include="Caching\Query\LocalCollectionExpander.cs" />
     <Compile Include="Caching\Query\QueryCache.cs" />
     <Compile Include="Caching\Query\Utility.cs" />
     <Compile Include="Future\IFutureRunner.cs" />
@@ -152,7 +150,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
