@@ -25,6 +25,12 @@ namespace EntityFramework.Audit
         private readonly ConcurrentDictionary<string, IMethodAccessor> _formatterCache = new ConcurrentDictionary<string, IMethodAccessor>();
         private readonly ConcurrentDictionary<Type, IMemberAccessor> _displayCache = new ConcurrentDictionary<Type, IMemberAccessor>();
 
+        public AuditConfiguration()
+        {
+            IncludeInserts = true;
+            IncludeDeletes = true;
+        }
+
         internal bool IsAuditable(object entity)
         {
             if (entity == null)
@@ -191,6 +197,22 @@ namespace EntityFramework.Audit
             var info = member.MemberInfo;
             return info;
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to include inserted entities. Default is <c>true</c>.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> to include inserted entities; otherwise, <c>false</c>.
+        /// </value>
+        public bool IncludeInserts { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to include deleted entities. Default is <c>true</c>.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> to include deleted entities; otherwise, <c>false</c>.
+        /// </value>
+        public bool IncludeDeletes { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to include relationship properties.

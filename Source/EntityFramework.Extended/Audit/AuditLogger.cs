@@ -150,9 +150,15 @@ namespace EntityFramework.Audit
             // must call to make sure changes are detected
             ObjectContext.DetectChanges();
 
+            var entityState = EntityState.Modified;
+            if (Configuration.IncludeInserts)
+                entityState = entityState | EntityState.Added;
+            if (Configuration.IncludeDeletes)
+                entityState = entityState | EntityState.Deleted;
+
             IEnumerable<ObjectStateEntry> changes = ObjectContext
                 .ObjectStateManager
-                .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified);
+                .GetObjectStateEntries(entityState);
 
             foreach (ObjectStateEntry objectStateEntry in changes)
             {
