@@ -34,7 +34,7 @@ namespace EntityFramework.Test
         public void ExpireTest()
         {
             var cacheManager = new CacheManager();
-            string key = "AddTest" + DateTime.Now.Ticks;
+            string key = "ExpireTest" + DateTime.Now.Ticks;
             var tags = new[] { "a", "b" };
             var cacheKey = new CacheKey(key, tags);
             var value = "Test Value " + DateTime.Now;
@@ -44,7 +44,7 @@ namespace EntityFramework.Test
             result.Should().BeTrue();
 
             // add second value with same tag
-            string key2 = "AddTest2" + DateTime.Now.Ticks;
+            string key2 = "ExpireTest2" + DateTime.Now.Ticks;
             var tags2 = new[] { "a", "c" };
             var cacheKey2 = new CacheKey(key2, tags2);
             var value2 = "Test Value 2 " + DateTime.Now;
@@ -54,7 +54,7 @@ namespace EntityFramework.Test
             result2.Should().BeTrue();
 
             // add third value with same tag
-            string key3 = "AddTest3" + DateTime.Now.Ticks;
+            string key3 = "ExpireTest3" + DateTime.Now.Ticks;
             var tags3 = new[] { "b", "c" };
             var cacheKey3 = new CacheKey(key3, tags3);
             var value3 = "Test Value 3 " + DateTime.Now;
@@ -110,7 +110,7 @@ namespace EntityFramework.Test
         public void GetOrAddTest()
         {
             var cacheManager = new CacheManager();
-            var cacheKey = new CacheKey("AddTest" + DateTime.Now.Ticks);
+            var cacheKey = new CacheKey("GetOrAddTest" + DateTime.Now.Ticks);
             var value = "Test Value " + DateTime.Now;
             var cachePolicy = new CachePolicy();
             int callCount = 0;
@@ -140,7 +140,7 @@ namespace EntityFramework.Test
         public void RemoveTest()
         {
             var cacheManager = new CacheManager();
-            var cacheKey = new CacheKey("AddTest" + DateTime.Now.Ticks);
+            var cacheKey = new CacheKey("RemoveTest" + DateTime.Now.Ticks);
             var value = "Test Value " + DateTime.Now;
             var cachePolicy = new CachePolicy();
 
