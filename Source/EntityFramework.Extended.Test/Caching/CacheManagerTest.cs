@@ -74,6 +74,9 @@ namespace EntityFramework.Test
             // expire actually just changes the value for tag key
             cacheManager.Expire(cacheTag);
 
+            // allow flush
+            System.Threading.Thread.Sleep(500);
+
             var expiredTag = cacheManager.Get(tagKey);
             expiredTag.Should().NotBeNull();
             expiredTag.Should().NotBe(cachedTag);
