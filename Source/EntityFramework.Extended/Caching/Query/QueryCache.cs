@@ -1,6 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq;
+using EntityFramework.Extensions;
 
 namespace EntityFramework.Caching
 {
@@ -20,43 +19,16 @@ namespace EntityFramework.Caching
         /// </summary>
         /// <param name="query">The query to get the key from.</param>
         /// <returns>A unique key for the specified <see cref="IQueryable"/></returns>
-        public static string GetCacheKey(this IQueryable query)
+        public static string GetCacheKey<TEntity>(this IQueryable<TEntity> query) where TEntity : class
         {
-            var expression = query.Expression;
-
-            // locally evaluate as much of the query as possible
-            expression = Evaluator.PartialEval(expression, QueryCache.CanBeEvaluatedLocally);
-
-            // support local collections
-            expression = LocalCollectionExpander.Rewrite(expression);
-
-            // use the string representation of the expression for the cache key
-            string key = expression.ToString();
+            // The key is made up of the SQL that will be executed, along with any parameters and their values
+            string key = query.ToTraceString();
 
             // the key is potentially very long, so use an md5 fingerprint
             // (fine if the query result data isn't critically sensitive)
             key = key.ToMd5Fingerprint();
 
             return key;
-        }
-
-        static Func<Expression, bool> CanBeEvaluatedLocally
-        {
-            get
-            {
-                return expression =>
-                {
-                    // don't evaluate parameters
-                    if (expression.NodeType == ExpressionType.Parameter)
-                        return false;
-
-                    // can't evaluate queries
-                    if (typeof(IQueryable).IsAssignableFrom(expression.Type))
-                        return false;
-
-                    return true;
-                };
-            }
         }
     }
 }
