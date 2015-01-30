@@ -75,5 +75,11 @@ namespace EntityFramework.Caching
         /// <param name="value">The object to insert.</param>
         /// <param name="cachePolicy">A <see cref="CachePolicy"/> that contains eviction details for the cache entry.</param>
         bool Set(CacheKey cacheKey, object value, CachePolicy cachePolicy);
+
+        /// <summary>
+        /// Clears all entries from the cache
+        /// </summary>
+        /// <returns>The number of items removed.</returns>
+        long ClearCache();
     }
 }

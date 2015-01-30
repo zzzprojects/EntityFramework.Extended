@@ -157,6 +157,16 @@ namespace EntityFramework.Caching
             return true;
         }
 
+        /// <summary>
+        /// Clears all entries from the cache
+        /// </summary>
+        /// <returns></returns>
+        public long ClearCache()
+        {
+            return MemoryCache.Default.Trim(100);
+        }
+
+
         // internal for testing
         internal static string GetKey(CacheKey cacheKey)
         {
