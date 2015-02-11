@@ -4,7 +4,7 @@ using System.Data.Common;
 using System.Data.Entity.Core.EntityClient;
 using System.Data.Entity.Core.Objects;
 using System.Linq;
-using System.Linq.Dynamic;
+using EntityFramework.DynamicLinq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
