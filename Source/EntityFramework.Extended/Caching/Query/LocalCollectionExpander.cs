@@ -34,7 +34,7 @@ namespace EntityFramework.Caching
                                 let g = x.Param.GetGenericTypeDefinition()
                                 where g == typeof(IEnumerable<>) || g == typeof(List<>)
                                 where x.Arg.NodeType == ExpressionType.Constant
-                                let elementType = x.Param.GetGenericArguments().Single()
+                                let elementType = x.Param.GetGenericArguments().First()
                                 let printer = MakePrinter((ConstantExpression)x.Arg, elementType)
                                 select new { x.Arg, Replacement = printer }).ToList();
 
@@ -42,7 +42,7 @@ namespace EntityFramework.Caching
             {
                 var args = map.Select(x => (from r in replacements
                                             where r.Arg == x.Arg
-                                            select r.Replacement).SingleOrDefault() ?? x.Arg).ToList();
+                                            select r.Replacement).FirstOrDefault() ?? x.Arg).ToList();
 
                 node = node.Update(args.First(), args.Skip(1));
             }

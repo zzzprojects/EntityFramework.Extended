@@ -64,25 +64,25 @@ namespace EntityFramework.Mapping
             // Get the entity type from the model that maps to the CLR type
             var entityType = metadata
                     .GetItems<EntityType>(DataSpace.OSpace)
-                    .Single(e => objectItemCollection.GetClrType(e) == type);
+                    .First(e => objectItemCollection.GetClrType(e) == type);
 
             // Get the entity set that uses this entity type
             var entitySet = metadata
                 .GetItems<EntityContainer>(DataSpace.CSpace)
-                .Single()
+                .First()
                 .EntitySets
-                .Single(s => s.ElementType.Name == entityType.Name);
+                .First(s => s.ElementType.Name == entityType.Name);
 
             // Find the mapping between conceptual and storage model for this entity set
             var mapping = metadata.GetItems<EntityContainerMapping>(DataSpace.CSSpace)
-                    .Single()
+                    .First()
                     .EntitySetMappings
-                    .Single(s => s.EntitySet == entitySet);
+                    .First(s => s.EntitySet == entitySet);
 
             // Find the storage entity set (table) that the entity is mapped
             var mappingFragment =
-                (mapping.EntityTypeMappings.SingleOrDefault(a => a.IsHierarchyMapping) ?? mapping.EntityTypeMappings.Single())
-                    .Fragments.Single();
+                (mapping.EntityTypeMappings.FirstOrDefault(a => a.IsHierarchyMapping) ?? mapping.EntityTypeMappings.First())
+                    .Fragments.First();
 
             entityMap.ModelType = entityType;
             entityMap.ModelSet = entitySet;
