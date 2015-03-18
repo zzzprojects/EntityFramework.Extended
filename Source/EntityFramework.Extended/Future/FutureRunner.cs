@@ -59,6 +59,11 @@ namespace EntityFramework.Future
                               ? dbConnection.CreateCommand()
                               : entityConnection.StoreConnection.CreateCommand();
 
+            if (entityConnection != null && entityConnection.CurrentTransaction != null)
+                {
+                command.Transaction = entityConnection.CurrentTransaction.StoreTransaction;
+                }
+
             var futureSql = new StringBuilder();
             int queryCount = 0;
 
