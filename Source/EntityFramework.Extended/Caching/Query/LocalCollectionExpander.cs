@@ -34,7 +34,7 @@ namespace EntityFramework.Caching
                                 let g = x.Param.GetGenericTypeDefinition()
                                 where g == typeof(IEnumerable<>) || g == typeof(List<>)
                                 where x.Arg.NodeType == ExpressionType.Constant
-                                let elementType = x.Param.GetGenericArguments().First()
+                                let elementType = x.Param.GetGenericArguments().Single()
                                 let printer = MakePrinter((ConstantExpression)x.Arg, elementType)
                                 select new { x.Arg, Replacement = printer }).ToList();
 
