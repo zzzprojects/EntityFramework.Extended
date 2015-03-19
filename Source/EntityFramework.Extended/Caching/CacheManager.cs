@@ -415,6 +415,15 @@ namespace EntityFramework.Caching
             provider.Set(cacheKey, value, cachePolicy);
         }
 
+        /// <summary>
+        /// Clears all entries from the cache
+        /// </summary>
+        public virtual void Clear()
+        {
+            var provider = ResolveProvider();
+            provider.ClearCache();
+        }
+
 
         /// <summary>
         /// Gets the registered <see cref="ICacheProvider"/> from <see cref="Locator"/>.
