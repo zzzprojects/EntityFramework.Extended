@@ -57,7 +57,7 @@ namespace EntityFramework.Mapping
         {
             var entityMap = new EntityMap(type);
             var metadata = objectContext.MetadataWorkspace;
-
+            
             // Get the part of the model that contains info about the actual CLR types
             var objectItemCollection = ((ObjectItemCollection)metadata.GetItemCollection(DataSpace.OSpace));
 
@@ -67,22 +67,19 @@ namespace EntityFramework.Mapping
                     .First(e => objectItemCollection.GetClrType(e) == type);
 
             // Get the entity set that uses this entity type
-            var entitySet = metadata
-                .GetItems<EntityContainer>(DataSpace.CSpace)
-                .First()
-                .EntitySets
-                .First(s => s.ElementType.Name == entityType.Name);
+            var entitySet = metadata.GetItems<EntityContainer>(DataSpace.CSpace)
+                                    .SelectMany(a => a.EntitySets)
+                                    .Where(s => s.ElementType.Name == entityType.Name)
+                                    .FirstOrDefault();
+            
 
             // Find the mapping between conceptual and storage model for this entity set
             var mapping = metadata.GetItems<EntityContainerMapping>(DataSpace.CSSpace)
-                    .First()
-                    .EntitySetMappings
-                    .First(s => s.EntitySet == entitySet);
+                                    .SelectMany(a => a.EntitySetMappings)
+                                    .First(s => s.EntitySet == entitySet);
 
             // Find the storage entity set (table) that the entity is mapped
-            var mappingFragment =
-                (mapping.EntityTypeMappings.FirstOrDefault(a => a.IsHierarchyMapping) ?? mapping.EntityTypeMappings.First())
-                    .Fragments.First();
+            var mappingFragment = (mapping.EntityTypeMappings.FirstOrDefault(a => a.IsHierarchyMapping) ?? mapping.EntityTypeMappings.First()).Fragments.First();
 
             entityMap.ModelType = entityType;
             entityMap.ModelSet = entitySet;
