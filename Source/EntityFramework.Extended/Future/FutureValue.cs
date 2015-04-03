@@ -41,7 +41,7 @@ namespace EntityFramework.Future
         public FutureValue(T underlyingValue)
             : base(null, null)
         {
-            UnderlingValue = underlyingValue;
+            UnderlyingValue = underlyingValue;
             _hasValue = true;
         }
 
@@ -61,26 +61,28 @@ namespace EntityFramework.Future
                     _hasValue = true;
 
                     var result = GetResult() ?? Enumerable.Empty<T>();
-                    UnderlingValue = result.FirstOrDefault();
+                    UnderlyingValue = result.FirstOrDefault();
                 }
 
                 if (Exception != null)
                     throw new FutureException("An error occurred executing the future query.", Exception);
 
-                return UnderlingValue;
+                return UnderlyingValue;
             }
             set
             {
-                UnderlingValue = value;
+                UnderlyingValue = value;
                 _hasValue = true;
             }
         }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="T:EntityFramework.Future.FutureValue`1"/> to <see cref="T"/>.
+        /// Performs an implicit conversion from <see cref="T:EntityFramework.Future.FutureValue`1" /> to T.
         /// </summary>
         /// <param name="futureValue">The future value.</param>
-        /// <returns>The result of forcing this lazy value.</returns>
+        /// <returns>
+        /// The result of forcing this lazy value.
+        /// </returns>
         public static implicit operator T(FutureValue<T> futureValue)
         {
             return futureValue.Value;
@@ -90,6 +92,6 @@ namespace EntityFramework.Future
         /// Gets the underling value. This property will not trigger the loading of the future query.
         /// </summary>
         /// <value>The underling value.</value>
-        internal T UnderlingValue { get; private set; }
+        internal T UnderlyingValue { get; private set; }
     }
 }

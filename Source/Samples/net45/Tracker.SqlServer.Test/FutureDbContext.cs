@@ -1,17 +1,15 @@
 using System.Linq;
 using EntityFramework.Extensions;
 using EntityFramework.Future;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using Tracker.SqlServer.CodeFirst;
 using Tracker.SqlServer.CodeFirst.Entities;
 
 namespace Tracker.SqlServer.Test
 {
-    [TestClass]
     public class FutureDbContext
     {
-
-        [TestMethod]
+        [Fact]
         public void PageTest()
         {
             var db = new TrackerContext();
@@ -29,10 +27,10 @@ namespace Tracker.SqlServer.Test
             var tasks = q2.ToList();
             int total = q1.Value;
 
-            Assert.IsNotNull(tasks);
+            Assert.NotNull(tasks);
         }
 
-        [TestMethod]
+        [Fact]
         public void SimpleTest()
         {
             var db = new TrackerContext();
@@ -50,24 +48,24 @@ namespace Tracker.SqlServer.Test
                 .Future();
 
             // should be 2 queries 
-            //Assert.AreEqual(2, db.FutureQueries.Count);
+            //Assert.Equal(2, db.FutureQueries.Count);
 
             // this triggers the loading of all the future queries
             var users = q1.ToList();
-            Assert.IsNotNull(users);
+            Assert.NotNull(users);
 
             // should be cleared at this point
-            //Assert.AreEqual(0, db.FutureQueries.Count);
+            //Assert.Equal(0, db.FutureQueries.Count);
 
             // this should already be loaded
-            Assert.IsTrue(((IFutureQuery)q2).IsLoaded);
+            Assert.True(((IFutureQuery)q2).IsLoaded);
 
             var tasks = q2.ToList();
-            Assert.IsNotNull(tasks);
+            Assert.NotNull(tasks);
 
         }
 
-        [TestMethod]
+        [Fact]
         public void FutureCountTest()
         {
             var db = new TrackerContext();
@@ -85,23 +83,23 @@ namespace Tracker.SqlServer.Test
                 .FutureCount();
 
             // should be 2 queries 
-            //Assert.AreEqual(2, db.FutureQueries.Count);
+            //Assert.Equal(2, db.FutureQueries.Count);
 
             // this triggers the loading of all the future queries
             var users = q1.ToList();
-            Assert.IsNotNull(users);
+            Assert.NotNull(users);
 
             // should be cleared at this point
-            //Assert.AreEqual(0, db.FutureQueries.Count);
+            //Assert.Equal(0, db.FutureQueries.Count);
 
             // this should already be loaded
-            Assert.IsTrue(((IFutureQuery)q2).IsLoaded);
+            Assert.True(((IFutureQuery)q2).IsLoaded);
 
             int count = q2;
-            Assert.AreNotEqual(count, 0);
+            Assert.NotEqual(count, 0);
         }
 
-        [TestMethod]
+        [Fact]
         public void FutureCountReverseTest()
         {
             var db = new TrackerContext();
@@ -119,24 +117,24 @@ namespace Tracker.SqlServer.Test
                 .FutureCount();
 
             // should be 2 queries 
-            //Assert.AreEqual(2, db.FutureQueries.Count);
+            //Assert.Equal(2, db.FutureQueries.Count);
 
             // access q2 first to trigger loading, testing loading from FutureCount
             // this triggers the loading of all the future queries
             var count = q2.Value;
-            Assert.AreNotEqual(count, 0);
+            Assert.NotEqual(count, 0);
 
             // should be cleared at this point
-            //Assert.AreEqual(0, db.FutureQueries.Count);
+            //Assert.Equal(0, db.FutureQueries.Count);
 
             // this should already be loaded
-            Assert.IsTrue(((IFutureQuery)q1).IsLoaded);
+            Assert.True(((IFutureQuery)q1).IsLoaded);
 
             var users = q1.ToList();
-            Assert.IsNotNull(users);
+            Assert.NotNull(users);
         }
 
-        [TestMethod]
+        [Fact]
         public void FutureValueTest()
         {
             var db = new TrackerContext();
@@ -158,26 +156,26 @@ namespace Tracker.SqlServer.Test
                 .Future();
 
             // should be 3 queries 
-            //Assert.AreEqual(3, db.FutureQueries.Count);
+            //Assert.Equal(3, db.FutureQueries.Count);
 
             // this triggers the loading of all the future queries
             User user = q1;
-            Assert.IsNotNull(user);
+            Assert.NotNull(user);
 
             // should be cleared at this point
-            //Assert.AreEqual(0, db.FutureQueries.Count);
+            //Assert.Equal(0, db.FutureQueries.Count);
 
             // this should already be loaded
-            Assert.IsTrue(((IFutureQuery)q2).IsLoaded);
+            Assert.True(((IFutureQuery)q2).IsLoaded);
 
             var count = q2.Value;
-            Assert.AreNotEqual(count, 0);
+            Assert.NotEqual(count, 0);
 
             var tasks = q3.ToList();
-            Assert.IsNotNull(tasks);
+            Assert.NotNull(tasks);
         }
 
-        [TestMethod]
+        [Fact]
         public void FutureValueReverseTest()
         {
             var db = new TrackerContext();
@@ -199,28 +197,28 @@ namespace Tracker.SqlServer.Test
                 .Future();
 
             // should be 3 queries 
-            //Assert.AreEqual(3, db.FutureQueries.Count);
+            //Assert.Equal(3, db.FutureQueries.Count);
 
             // access q2 first to trigger loading, testing loading from FutureCount
             // this triggers the loading of all the future queries
             var count = q2.Value;
-            Assert.AreNotEqual(count, 0);
+            Assert.NotEqual(count, 0);
 
             // should be cleared at this point
-            //Assert.AreEqual(0, db.FutureQueries.Count);
+            //Assert.Equal(0, db.FutureQueries.Count);
 
             // this should already be loaded
-            Assert.IsTrue(((IFutureQuery)q1).IsLoaded);
+            Assert.True(((IFutureQuery)q1).IsLoaded);
 
             var users = q1.Value;
-            Assert.IsNotNull(users);
+            Assert.NotNull(users);
 
             var tasks = q3.ToList();
-            Assert.IsNotNull(tasks);
+            Assert.NotNull(tasks);
 
         }
 
-        [TestMethod]
+        [Fact]
         public void FutureValueWithAggregateFunctions()
         {
             var db = new TrackerContext();
@@ -229,17 +227,17 @@ namespace Tracker.SqlServer.Test
             var q2 = db.Users.Where(x => x.EmailAddress.EndsWith("@battlestar.com")).FutureValue(x => x.Min(t => t.LastName));
             var q3 = db.Tasks.FutureValue(x => x.Sum(t => t.Priority.Order));
 
-            Assert.IsFalse(((IFutureQuery)q1).IsLoaded);
-            Assert.IsFalse(((IFutureQuery)q2).IsLoaded);
-            Assert.IsFalse(((IFutureQuery)q3).IsLoaded);
+            Assert.False(((IFutureQuery)q1).IsLoaded);
+            Assert.False(((IFutureQuery)q2).IsLoaded);
+            Assert.False(((IFutureQuery)q3).IsLoaded);
 
             var r1 = q1.Value;
             var r2 = q2.Value;
             var r3 = q3.Value;
 
-            Assert.IsTrue(((IFutureQuery)q1).IsLoaded);
-            Assert.IsTrue(((IFutureQuery)q2).IsLoaded);
-            Assert.IsTrue(((IFutureQuery)q3).IsLoaded);
+            Assert.True(((IFutureQuery)q1).IsLoaded);
+            Assert.True(((IFutureQuery)q2).IsLoaded);
+            Assert.True(((IFutureQuery)q3).IsLoaded);
         }
     }
 }

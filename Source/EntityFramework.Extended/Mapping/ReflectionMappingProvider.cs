@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Metadata.Edm;
-using System.Data.Objects;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Text;
 using EntityFramework.Reflection;
@@ -151,14 +151,14 @@ namespace EntityFramework.Mapping
 
         private static void SetProperties(EntityMap entityMap, dynamic mappingFragmentProxy)
         {
-            var propertyMaps = mappingFragmentProxy.Properties;
+            var propertyMaps = mappingFragmentProxy.PropertyMappings;
             foreach (var propertyMap in propertyMaps)
             {
                 // StorageScalarPropertyMapping
                 dynamic propertyMapProxy = new DynamicProxy(propertyMap);
 
-                EdmProperty modelProperty = propertyMapProxy.EdmProperty;
-                EdmProperty storeProperty = propertyMapProxy.ColumnProperty;
+                EdmProperty modelProperty = propertyMapProxy.Property;
+                EdmProperty storeProperty = propertyMapProxy.Column;
 
                 var map = new PropertyMap
                 {

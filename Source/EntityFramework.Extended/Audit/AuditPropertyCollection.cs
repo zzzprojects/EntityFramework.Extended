@@ -1,10 +1,12 @@
 ﻿using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
 
 namespace EntityFramework.Audit
 {
     /// <summary>
     /// A keyed collection of <see cref="AuditProperty"/>
     /// </summary>
+    [CollectionDataContract(Name = "properties", ItemName = "property", Namespace = AuditLog.AuditNamespace)]
     public class AuditPropertyCollection : KeyedCollection<string, AuditProperty>
     {
         /// <summary>

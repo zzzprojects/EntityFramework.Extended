@@ -59,4 +59,3 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
         }
     }
 }
-

@@ -4,23 +4,21 @@ using System.Globalization;
 using System.Runtime.Caching;
 using EntityFramework.Caching;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace EntityFramework.Test.Caching
 {
-    [TestClass]
+    
     public class MemoryCacheProviderTest
     {
-        public TestContext TestContext { get; set; }
-
-        [TestMethod]
+        [Fact]
         public void MemoryCacheProviderConstructorTest()
         {
             Action action = () => new MemoryCacheProvider();
             action.ShouldNotThrow();
         }
 
-        [TestMethod]
+        [Fact]
         public void AddTest()
         {
             var provider = new MemoryCacheProvider();
@@ -38,11 +36,11 @@ namespace EntityFramework.Test.Caching
             cachedValue.Should().Be(value);
         }
 
-        [TestMethod]
+        [Fact]
         public void AddWithTagsTest()
         {
             var provider = new MemoryCacheProvider();
-            string key = "AddTest" + DateTime.Now.Ticks;
+            string key = "AddWithTagsTest" + DateTime.Now.Ticks;
             string[] tags = new[] { "a", "b" };
             var cacheKey = new CacheKey(key, tags);
             var value = "Test Value " + DateTime.Now;
@@ -66,11 +64,11 @@ namespace EntityFramework.Test.Caching
             cachedTag.Should().NotBeNull();
         }
 
-        [TestMethod]
+        [Fact]
         public void AddWithExistingTagTest()
         {
             var provider = new MemoryCacheProvider();
-            string key = "AddTest" + DateTime.Now.Ticks;
+            string key = "AddWithExistingTagTest" + DateTime.Now.Ticks;
             string[] tags = new[] { "a", "b" };
             var cacheKey = new CacheKey(key, tags);
             var value = "Test Value " + DateTime.Now;
@@ -88,7 +86,7 @@ namespace EntityFramework.Test.Caching
             cachedTag.Should().NotBeNull();
 
             // add second value with same tag
-            string key2 = "AddTest2" + DateTime.Now.Ticks;
+            string key2 = "AddWithExistingTagTest2" + DateTime.Now.Ticks;
             string[] tags2 = new[] { "a", "c" };
             var cacheKey2 = new CacheKey(key2, tags2);
             var value2 = "Test Value 2 " + DateTime.Now;
@@ -103,7 +101,7 @@ namespace EntityFramework.Test.Caching
             cachedTag2.Should().Be(cachedTag);
         }
 
-        [TestMethod]
+        [Fact]
         public void ExpireTest()
         {
             var cache = MemoryCache.Default;
@@ -112,7 +110,7 @@ namespace EntityFramework.Test.Caching
                 cache.Remove(pair.Key);
 
             var provider = new MemoryCacheProvider();
-            string key = "AddTest" + DateTime.Now.Ticks;
+            string key = "ExpireTest" + DateTime.Now.Ticks;
             var tags = new[] { "a", "b" };
             var cacheKey = new CacheKey(key, tags);
             var value = "Test Value " + DateTime.Now;
@@ -122,7 +120,7 @@ namespace EntityFramework.Test.Caching
             result.Should().BeTrue();
 
             // add second value with same tag
-            string key2 = "AddTest2" + DateTime.Now.Ticks;
+            string key2 = "ExpireTest2" + DateTime.Now.Ticks;
             var tags2 = new[] { "a", "c" };
             var cacheKey2 = new CacheKey(key2, tags2);
             var value2 = "Test Value 2 " + DateTime.Now;
@@ -132,7 +130,7 @@ namespace EntityFramework.Test.Caching
             result2.Should().BeTrue();
 
             // add third value with same tag
-            string key3 = "AddTest3" + DateTime.Now.Ticks;
+            string key3 = "ExpireTest3" + DateTime.Now.Ticks;
             var tags3 = new[] { "b", "c" };
             var cacheKey3 = new CacheKey(key3, tags3);
             var value3 = "Test Value 3 " + DateTime.Now;
@@ -151,6 +149,8 @@ namespace EntityFramework.Test.Caching
 
             var cachedTag = cache.Get(tagKey);
             cachedTag.Should().NotBeNull();
+
+            System.Threading.Thread.Sleep(500);
 
             // expire actually just changes the value for tag key
             provider.Expire(cacheTag);
@@ -172,7 +172,7 @@ namespace EntityFramework.Test.Caching
             cache.GetCount().Should().Be(4);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetTest()
         {
             var provider = new MemoryCacheProvider();
@@ -188,11 +188,11 @@ namespace EntityFramework.Test.Caching
             existing.Should().BeSameAs(value);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetOrAddTest()
         {
             var provider = new MemoryCacheProvider();
-            var cacheKey = new CacheKey("AddTest" + DateTime.Now.Ticks);
+            var cacheKey = new CacheKey("GetOrAddTest" + DateTime.Now.Ticks);
             var value = "Test Value " + DateTime.Now;
             var cachePolicy = new CachePolicy();
             int callCount = 0;
@@ -219,11 +219,11 @@ namespace EntityFramework.Test.Caching
             callCount.Should().Be(0);
         }
 
-        [TestMethod]
+        [Fact]
         public void RemoveTest()
         {
             var provider = new MemoryCacheProvider();
-            var cacheKey = new CacheKey("AddTest" + DateTime.Now.Ticks);
+            var cacheKey = new CacheKey("RemoveTest" + DateTime.Now.Ticks);
             var value = "Test Value " + DateTime.Now;
             var cachePolicy = new CachePolicy();
 
@@ -245,7 +245,7 @@ namespace EntityFramework.Test.Caching
             previous.Should().BeNull();
         }
 
-        [TestMethod]
+        [Fact]
         public void SetTest()
         {
             var provider = new MemoryCacheProvider();
@@ -271,7 +271,7 @@ namespace EntityFramework.Test.Caching
             cachedValue2.Should().Be(value2);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateChangeMonitorTest()
         {
             string key = DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);
@@ -290,7 +290,7 @@ namespace EntityFramework.Test.Caching
             monitor.CacheKeys.Should().Contain(tagKey);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreatePolicyAbsoluteTest()
         {
             string key = DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);
@@ -310,7 +310,7 @@ namespace EntityFramework.Test.Caching
             policy.ChangeMonitors.Should().ContainItemsAssignableTo<CacheEntryChangeMonitor>();
         }
 
-        [TestMethod]
+        [Fact]
         public void CreatePolicySlidingTest()
         {
             string key = DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);

@@ -2,34 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using EntityFramework.Reflection;
 
 namespace EntityFramework.Test.Reflection
 {
-  [TestClass]
+  
   public class ReflectionHelperTest
   {
-    [TestMethod]
+    [Fact]
     public virtual void WhenExtractingNameFromAValidPropertyExpression_ThenPropertyNameReturned()
     {
       var propertyName = ReflectionHelper.ExtractPropertyName(() => this.InstanceProperty);
-      Assert.AreEqual("InstanceProperty", propertyName);
+      Assert.Equal("InstanceProperty", propertyName);
     }
 
-    [TestMethod]
+    [Fact]
     public void WhenExpressionRepresentsAStaticProperty_ThenExceptionThrown()
     {
       ExceptionAssert.Throws<ArgumentException>(() => ReflectionHelper.ExtractPropertyName(() => StaticProperty));
     }
 
-    [TestMethod]
+    [Fact]
     public void WhenExpressionIsNull_ThenAnExceptionIsThrown()
     {
       ExceptionAssert.Throws<ArgumentNullException>(() => ReflectionHelper.ExtractPropertyName<int>(null));
     }
 
-    [TestMethod]
+    [Fact]
     public void WhenExpressionRepresentsANonMemberAccessExpression_ThenAnExceptionIsThrown()
     {
       ExceptionAssert.Throws<ArgumentException>(
@@ -38,7 +38,7 @@ namespace EntityFramework.Test.Reflection
 
     }
 
-    [TestMethod]
+    [Fact]
     public void WhenExpressionRepresentsANonPropertyMemberAccessExpression_ThenAnExceptionIsThrown()
     {
       ExceptionAssert.Throws<ArgumentException>(() => ReflectionHelper.ExtractPropertyName(() => this.InstanceField));

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Data.Objects;
+using System.Data.Entity.Core.Objects;
 using System.Diagnostics;
 using System.Linq;
 using EntityFramework.Reflection;
@@ -161,7 +161,7 @@ namespace EntityFramework.Future
                 // ShaperFactory
                 dynamic shaperFactory = executionPlan.ResultShaperFactory;
                 // Shaper<T>
-                dynamic shaper = shaperFactory.Create(reader, dataContext, dataContext.MetadataWorkspace, MergeOption.AppendOnly, false);
+                dynamic shaper = shaperFactory.Create(reader, dataContext, dataContext.MetadataWorkspace, MergeOption.AppendOnly, false, true, false);
 
                 var list = new List<T>();
                 IEnumerator<T> enumerator = shaper.GetEnumerator();

@@ -1,13 +1,14 @@
 using System;
 using System.Data;
 using System.Data.Common;
-using System.Data.EntityClient;
-using System.Data.Objects;
+using System.Data.Entity.Core.EntityClient;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Linq.Dynamic;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using EntityFramework.Extensions;
 using EntityFramework.Mapping;
 using EntityFramework.Reflection;
@@ -29,8 +30,39 @@ namespace EntityFramework.Batch
         /// <returns>
         /// The number of rows deleted.
         /// </returns>
-        public int Delete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query)
+        public int Delete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query) where TEntity : class
+        {
+#if NET45
+            return InternalDelete(objectContext, entityMap, query, false).Result;
+#else
+            return InternalDelete(objectContext, entityMap, query);
+#endif
+        }
+
+#if NET45
+        /// <summary>
+        /// Create and run a batch delete statement asynchronously.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="objectContext">The <see cref="ObjectContext"/> to get connection and metadata information from.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for <typeparamref name="TEntity"/>.</param>
+        /// <param name="query">The query to create the where clause from.</param>
+        /// <returns>
+        /// The number of rows deleted.
+        /// </returns>
+        public Task<int> DeleteAsync<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query) where TEntity : class
+        {
+            return InternalDelete(objectContext, entityMap, query, true);
+        }
+#endif
+
+#if NET45
+        private async Task<int> InternalDelete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, bool async = false)
             where TEntity : class
+#else
+        private int InternalDelete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query)
+            where TEntity : class
+#endif
         {
             DbConnection deleteConnection = null;
             DbTransaction deleteTransaction = null;
@@ -89,8 +121,13 @@ namespace EntityFramework.Batch
 
                 deleteCommand.CommandText = sqlBuilder.ToString();
 
+#if NET45
+                int result = async
+                    ? await deleteCommand.ExecuteNonQueryAsync()
+                    : deleteCommand.ExecuteNonQuery();
+#else
                 int result = deleteCommand.ExecuteNonQuery();
-
+#endif
                 // only commit if created transaction
                 if (ownTransaction)
                     deleteTransaction.Commit();
@@ -121,8 +158,39 @@ namespace EntityFramework.Batch
         /// <returns>
         /// The number of rows updated.
         /// </returns>
-        public int Update<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression)
+        public int Update<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression) where TEntity : class
+        {
+#if NET45
+            return InternalUpdate(objectContext, entityMap, query, updateExpression, false).Result;
+#else
+            return InternalUpdate(objectContext, entityMap, query, updateExpression);
+#endif
+        }
+
+#if NET45
+        /// <summary>
+        /// Create and run a batch update statement asynchronously.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="objectContext">The <see cref="ObjectContext"/> to get connection and metadata information from.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for <typeparamref name="TEntity"/>.</param>
+        /// <param name="query">The query to create the where clause from.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <returns>
+        /// The number of rows updated.
+        /// </returns>
+        public Task<int> UpdateAsync<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression) where TEntity : class
+        {
+            return InternalUpdate(objectContext, entityMap, query, updateExpression, true);
+        }
+#endif
+#if NET45
+        private async Task<int> InternalUpdate<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression, bool async = false)
             where TEntity : class
+#else
+        private int InternalUpdate<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression, bool async = false)
+            where TEntity : class
+#endif
         {
             DbConnection updateConnection = null;
             DbTransaction updateTransaction = null;
@@ -252,7 +320,7 @@ namespace EntityFramework.Batch
                         string sql = selectQuery.ToTraceString();
 
                         // parse select part of sql to use as update
-                        string regex = @"SELECT\s*\r\n(?<ColumnValue>.+)?\s*AS\s*(?<ColumnAlias>\[\w+\])\r\nFROM\s*(?<TableName>\[\w+\]\.\[\w+\]|\[\w+\])\s*AS\s*(?<TableAlias>\[\w+\])";
+                        string regex = @"SELECT\s*\r\n\s*(?<ColumnValue>.+)?\s*AS\s*(?<ColumnAlias>\[\w+\])\r\n\s*FROM\s*(?<TableName>\[\w+\]\.\[\w+\]|\[\w+\])\s*AS\s*(?<TableAlias>\[\w+\])";
                         Match match = Regex.Match(sql, regex);
                         if (!match.Success)
                             throw new ArgumentException("The MemberAssignment expression could not be processed.", "updateExpression");
@@ -268,7 +336,7 @@ namespace EntityFramework.Batch
 
                             var parameter = updateCommand.CreateParameter();
                             parameter.ParameterName = parameterName;
-                            parameter.Value = objectParameter.Value;
+                            parameter.Value = objectParameter.Value ?? DBNull.Value;
                             updateCommand.Parameters.Add(parameter);
 
                             value = value.Replace(objectParameter.Name, parameterName);
@@ -297,8 +365,13 @@ namespace EntityFramework.Batch
 
                 updateCommand.CommandText = sqlBuilder.ToString();
 
+#if NET45
+                int result = async
+                    ? await updateCommand.ExecuteNonQueryAsync()
+                    : updateCommand.ExecuteNonQuery();
+#else
                 int result = updateCommand.ExecuteNonQuery();
-
+#endif
                 // only commit if created transaction
                 if (ownTransaction)
                     updateTransaction.Commit();
@@ -318,6 +391,8 @@ namespace EntityFramework.Batch
 
         private static Tuple<DbConnection, DbTransaction> GetStore(ObjectContext objectContext)
         {
+            // TODO, re-eval if this is needed
+
             DbConnection dbConnection = objectContext.Connection;
             var entityConnection = dbConnection as EntityConnection;
 
@@ -340,6 +415,8 @@ namespace EntityFramework.Batch
         private static string GetSelectSql<TEntity>(ObjectQuery<TEntity> query, EntityMap entityMap, DbCommand command)
             where TEntity : class
         {
+            // TODO change to esql?
+
             // changing query to only select keys
             var selector = new StringBuilder(50);
             selector.Append("new(");
@@ -365,7 +442,7 @@ namespace EntityFramework.Batch
             {
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = objectParameter.Name;
-                parameter.Value = objectParameter.Value;
+                parameter.Value = objectParameter.Value ?? DBNull.Value;
 
                 command.Parameters.Add(parameter);
             }

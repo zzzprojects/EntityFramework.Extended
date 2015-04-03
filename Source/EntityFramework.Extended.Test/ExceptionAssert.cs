@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace EntityFramework.Test
 {
@@ -19,11 +19,11 @@ namespace EntityFramework.Test
       }
       catch (Exception ex)
       {
-        Assert.IsInstanceOfType(ex, expectedExceptionType);
+        Assert.IsType(expectedExceptionType, ex);
         return;
       }
 
-      Assert.Fail(string.Format("No exception thrown.  Expected exception type of {0}.", expectedExceptionType.Name));
+      Assert.True(false, string.Format("No exception thrown.  Expected exception type of {0}.", expectedExceptionType.Name));
     }
   }
 }

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
+using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
-using System.Data.Objects;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using EntityFramework.Reflection;
 
 namespace EntityFramework.Extensions
@@ -91,7 +89,7 @@ namespace EntityFramework.Extensions
       /// <returns>An ObjectQuery created from the expression.</returns>
       public static ObjectQuery CreateQuery(this IQueryable source, Expression expression, Type type)
       {
-          // first convet to object query to get the correct provider
+          // first convert to object query to get the correct provider
           ObjectQuery sourceQuery = source.ToObjectQuery();
           if (sourceQuery == null)
               return null;

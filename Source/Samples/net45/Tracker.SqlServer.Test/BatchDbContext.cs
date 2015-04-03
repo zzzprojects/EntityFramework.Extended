@@ -4,47 +4,67 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
 using EntityFramework.Extensions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using Tracker.SqlServer.CodeFirst;
 using Tracker.SqlServer.CodeFirst.Entities;
 
 namespace Tracker.SqlServer.Test
 {
-    [TestClass]
+
     public class BatchDbContext
     {
-        [TestMethod]
+        [Fact]
         public void Delete()
         {
             var db = new TrackerContext();
             string emailDomain = "@test.com";
             int count = db.Users
-                .Delete(u => u.EmailAddress.EndsWith(emailDomain));
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Delete();
         }
-        [TestMethod]
+        [Fact]
         public void DeleteWhere()
         {
             var db = new TrackerContext();
             string emailDomain = "@test.com";
-
-            //var user = db.Users.Select(u => new User { FirstName = u.FirstName, LastName = u.LastName });
 
             int count = db.Users
                 .Where(u => u.EmailAddress.EndsWith(emailDomain))
                 .Delete();
         }
 
-        [TestMethod]
+        [Fact]
+        public async void DeleteAsync()
+        {
+            var db = new TrackerContext();
+            string emailDomain = "@test.com";
+
+            int count = await db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .DeleteAsync();
+        }
+
+        [Fact]
         public void Update()
         {
             var db = new TrackerContext();
             string emailDomain = "@test.com";
-            int count = db.Users.Update(
-                u => u.EmailAddress.EndsWith(emailDomain),
-                u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Update(u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
         }
 
-        [TestMethod]
+        [Fact]
+        public async void UpdateAsync()
+        {
+            var db = new TrackerContext();
+            string emailDomain = "@test.com";
+            int count = await db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .UpdateAsync(u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
+        }
+
+        [Fact]
         public void UpdateAppend()
         {
             var db = new TrackerContext();
@@ -52,12 +72,12 @@ namespace Tracker.SqlServer.Test
             string emailDomain = "@test.com";
             string newComment = " New Comment";
 
-            int count = db.Users.Update(
-                u => u.EmailAddress.EndsWith(emailDomain),
-                u => new User { LastName = u.LastName + newComment });
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Update(u => new User { LastName = u.LastName + newComment });
         }
 
-        [TestMethod]
+        [Fact]
         public void UpdateAppendAndNull()
         {
             var db = new TrackerContext();
@@ -65,9 +85,9 @@ namespace Tracker.SqlServer.Test
             string emailDomain = "@test.com";
             string newComment = " New Comment";
 
-            int count = db.Users.Update(
-                u => u.EmailAddress.EndsWith(emailDomain),
-                u => new User
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Update(u => new User
                 {
                     FirstName = "Test",
                     LastName = u.LastName + newComment,
@@ -75,28 +95,27 @@ namespace Tracker.SqlServer.Test
                 });
         }
 
-        [TestMethod]
+        [Fact]
         public void UpdateJoin()
         {
             var db = new TrackerContext();
             string emailDomain = "@test.com";
             string space = " ";
 
-            int count = db.Users.Update(
-                u => u.EmailAddress.EndsWith(emailDomain),
-                u => new User { LastName = u.FirstName + space + u.LastName });
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Update(u => new User { LastName = u.FirstName + space + u.LastName });
         }
 
-        [TestMethod]
+        [Fact]
         public void UpdateCopy()
         {
             var db = new TrackerContext();
             string emailDomain = "@test.com";
-            string space = " ";
 
-            int count = db.Users.Update(
-                u => u.EmailAddress.EndsWith(emailDomain),
-                u => new User { Comment = u.LastName });
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                .Update(u => new User { Comment = u.LastName });
         }
 
     }

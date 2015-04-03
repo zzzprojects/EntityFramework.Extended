@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Data.EntityClient;
-using System.Data.Objects;
+using System.Data.Entity.Core.EntityClient;
+using System.Data.Entity.Core.Objects;
 using System.Text;
 using EntityFramework.Reflection;
 
@@ -27,7 +27,7 @@ namespace EntityFramework.Future
 
             // used to call internal methods
             dynamic contextProxy = new DynamicProxy(context);
-            contextProxy.EnsureConnection();
+            contextProxy.EnsureConnection(false);
 
             try
             {
@@ -58,6 +58,11 @@ namespace EntityFramework.Future
             var command = entityConnection == null
                               ? dbConnection.CreateCommand()
                               : entityConnection.StoreConnection.CreateCommand();
+
+            if (entityConnection != null && entityConnection.CurrentTransaction != null)
+                {
+                command.Transaction = entityConnection.CurrentTransaction.StoreTransaction;
+                }
 
             var futureSql = new StringBuilder();
             int queryCount = 0;

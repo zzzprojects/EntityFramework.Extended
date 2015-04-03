@@ -1,24 +1,22 @@
 ﻿using System.Globalization;
 using EntityFramework.Caching;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using System;
 
 namespace EntityFramework.Test.Caching
 {
-    [TestClass]
+    
     public class CacheTagTest
     {
-        public TestContext TestContext { get; set; }
-
-        [TestMethod]
+        [Fact]
         public void CacheKeyConstructorNullTagTest()
         {
             Action action = () => new CacheTag(null);
             action.ShouldThrow<ArgumentNullException>();
         }
 
-        [TestMethod]
+        [Fact]
         public void CacheKeyConstructorEmptyTagTest()
         {
             var cacheTag = new CacheTag(string.Empty);
@@ -27,7 +25,7 @@ namespace EntityFramework.Test.Caching
         }
 
 
-        [TestMethod]
+        [Fact]
         public void CacheTagConstructorTest()
         {
             string tag = DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture); 
@@ -37,7 +35,7 @@ namespace EntityFramework.Test.Caching
         }
 
 
-        [TestMethod]
+        [Fact]
         public void EqualsTest()
         {
             string tag = DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);
@@ -55,7 +53,7 @@ namespace EntityFramework.Test.Caching
         }
 
 
-        [TestMethod]
+        [Fact]
         public void GetHashCodeTest()
         {
             string tag = DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);

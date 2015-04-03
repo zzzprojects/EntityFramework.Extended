@@ -27,6 +27,7 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
             // Properties
             Property(t => t.TaskId)
                 .HasColumnName("TaskId")
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None)
                 .IsRequired();
             Property(t => t.Browser)
                 .HasColumnName("Browser")
@@ -58,4 +59,3 @@ namespace Tracker.SqlServer.CodeFirst.Mapping
         }
     }
 }
-

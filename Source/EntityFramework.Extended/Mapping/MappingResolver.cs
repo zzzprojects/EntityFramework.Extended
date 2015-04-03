@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data.Metadata.Edm;
-using System.Data.Objects;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 
 namespace EntityFramework.Mapping
@@ -38,7 +38,7 @@ namespace EntityFramework.Mapping
         {
             var entityType = typeof(TEntity);
             var metadataWorkspace = objectContext.MetadataWorkspace;
-
+            
             // make sure types are loaded
             Type baseType = entityType;
             do

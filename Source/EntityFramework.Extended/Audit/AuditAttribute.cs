@@ -1,5 +1,4 @@
 ﻿using System;
-using EntityFramework.Audit;
 
 namespace EntityFramework.Audit
 {

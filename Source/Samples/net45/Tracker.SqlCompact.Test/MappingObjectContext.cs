@@ -15,10 +15,10 @@ namespace Tracker.SqlCompact.Test
         [Ignore]
         public void GetEntityMap()
         {
-            var db = new TrackerEntities();
-            var metadata = db.MetadataWorkspace;
+            //var db = new TrackerEntities();
+            //var metadata = db.MetadataWorkspace;
 
-            var map = db.Tasks.GetEntityMap<Task>();
+            //var map = db.Tasks.GetEntityMap<Task>();
 
         }
 

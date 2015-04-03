@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.Data.Metadata.Edm;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 using EntityFramework.Mapping;
-using EntityFramework.Reflection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using Tracker.SqlServer.CodeFirst;
 using Tracker.SqlServer.CodeFirst.Entities;
 using Tracker.SqlServer.Entities;
@@ -18,29 +12,46 @@ namespace Tracker.SqlServer.Test
     /// <summary>
     /// Summary description for MappingObjectContext
     /// </summary>
-    [TestClass]
+    
     public class MappingObjectContext
     {
-        [TestMethod]
+        [Fact]
         public void GetEntityMapTask()
         {
-            var db = new TrackerEntities();
-            var metadata = db.MetadataWorkspace;
+            //var db = new TrackerEntities();
+            //var metadata = db.MetadataWorkspace;
 
-            var map = db.Tasks.GetEntityMap<Task>();
+            //var map = db.Tasks.GetEntityMap<Task>();
 
-            Assert.AreEqual("[dbo].[Task]", map.TableName);
+            //Assert.Equal("[dbo].[Task]", map.TableName);
         }
 
 
-        [TestMethod]
+        [Fact]
         public void GetEntityMapAuditData()
         {
             var db = new TrackerContext();
+            var resolver = new MetadataMappingProvider();
 
-            var map = db.Audits.ToObjectQuery().GetEntityMap<AuditData>();
+            var map = resolver.GetEntityMap(typeof(AuditData), db);
 
-            Assert.AreEqual("[dbo].[Audit]", map.TableName);
+            //var map = db.Audits.ToObjectQuery().GetEntityMap<AuditData>();
+
+            Assert.Equal("[dbo].[Audit]", map.TableName);
+        }
+
+
+        [Fact]
+        public void GetInheritedEntityMapAuditData()
+        {
+            var db = new TrackerContext();
+            var resolver = new MetadataMappingProvider();
+
+            var map = resolver.GetEntityMap(typeof(CodeFirst.Entities.Task), db);
+
+            //var map = db.Audits.ToObjectQuery().GetEntityMap<AuditData>();
+
+            Assert.Equal("[dbo].[Task]", map.TableName);
         }
 
     }

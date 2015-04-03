@@ -2,14 +2,15 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
+
 
 namespace EntityFramework.Test
 {
-    [TestClass]
+        
     public class IoCTest
     {
-        [TestMethod]
+        [Fact]
         public void TestMethod1()
         {
         }

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace EntityFramework.Audit
@@ -7,6 +8,7 @@ namespace EntityFramework.Audit
     /// A class used to hold audit key values.
     /// </summary>
     [XmlRoot(Namespace = AuditLog.AuditNamespace, ElementName = "key")]
+    [DataContract(Name = "key", Namespace = AuditLog.AuditNamespace)]
     [DebuggerDisplay("Name: {Name}, Value: {Value}")]
     public class AuditKey
     {
@@ -14,14 +16,16 @@ namespace EntityFramework.Audit
         /// Gets or sets the name of the property.
         /// </summary>
         /// <value>The name of the property.</value>
-        [XmlAttribute("name")]
+        [XmlElement("name")]
+        [DataMember(Name = "name", Order = 0)]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the type of the property.
         /// </summary>
         /// <value>The type of the property.</value>
-        [XmlAttribute("type")]
+        [XmlElement("type")]
+        [DataMember(Name = "type", Order = 1)]
         public string Type { get; set; }
 
         /// <summary>
@@ -29,6 +33,7 @@ namespace EntityFramework.Audit
         /// </summary>
         /// <value>The current value of the property.</value>
         [XmlElement("value")]
+        [DataMember(Name = "value", Order = 2)]
         public object Value { get; set; }
     }
 }

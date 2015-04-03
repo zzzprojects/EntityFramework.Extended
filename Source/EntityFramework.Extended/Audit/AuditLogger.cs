@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Core.Objects.DataClasses;
 using System.Data.Entity.Infrastructure;
-using System.Data.Metadata.Edm;
-using System.Data.Objects;
-using System.Data.Objects.DataClasses;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -150,9 +150,15 @@ namespace EntityFramework.Audit
             // must call to make sure changes are detected
             ObjectContext.DetectChanges();
 
+            var entityState = EntityState.Modified;
+            if (Configuration.IncludeInserts)
+                entityState = entityState | EntityState.Added;
+            if (Configuration.IncludeDeletes)
+                entityState = entityState | EntityState.Deleted;
+
             IEnumerable<ObjectStateEntry> changes = ObjectContext
                 .ObjectStateManager
-                .GetObjectStateEntries(EntityState.Added | EntityState.Deleted | EntityState.Modified);
+                .GetObjectStateEntries(entityState);
 
             foreach (ObjectStateEntry objectStateEntry in changes)
             {
@@ -188,7 +194,6 @@ namespace EntityFramework.Audit
             WriteRelationships(state);
 
             return true;
-
         }
 
         private void WriteKeys(AuditEntryState state)
@@ -328,7 +333,7 @@ namespace EntityFramework.Audit
 
             foreach (NavigationProperty navigationProperty in properties)
             {
-                if (navigationProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many 
+                if (navigationProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many
                     || navigationProperty.FromEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many)
                     continue;
 
@@ -360,13 +365,14 @@ namespace EntityFramework.Audit
                     auditProperty.IsRelationship = true;
                     auditProperty.ForeignKey = GetForeignKey(navigationProperty);
 
-                    object currentValue;
+                    object currentValue = null;
 
                     if (isLoaded)
                     {
                         // get value directly from instance to save db call
                         object valueInstance = accessor.GetValue(state.Entity);
-                        currentValue = displayMember.GetValue(valueInstance);
+                        if(valueInstance != null)
+                            currentValue = displayMember.GetValue(valueInstance);
                     }
                     else
                     {
@@ -523,7 +529,7 @@ namespace EntityFramework.Audit
             var parameters = new List<ObjectParameter>();
             for (int index = 0; index < fromProperties.Count; index++)
             {
-                if (parameters.Count > 1)
+                if (index > 0)
                     sql.Append(" AND ");
 
                 string fromProperty = fromProperties[index];
@@ -531,16 +537,20 @@ namespace EntityFramework.Audit
                 var value = values.GetValue(toProperty);
                 var name = "@" + fromProperty;
 
-                sql.Append(" t.")
-                    .Append(fromProperty)
-                    .Append(" == ")
-                    .Append(name);
-
-                parameters.Add(new ObjectParameter(fromProperty, value));
+                sql.Append(" t.").Append(fromProperty);
+                if (value != null)
+                {
+                    sql.Append(" == ").Append(name);
+                    parameters.Add(new ObjectParameter(fromProperty, value));
+                }
+                else
+                {
+                    sql.Append(" is null");
+                }
             }
 
             var q = state.ObjectContext.CreateQuery<object>(
-                sql.ToString(), 
+                sql.ToString(),
                 parameters.ToArray());
 
             return q.FirstOrDefault();

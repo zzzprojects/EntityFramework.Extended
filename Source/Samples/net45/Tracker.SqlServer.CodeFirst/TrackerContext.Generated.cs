@@ -16,32 +16,39 @@ namespace Tracker.SqlServer.CodeFirst
     {
         public TrackerContext()
             :base("Name=TrackerContext")
-        { }
+        {
+            InitializeContext();
+        }
 
         public TrackerContext(System.Data.Entity.Infrastructure.DbCompiledModel model)
             : base("Name=TrackerContext", model)
-        { }
+        {
+            InitializeContext();
+        }
 
         public TrackerContext(string nameOrConnectionString)
             : base(nameOrConnectionString)
-        { }
+        {
+            InitializeContext();
+        }
 
         public TrackerContext(string nameOrConnectionString, System.Data.Entity.Infrastructure.DbCompiledModel model)
             : base(nameOrConnectionString, model)
-        { }
+        {
+            InitializeContext();
+        }
 
         public TrackerContext(System.Data.Common.DbConnection existingConnection, bool contextOwnsConnection)
             : base(existingConnection, contextOwnsConnection)
-        { }
+        {
+            InitializeContext();
+        }
 
         public TrackerContext(System.Data.Common.DbConnection existingConnection, System.Data.Entity.Infrastructure.DbCompiledModel model, bool contextOwnsConnection)
             : base(existingConnection, model, contextOwnsConnection)
-        { }
-
-        public TrackerContext(System.Data.Objects.ObjectContext objectContext, bool dbContextOwnsObjectContext)
-            : base(objectContext, dbContextOwnsObjectContext)
-        { }
-
+        {
+            InitializeContext();
+        }
 
         public System.Data.Entity.DbSet<Tracker.SqlServer.CodeFirst.Entities.AuditData> Audits { get; set; }
         public System.Data.Entity.DbSet<Tracker.SqlServer.CodeFirst.Entities.Task> Tasks { get; set; }
@@ -63,5 +70,8 @@ namespace Tracker.SqlServer.CodeFirst
 
             InitializeMapping(modelBuilder);
         }
+
+        partial void InitializeContext();
+        partial void InitializeMapping(System.Data.Entity.DbModelBuilder modelBuilder);
     }
 }

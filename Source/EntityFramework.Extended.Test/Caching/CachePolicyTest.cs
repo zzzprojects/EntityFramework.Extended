@@ -1,19 +1,17 @@
 ﻿using System.Runtime.Caching;
 using EntityFramework.Caching;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using System;
 
 namespace EntityFramework.Test.Caching
 {
 
 
-    [TestClass]
+    
     public class CachePolicyTest
     {
-        public TestContext TestContext { get; set; }
-
-        [TestMethod]
+        [Fact]
         public void CachePolicyConstructorTest()
         {
             var cachePolicy = new CachePolicy();
@@ -24,7 +22,7 @@ namespace EntityFramework.Test.Caching
             cachePolicy.SlidingExpiration.Should().Be(ObjectCache.NoSlidingExpiration);
         }
 
-        [TestMethod]
+        [Fact]
         public void WithAbsoluteExpirationTest()
         {
             var absoluteExpiration = new DateTimeOffset(2012, 1, 1, 12, 0, 0, TimeSpan.Zero);
@@ -36,7 +34,7 @@ namespace EntityFramework.Test.Caching
             cachePolicy.SlidingExpiration.Should().Be(ObjectCache.NoSlidingExpiration);
         }
 
-        [TestMethod]
+        [Fact]
         public void WithSlidingExpirationTest()
         {
             TimeSpan slidingExpiration = TimeSpan.FromMinutes(5);
@@ -48,7 +46,7 @@ namespace EntityFramework.Test.Caching
             cachePolicy.SlidingExpiration.Should().Be(slidingExpiration);
         }
 
-        [TestMethod]
+        [Fact]
         public void WithDurationExpirationTest()
         {
             TimeSpan expirationSpan = TimeSpan.FromSeconds(30);

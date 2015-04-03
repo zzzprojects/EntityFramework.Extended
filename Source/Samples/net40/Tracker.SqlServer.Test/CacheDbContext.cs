@@ -5,16 +5,16 @@ using System.Linq;
 using EntityFramework.Caching;
 using EntityFramework.Extensions;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using Tracker.SqlServer.CodeFirst;
 using Tracker.SqlServer.CodeFirst.Entities;
 
 namespace Tracker.SqlServer.Test
 {
-    [TestClass]
+    
     public class CacheDbContext
     {
-        [TestMethod]
+        [Fact]
         public void FromCacheTest()
         {
             var db = new TrackerContext();
@@ -25,7 +25,7 @@ namespace Tracker.SqlServer.Test
             roles2.Should().NotBeEmpty();
         }
 
-        [TestMethod]
+        [Fact]
         public void FromCacheFirstOrDefaultTest()
         {
             var db = new TrackerContext();
@@ -36,7 +36,7 @@ namespace Tracker.SqlServer.Test
             role2.Should().NotBeNull();
         }
 
-        [TestMethod]
+        [Fact]
         public void TaskFromCacheTest()
         {
             var db = new TrackerContext();
@@ -58,5 +58,32 @@ namespace Tracker.SqlServer.Test
 
 
         }
+
+        [Fact]
+        public void TaskProjectionFromCacheTest()
+        {
+            var db = new TrackerContext();
+
+            //query result is now cached 300 seconds
+            var tasks = db.Tasks
+                .Select(t => new TaskLookup
+                {
+                    Id = t.Id,
+                    Summary = t.Summary
+                })
+                .FromCache()
+                .ToList();
+
+
+
+        }
+
+    }
+
+    public class TaskLookup
+    {
+        public int Id { get; set; }
+        public string Summary { get; set; }
+
     }
 }

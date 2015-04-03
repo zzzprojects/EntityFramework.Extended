@@ -4,49 +4,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
 using EntityFramework.Extensions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using Tracker.SqlServer.Entities;
 
 namespace Tracker.SqlServer.Test
 {
-    [TestClass]
+    
     public class ExtensionTest
     {
-        [TestMethod]
+        [Fact]
         public void BeginTransactionObjectContext()
         {
             using (var db = new TrackerEntities())
-            using (var tx = db.BeginTransaction())
+            using (var tx = db.Database.BeginTransaction())
             {
                 string emailDomain = "@test.com";
 
-                int count = db.Users.Update(
-                    u => u.Email.EndsWith(emailDomain),
-                    u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
+                int count = db.Users
+                    .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                    .Update(u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
 
-                count = db.Users.Delete(u => u.Email.EndsWith(emailDomain));
+                count = db.Users
+                    .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                    .Delete();
 
                 tx.Commit();
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void NoTransactionObjectContext()
         {
             using (var db = new TrackerEntities())
             {
                 string emailDomain = "@test.com";
 
-                int count = db.Users.Update(
-                    u => u.Email.EndsWith(emailDomain),
-                    u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
+                int count = db.Users
+                    .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                    .Update(u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
 
-                count = db.Users.Delete(u => u.Email.EndsWith(emailDomain));
+                count = db.Users
+                    .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                    .Delete();
 
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void TransactionScopeObjectContext()
         {
             using (var tx = new TransactionScope())
@@ -54,11 +58,13 @@ namespace Tracker.SqlServer.Test
             {
                 string emailDomain = "@test.com";
 
-                int count = db.Users.Update(
-                    u => u.Email.EndsWith(emailDomain),
-                    u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
+                int count = db.Users
+                    .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                    .Update(u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
 
-                count = db.Users.Delete(u => u.Email.EndsWith(emailDomain));
+                count = db.Users
+                    .Where(u => u.EmailAddress.EndsWith(emailDomain))
+                    .Delete();
 
                 tx.Complete();
             }

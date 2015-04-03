@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
 using System.Text;
+using System.Threading.Tasks;
 using EntityFramework.Caching;
 
 namespace EntityFramework.Extensions
@@ -42,6 +43,39 @@ namespace EntityFramework.Extensions
             return result;
         }
 
+#if NET45
+        /// <summary>
+        /// Returns the result of the <paramref name="query"/>; if possible from the cache,
+        /// otherwise the query is materialized asynchronously and the result cached before being returned.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the data in the data source.</typeparam>
+        /// <param name="query">The query to be materialized.</param>
+        /// <param name="cachePolicy">The cache policy for the query.</param>
+        /// <param name="tags">The list of tags to use for cache expiration.</param>
+        /// <returns>
+        /// The result of the query.
+        /// </returns>
+        public static async Task<IEnumerable<TEntity>> FromCacheAsync<TEntity>(this IQueryable<TEntity> query, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
+            where TEntity : class
+        {
+            string key = query.GetCacheKey();
+            var cacheKey = new CacheKey(key,
+                tags ?? Enumerable.Empty<string>());
+
+            // allow override of CacheManager
+            var manager = Locator.Current.Resolve<CacheManager>();
+
+            var result = await manager.GetOrAddAsync(
+                cacheKey,
+                async k => await query.AsNoTracking().ToListAsync(),
+                cachePolicy ?? CachePolicy.Default
+            ) as IEnumerable<TEntity>;
+
+            return result;
+        }
+
+#endif
+
         /// <summary>
         /// Returns the first element of the <paramref name="query"/>; if possible from the cache,
         /// otherwise the query is materialized and the result cached before being returned.
@@ -59,6 +93,27 @@ namespace EntityFramework.Extensions
                 .FromCache(cachePolicy, tags)
                 .FirstOrDefault();
         }
+
+#if NET45
+        /// <summary>
+        /// Returns the first element of the <paramref name="query"/>; if possible from the cache,
+        /// otherwise the query is materialized asynchronously and the result cached before being returned.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the data in the data source.</typeparam>
+        /// <param name="query">The query to be materialized.</param>
+        /// <param name="cachePolicy">The cache policy for the query.</param>
+        /// <param name="tags">The list of tags to use for cache expiration.</param>
+        /// <returns>default(T) if source is empty; otherwise, the first element in source.</returns>
+        public static async Task<TEntity> FromCacheFirstOrDefaultAsync<TEntity>(this IQueryable<TEntity> query, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
+            where TEntity : class
+        {
+            return (await query
+                .Take(1)
+                .FromCacheAsync(cachePolicy, tags)
+                ).FirstOrDefault();
+        }
+
+#endif
 
         /// <summary>
         /// Removes the cached query from cache.
@@ -88,7 +143,7 @@ namespace EntityFramework.Extensions
             where TEntity : class
         {
             string key = query.GetCacheKey();
-            
+
             // allow override of CacheManager
             var manager = Locator.Current.Resolve<CacheManager>();
 

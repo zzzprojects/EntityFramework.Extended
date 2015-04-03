@@ -16,6 +16,8 @@ namespace Tracker.SqlServer.CodeFirst.Entities
     {
         public TaskExtended()
         {
+            CreatedDate = DateTime.Now;
+            ModifiedDate = DateTime.Now;
         }
 
         public int TaskId { get; set; }

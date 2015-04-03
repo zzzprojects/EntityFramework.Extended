@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EntityFramework.Caching
 {
@@ -14,7 +15,7 @@ namespace EntityFramework.Caching
     /// </para>
     /// <para>
     /// The CacheManager also supports tagging the cache entry to support expiring by tag. <see cref="CacheKey"/> supports a list
-    /// of tags to associate with the cache entry.  Use <see cref="Expire"/> to evict the cache entry by <see cref="CacheTag"/>.
+    /// of tags to associate with the cache entry.  Use <see cref="F:Expire"/> to evict the cache entry by <see cref="CacheTag"/>.
     /// </para>
     /// </remarks>
     /// <example>
@@ -285,6 +286,25 @@ namespace EntityFramework.Caching
             return item;
         }
 
+#if NET45
+        /// <summary>
+        /// Gets the cache value for the specified key that is already in the dictionary or the new value for the key as returned asynchronously by <paramref name="valueFactory"/>.
+        /// </summary>
+        /// <param name="cacheKey">A unique identifier for the cache entry.</param>
+        /// <param name="valueFactory">The asynchronous function used to generate a value to insert into cache.</param>
+        /// <param name="cachePolicy">An object that contains eviction details for the cache entry.</param>
+        /// <returns>
+        /// The value for the key. This will be either the existing value for the key if the key is already in the dictionary, 
+        /// or the new value for the key as returned by <paramref name="valueFactory"/> if the key was not in the dictionary.
+        /// </returns>
+        public virtual Task<object> GetOrAddAsync(CacheKey cacheKey, Func<CacheKey, Task<object>> valueFactory, CachePolicy cachePolicy)
+        {
+            var provider = ResolveProvider();
+            var item = provider.GetOrAddAsync(cacheKey, valueFactory, cachePolicy);
+
+            return item;
+        }
+#endif
 
         /// <summary>
         /// Removes a cache entry from the cache. 
@@ -296,7 +316,7 @@ namespace EntityFramework.Caching
             var cacheKey = new CacheKey(key);
             return Remove(cacheKey);
         }
-        
+
         /// <summary>
         /// Removes a cache entry from the cache. 
         /// </summary>
@@ -393,6 +413,15 @@ namespace EntityFramework.Caching
         {
             var provider = ResolveProvider();
             provider.Set(cacheKey, value, cachePolicy);
+        }
+
+        /// <summary>
+        /// Clears all entries from the cache
+        /// </summary>
+        public virtual void Clear()
+        {
+            var provider = ResolveProvider();
+            provider.ClearCache();
         }
 
 

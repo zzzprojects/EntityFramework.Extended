@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Concurrent;
-using System.Data.Objects;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace EntityFramework.Future
 {
     /// <summary>
-    /// A class to store the collection of FutureContext class that are linked to an ObjectContext.
+    /// A class to store the collection of <see cref="FutureContext"/> class that are linked to an <see cref="ObjectContext"/>.
     /// </summary>
     public class FutureStore
     {
