@@ -42,7 +42,7 @@ A current limitations of the Entity Framework is that in order to update or dele
 **Deleting**
     
     //delete all users where FirstName matches
-    context.Users.Delete(u => u.FirstName == "firstname");
+    context.Users.Where(u => u.FirstName == "firstname").Delete();
 
 **Update**
     
