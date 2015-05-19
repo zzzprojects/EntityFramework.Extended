@@ -13,6 +13,9 @@ using System.Data.Common;
 
 namespace Tracker.SqlServer.Test
 {
+    /// <summary>
+    /// Tests interceptors with future queries
+    /// </summary>
     public class InterceptorTest
     {
         [Fact]
@@ -68,7 +71,6 @@ namespace Tracker.SqlServer.Test
                     Arg.Any<DbCommandInterceptionContext<int>>());
                               
                 DbInterception.Remove(interceptor);
-
             }
         }
     }
