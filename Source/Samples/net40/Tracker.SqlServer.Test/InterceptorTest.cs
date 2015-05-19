@@ -52,11 +52,11 @@ namespace Tracker.SqlServer.Test
 
                 interceptor.Received().ScalarExecuting(
                   Arg.Any<DbCommand>(),
-                  Arg.Any<DbCommandInterceptionContext<object>>();
+                  Arg.Any<DbCommandInterceptionContext<object>>());
 
                 interceptor.Received().ScalarExecuted(
                     Arg.Any<DbCommand>(),
-                    Arg.Any<DbCommandInterceptionContext<object>>();
+                    Arg.Any<DbCommandInterceptionContext<object>>());
 
                 interceptor.DidNotReceive().NonQueryExecuting(
                     Arg.Any<DbCommand>(),
