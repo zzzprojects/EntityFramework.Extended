@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.Entity.Core.EntityClient;
 using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure.Interception;
 using System.Text;
 using EntityFramework.Reflection;
 
@@ -32,7 +33,7 @@ namespace EntityFramework.Future
             try
             {
                 using (var command = CreateFutureCommand(context, futureQueries))
-                using (var reader = command.ExecuteReader())
+                using (var reader = DbInterception.Dispatch.Command.Reader(command, new DbCommandInterceptionContext(context.InterceptionContext)))
                 {
                     foreach (var futureQuery in futureQueries)
                     {
