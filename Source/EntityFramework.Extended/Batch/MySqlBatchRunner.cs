@@ -1,8 +1,8 @@
 using System;
 using System.Data;
 using System.Data.Common;
-using System.Data.EntityClient;
-using System.Data.Objects;
+using System.Data.Entity.Core.EntityClient;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Linq.Dynamic;
 using System.Linq.Expressions;
@@ -11,13 +11,14 @@ using System.Text.RegularExpressions;
 using EntityFramework.Extensions;
 using EntityFramework.Mapping;
 using EntityFramework.Reflection;
+using System.Threading.Tasks;
 
 namespace EntityFramework.Batch
 {
     /// <summary>
     /// A batch execution runner for MySQL Server.
     /// </summary>
-	public class MySqlBatchRunner : IBatchRunner
+    public class MySqlBatchRunner : IBatchRunner
     {
         /// <summary>
         /// Create and run a batch delete statement.
@@ -31,6 +32,38 @@ namespace EntityFramework.Batch
         /// </returns>
         public int Delete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query)
             where TEntity : class
+        {
+#if NET45
+            return InternalDelete(objectContext, entityMap, query, false).Result;
+#else
+            return InternalDelete(objectContext, entityMap, query);
+#endif
+        }
+
+#if NET45
+        /// <summary>
+        /// Create and run a batch delete statement asynchronously.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="objectContext">The <see cref="ObjectContext"/> to get connection and metadata information from.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for <typeparamref name="TEntity"/>.</param>
+        /// <param name="query">The query to create the where clause from.</param>
+        /// <returns>
+        /// The number of rows deleted.
+        /// </returns>
+        public Task<int> DeleteAsync<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query) where TEntity : class
+        {
+            return InternalDelete(objectContext, entityMap, query, true);
+        }
+#endif
+
+#if NET45
+        private async Task<int> InternalDelete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, bool async = false)
+            where TEntity : class
+#else
+        private int InternalDelete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query)
+            where TEntity : class
+#endif
         {
             DbConnection deleteConnection = null;
             DbTransaction deleteTransaction = null;
@@ -67,7 +100,7 @@ namespace EntityFramework.Batch
 
                 var sqlBuilder = new StringBuilder(innerSelect.Length * 2);
 
-				sqlBuilder.Append("DELETE j0");
+                sqlBuilder.Append("DELETE j0");
                 sqlBuilder.AppendLine();
 
                 sqlBuilder.AppendFormat("FROM {0} AS j0 INNER JOIN (", entityMap.TableName);
@@ -86,9 +119,15 @@ namespace EntityFramework.Batch
                 }
                 sqlBuilder.Append(")");
 
-				deleteCommand.CommandText = sqlBuilder.ToString().Replace("[", "").Replace("]", "");
+                deleteCommand.CommandText = sqlBuilder.ToString().Replace("[", "").Replace("]", "");
 
+#if NET45
+                int result = async
+                    ? await deleteCommand.ExecuteNonQueryAsync()
+                    : deleteCommand.ExecuteNonQuery();
+#else
                 int result = deleteCommand.ExecuteNonQuery();
+#endif
 
                 // only commit if created transaction
                 if (ownTransaction)
@@ -120,8 +159,40 @@ namespace EntityFramework.Batch
         /// <returns>
         /// The number of rows updated.
         /// </returns>
-        public int Update<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression)
+        public int Update<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression) where TEntity : class
+        {
+#if NET45
+            return InternalUpdate(objectContext, entityMap, query, updateExpression, false).Result;
+#else
+            return InternalUpdate(objectContext, entityMap, query, updateExpression);
+#endif
+        }
+
+#if NET45
+        /// <summary>
+        /// Create and run a batch update statement asynchronously.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <param name="objectContext">The <see cref="ObjectContext"/> to get connection and metadata information from.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for <typeparamref name="TEntity"/>.</param>
+        /// <param name="query">The query to create the where clause from.</param>
+        /// <param name="updateExpression">The update expression.</param>
+        /// <returns>
+        /// The number of rows updated.
+        /// </returns>
+        public Task<int> UpdateAsync<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression) where TEntity : class
+        {
+            return InternalUpdate(objectContext, entityMap, query, updateExpression, true);
+        }
+#endif
+
+#if NET45
+        private async Task<int> InternalUpdate<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression, bool async = false)
             where TEntity : class
+#else
+        private int InternalUpdate<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression, bool async = false)
+            where TEntity : class
+#endif
         {
             DbConnection updateConnection = null;
             DbTransaction updateTransaction = null;
@@ -159,22 +230,22 @@ namespace EntityFramework.Batch
 
                 sqlBuilder.Append("UPDATE ");
                 sqlBuilder.Append(entityMap.TableName);
-				sqlBuilder.AppendFormat(" AS j0 INNER JOIN (", entityMap.TableName);
-				sqlBuilder.AppendLine();
-				sqlBuilder.AppendLine(innerSelect);
-				sqlBuilder.Append(") AS j1 ON (");
+                sqlBuilder.AppendFormat(" AS j0 INNER JOIN (", entityMap.TableName);
+                sqlBuilder.AppendLine();
+                sqlBuilder.AppendLine(innerSelect);
+                sqlBuilder.Append(") AS j1 ON (");
 
-				bool wroteKey = false;
-				foreach (var keyMap in entityMap.KeyMaps)
-				{
-					if (wroteKey)
-						sqlBuilder.Append(" AND ");
+                bool wroteKey = false;
+                foreach (var keyMap in entityMap.KeyMaps)
+                {
+                    if (wroteKey)
+                        sqlBuilder.Append(" AND ");
 
-					sqlBuilder.AppendFormat("j0.{0} = j1.{0}", keyMap.ColumnName);
-					wroteKey = true;
-				}
-				sqlBuilder.Append(")");
-				sqlBuilder.AppendLine(" ");
+                    sqlBuilder.AppendFormat("j0.{0} = j1.{0}", keyMap.ColumnName);
+                    wroteKey = true;
+                }
+                sqlBuilder.Append(")");
+                sqlBuilder.AppendLine(" ");
 
                 sqlBuilder.AppendLine(" SET ");
 
@@ -297,7 +368,13 @@ namespace EntityFramework.Batch
 
                 updateCommand.CommandText = sqlBuilder.ToString().Replace("[", "").Replace("]", "");
 
+#if NET45
+                int result = async
+                    ? await updateCommand.ExecuteNonQueryAsync()
+                    : updateCommand.ExecuteNonQuery();
+#else
                 int result = updateCommand.ExecuteNonQuery();
+#endif
 
                 // only commit if created transaction
                 if (ownTransaction)
