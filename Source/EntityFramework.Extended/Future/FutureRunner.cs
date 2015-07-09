@@ -5,6 +5,8 @@ using System.Data.Entity.Core.EntityClient;
 using System.Data.Entity.Core.Objects;
 using System.Text;
 using EntityFramework.Reflection;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace EntityFramework.Future
 {
@@ -13,12 +15,13 @@ namespace EntityFramework.Future
     /// </summary>
     public class FutureRunner : IFutureRunner
     {
+        
         /// <summary>
         /// Executes the future queries.
         /// </summary>
         /// <param name="context">The <see cref="ObjectContext"/> to run the queries against.</param>
         /// <param name="futureQueries">The future queries list.</param>
-        public void ExecuteFutureQueries(ObjectContext context, IList<IFutureQuery> futureQueries)
+        public async Task ExecuteFutureQueriesAsync(ObjectContext context, IList<IFutureQuery> futureQueries)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -31,9 +34,20 @@ namespace EntityFramework.Future
 
             try
             {
+#if DEBUG
+                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
+#endif
                 using (var command = CreateFutureCommand(context, futureQueries))
-                using (var reader = command.ExecuteReader())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
+#if DEBUG
+                    Debug.WriteLine("Executing Query: ");
+                    Debug.WriteLine(command.CommandText);
+                    Debug.WriteLine("Time Elapsed: " + sw.ElapsedMilliseconds.ToString("f2") + "ms");
+                    
+#endif
+
                     foreach (var futureQuery in futureQueries)
                     {
                         futureQuery.SetResult(context, reader);
@@ -115,5 +129,8 @@ namespace EntityFramework.Future
 
             return command;
         }
+
+
+        
     }
 }

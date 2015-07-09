@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Objects;
+using System.Threading.Tasks;
 
 namespace EntityFramework.Future
 {
@@ -69,10 +70,12 @@ namespace EntityFramework.Future
             get { return _objectContext.IsAlive; }
         }
 
+        
+
         /// <summary>
         /// Executes the future queries as a single batch.
         /// </summary>
-        public void ExecuteFutureQueries()
+        public async Task ExecuteFutureQueriesAsync()
         {
             ObjectContext context = ObjectContext;
             if (context == null)
@@ -82,7 +85,7 @@ namespace EntityFramework.Future
             if (runner == null)
                 throw new InvalidOperationException("Could not resolve the IFutureRunner. Make sure IFutureRunner is registered in the Locator.Current container.");
 
-            runner.ExecuteFutureQueries(context, FutureQueries);
+            await runner.ExecuteFutureQueriesAsync(context, FutureQueries);
         }
 
         /// <summary>

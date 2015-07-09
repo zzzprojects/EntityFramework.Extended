@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace EntityFramework.Future
 {
@@ -14,10 +15,12 @@ namespace EntityFramework.Future
         /// <value>The future queries.</value>
         IList<IFutureQuery> FutureQueries { get; }
 
+       
+
         /// <summary>
         /// Executes the future queries.
         /// </summary>
-        void ExecuteFutureQueries();
+        Task ExecuteFutureQueriesAsync();
 
         /// <summary>
         /// Adds the future query to the waiting queries list on this context.

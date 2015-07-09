@@ -33,7 +33,7 @@ namespace EntityFramework.Extensions
                 throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
 
             var futureContext = GetFutureContext(sourceQuery);
-            var future = new FutureQuery<TEntity>(sourceQuery, futureContext.ExecuteFutureQueries);
+            var future = new FutureQuery<TEntity>(sourceQuery, futureContext.ExecuteFutureQueriesAsync);
             futureContext.AddQuery(future);
 
             return future;
@@ -69,7 +69,7 @@ namespace EntityFramework.Extensions
                 throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
 
             var futureContext = GetFutureContext(sourceQuery);
-            var future = new FutureCount(countQuery, futureContext.ExecuteFutureQueries);
+            var future = new FutureCount(countQuery, futureContext.ExecuteFutureQueriesAsync);
             futureContext.AddQuery(future);
             return future;
         }
@@ -111,7 +111,7 @@ namespace EntityFramework.Extensions
                 throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
 
             var futureContext = GetFutureContext(sourceQuery);
-            var future = new FutureValue<TResult>(valueQuery, futureContext.ExecuteFutureQueries);
+            var future = new FutureValue<TResult>(valueQuery, futureContext.ExecuteFutureQueriesAsync);
             futureContext.AddQuery(future);
             return future;
         }
@@ -141,7 +141,7 @@ namespace EntityFramework.Extensions
                 throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
 
             var futureContext = GetFutureContext(sourceQuery);
-            var future = new FutureValue<TEntity>(objectQuery, futureContext.ExecuteFutureQueries);
+            var future = new FutureValue<TEntity>(objectQuery, futureContext.ExecuteFutureQueriesAsync);
             futureContext.AddQuery(future);
             return future;
         }
