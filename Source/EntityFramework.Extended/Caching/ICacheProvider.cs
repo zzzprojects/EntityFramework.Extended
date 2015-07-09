@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EntityFramework.Caching
@@ -47,11 +48,12 @@ namespace EntityFramework.Caching
         /// <param name="cacheKey">A unique identifier for the cache entry.</param>
         /// <param name="valueFactory">The asynchronous function used to generate a value to insert into cache.</param>
         /// <param name="cachePolicy">A <see cref="CachePolicy"/> that contains eviction details for the cache entry.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to cancel the operation.</param>
         /// <returns>
         /// The value for the key. This will be either the existing value for the key if the key is already in the cache, 
         /// or the new value for the key as returned by <paramref name="valueFactory"/> if the key was not in the cache.
         /// </returns>
-        Task<object> GetOrAddAsync(CacheKey cacheKey, Func<CacheKey, Task<object>> valueFactory, CachePolicy cachePolicy);
+        Task<object> GetOrAddAsync(CacheKey cacheKey, Func<CacheKey, CancellationToken, Task<object>> valueFactory, CachePolicy cachePolicy, CancellationToken cancellationToken);
 #endif
 
         /// <summary>
