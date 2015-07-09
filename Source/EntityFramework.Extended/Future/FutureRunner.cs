@@ -29,6 +29,7 @@ namespace EntityFramework.Future
             // used to call internal methods
             dynamic contextProxy = new DynamicProxy(context);
             contextProxy.EnsureConnection(false);
+
             //the (internal) InterceptionContext contains the registered loggers
             DbInterceptionContext interceptionContext = contextProxy.InterceptionContext;
 
