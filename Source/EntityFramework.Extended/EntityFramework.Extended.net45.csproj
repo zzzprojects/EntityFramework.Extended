@@ -91,8 +91,8 @@
     <Compile Include="Caching\Query\LocalCollectionExpander.cs" />
     <Compile Include="Caching\Query\QueryCache.cs" />
     <Compile Include="Caching\Query\Utility.cs" />
-    <Compile Include="Extensions\IQueryUnwrapper.cs" />
     <Compile Include="Future\IFutureRunner.cs" />
+    <Compile Include="IQueryUnwrapper.cs" />
     <Compile Include="Locator.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="Dynamic\DynamicQueryable.cs" />

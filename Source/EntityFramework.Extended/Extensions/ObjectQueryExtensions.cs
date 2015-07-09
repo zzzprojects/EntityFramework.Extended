@@ -23,9 +23,7 @@ namespace EntityFramework.Extensions
       {
           var queryUnwrapper = Locator.Current.Resolve<IQueryUnwrapper>();
           if (queryUnwrapper != null)
-          {
               query = queryUnwrapper.Unwrap(query);
-          }
 
           // first try direct cast
           var objectQuery = query as ObjectQuery<TEntity>;
@@ -60,6 +58,10 @@ namespace EntityFramework.Extensions
       /// <returns>The converted ObjectQuery; otherwise null if it can't be converted.</returns>
       public static ObjectQuery ToObjectQuery(this IQueryable query)
       {
+          var queryUnwrapper = Locator.Current.Resolve<IQueryUnwrapper>();
+          if (queryUnwrapper != null)
+              query = queryUnwrapper.Unwrap(query);
+
           // first try direct cast
           var objectQuery = query as ObjectQuery;
           if (objectQuery != null)
