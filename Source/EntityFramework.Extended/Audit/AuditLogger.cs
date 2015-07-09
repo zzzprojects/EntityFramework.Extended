@@ -170,10 +170,9 @@ namespace EntityFramework.Audit
                 if (!Configuration.IsAuditable(entityType))
                     continue;
 
-                var state = new AuditEntryState(objectStateEntry)
+                var state = new AuditEntryState(ObjectContext, objectStateEntry)
                 {
                     AuditLog = auditLog,
-                    ObjectContext = ObjectContext,
                 };
 
                 if (WriteEntity(state))
