@@ -6,6 +6,9 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using EntityFramework.Batch;
 using EntityFramework.Mapping;
+using System.Data.Entity.Core.EntityClient;
+using System.Data.Common;
+using System.Data.SqlClient;
 
 namespace EntityFramework.Extensions
 {
@@ -102,7 +105,7 @@ namespace EntityFramework.Extensions
             if (entityMap == null)
                 throw new ArgumentException("Could not load the entity mapping information for the query ObjectSet.", "source");
 
-            var runner = ResolveRunner();
+            var runner = ResolveRunner(objectContext);
             return runner.Delete(objectContext, entityMap, sourceQuery);
         }
 
@@ -173,7 +176,7 @@ namespace EntityFramework.Extensions
             if (entityMap == null)
                 throw new ArgumentException("Could not load the entity mapping information for the query ObjectSet.", "source");
 
-            var runner = ResolveRunner();
+            var runner = ResolveRunner(objectContext);
             return runner.DeleteAsync(objectContext, entityMap, sourceQuery);
         }
 
@@ -222,7 +225,7 @@ namespace EntityFramework.Extensions
             if (objectQuery == null)
                 throw new ArgumentException("The query must be of type ObjectQuery or DbQuery.", "query");
 
-            var runner = ResolveRunner();
+            var runner = ResolveRunner(objectContext);
             return runner.Update(objectContext, entityMap, objectQuery, updateExpression);
         }
 
@@ -306,7 +309,7 @@ namespace EntityFramework.Extensions
             if (entityMap == null)
                 throw new ArgumentException("Could not load the entity mapping information for the source.", "source");
 
-            var runner = ResolveRunner();
+            var runner = ResolveRunner(objectContext);
             return runner.Update(objectContext, entityMap, sourceQuery, updateExpression);
         }
 
@@ -391,17 +394,30 @@ namespace EntityFramework.Extensions
             if (entityMap == null)
                 throw new ArgumentException("Could not load the entity mapping information for the source.", "source");
 
-            var runner = ResolveRunner();
+            var runner = ResolveRunner(objectContext);
             return runner.UpdateAsync(objectContext, entityMap, sourceQuery, updateExpression);
         }
 
 #endif
 
-        private static IBatchRunner ResolveRunner()
+        private static IBatchRunner ResolveRunner(ObjectContext context)
         {
-            var provider = Locator.Current.Resolve<IBatchRunner>();
+            DbConnection theConnection = (context.Connection as EntityConnection).StoreConnection;
+
+            IBatchRunner provider = null;
+
+            if (theConnection is SqlConnection)
+                provider = new SqlServerBatchRunner();
+            else if (theConnection.GetType().FullName == "MySql.Data.MySqlClient.MySqlConnection")
+                provider = new MySqlBatchRunner();
+
             if (provider == null)
-                throw new InvalidOperationException("Could not resolve the IBatchRunner. Make sure IBatchRunner is registered in the Locator.Current container.");
+            {
+                var ex = new InvalidOperationException("Could not resolve the IBatchRunner. Current database is not supported");
+                ex.Data["DbConnection"] = theConnection;
+
+                throw ex;
+            }
 
             return provider;
         }
