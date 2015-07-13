@@ -57,7 +57,7 @@ namespace EntityFramework.Mapping
         {
             var entityMap = new EntityMap(type);
             var metadata = objectContext.MetadataWorkspace;
-            
+
             // Get the part of the model that contains info about the actual CLR types
             var objectItemCollection = ((ObjectItemCollection)metadata.GetItemCollection(DataSpace.OSpace));
 
@@ -71,7 +71,7 @@ namespace EntityFramework.Mapping
                                     .SelectMany(a => a.EntitySets)
                                     .Where(s => s.ElementType.Name == entityType.Name)
                                     .FirstOrDefault();
-            
+
 
             // Find the mapping between conceptual and storage model for this entity set
             var mapping = metadata.GetItems<EntityContainerMapping>(DataSpace.CSSpace)
@@ -136,11 +136,9 @@ namespace EntityFramework.Mapping
                 var complexPropertyMapping = propertyMapping as ComplexPropertyMapping;
             }
         }
-        
+
         private static void SetTableName(EntityMap entityMap)
         {
-            var builder = new StringBuilder(50);
-
             EntitySet storeSet = entityMap.StoreSet;
 
             string table = null;
@@ -167,21 +165,10 @@ namespace EntityFramework.Mapping
             if (schemaProperty != null)
                 schema = schemaProperty.Value as string;
 
-            if (!string.IsNullOrWhiteSpace(schema))
-            {
-                builder.Append(QuoteIdentifier(schema));
-                builder.Append(".");
-            }
-
-            builder.Append(QuoteIdentifier(table));
-
-            entityMap.TableName = builder.ToString();
+            entityMap.SchemaName = schema;
+            entityMap.TableName = table;
         }
 
-        private static string QuoteIdentifier(string name)
-        {
-            return ("[" + name.Replace("]", "]]") + "]");
-        }
 
     }
 }
