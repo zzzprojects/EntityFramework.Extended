@@ -3,13 +3,14 @@ using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.Entity.Core.Objects;
+using System.Linq;
 using EntityFramework.Reflection;
 
 namespace EntityFramework.Audit
 {
     internal class AuditEntryState
     {
-        public AuditEntryState(ObjectStateEntry objectStateEntry)
+        public AuditEntryState(ObjectContext objectContext, ObjectStateEntry objectStateEntry)
         {
             if (objectStateEntry == null)
                 throw new ArgumentNullException("objectStateEntry");
@@ -17,16 +18,18 @@ namespace EntityFramework.Audit
             if (objectStateEntry.Entity == null)
                 throw new ArgumentException("The Entity property is null for the specified ObjectStateEntry.", "objectStateEntry");
 
+            if (objectContext == null)
+            {
+                throw new ArgumentNullException("objectContext");
+            }
+
             ObjectStateEntry = objectStateEntry;
+            ObjectContext = objectContext;
+            ObjectType = ObjectContext.GetObjectType(objectStateEntry.Entity.GetType());
+
             Entity = objectStateEntry.Entity;
-
-            EntityType = objectStateEntry.EntitySet.ElementType as EntityType;
-
-            Type entityType = objectStateEntry.Entity.GetType();
-            entityType = ObjectContext.GetObjectType(entityType);
-
-            ObjectType = entityType;
-            EntityAccessor = TypeAccessor.GetAccessor(entityType);
+            EntityType = objectContext.MetadataWorkspace.GetItems(DataSpace.OSpace).OfType<EntityType>().FirstOrDefault(x => x.Name == ObjectType.Name);
+            EntityAccessor = TypeAccessor.GetAccessor(ObjectType);
 
             AuditEntity = new AuditEntity(objectStateEntry.Entity)
             {
