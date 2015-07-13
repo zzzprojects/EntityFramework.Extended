@@ -97,13 +97,24 @@ namespace EntityFramework.Batch
 
                 var innerSelect = GetSelectSql(query, entityMap, deleteCommand);
 
+                string tableName;
+                if (entityMap.SchemaName != null)
+                {
+                    tableName = new StringBuilder(50)
+                        .Append(QuoteIdentifier(entityMap.SchemaName))
+                        .Append('.')
+                        .Append(QuoteIdentifier(entityMap.TableName)).ToString();
+                }
+                else
+                    tableName = QuoteIdentifier(entityMap.TableName);
+
                 var sqlBuilder = new StringBuilder(innerSelect.Length * 2);
 
                 sqlBuilder.Append("DELETE ");
-                sqlBuilder.Append(entityMap.TableName);
+                sqlBuilder.Append(tableName);
                 sqlBuilder.AppendLine();
 
-                sqlBuilder.AppendFormat("FROM {0} AS j0 INNER JOIN (", entityMap.TableName);
+                sqlBuilder.AppendFormat("FROM {0} AS j0 INNER JOIN (", tableName);
                 sqlBuilder.AppendLine();
                 sqlBuilder.AppendLine(innerSelect);
                 sqlBuilder.Append(") AS j1 ON (");
@@ -223,11 +234,21 @@ namespace EntityFramework.Batch
                 if (objectContext.CommandTimeout.HasValue)
                     updateCommand.CommandTimeout = objectContext.CommandTimeout.Value;
 
+                string tableName;
+                if (entityMap.SchemaName != null)
+                {
+                    tableName = new StringBuilder(50)
+                        .Append(QuoteIdentifier(entityMap.SchemaName))
+                        .Append('.')
+                        .Append(QuoteIdentifier(entityMap.TableName)).ToString();
+                }
+                else
+                    tableName = QuoteIdentifier(entityMap.TableName);
                 var innerSelect = GetSelectSql(query, entityMap, updateCommand);
                 var sqlBuilder = new StringBuilder(innerSelect.Length * 2);
 
                 sqlBuilder.Append("UPDATE ");
-                sqlBuilder.Append(entityMap.TableName);
+                sqlBuilder.Append(tableName);
                 sqlBuilder.AppendLine(" SET ");
 
                 var memberInitExpression = updateExpression.Body as MemberInitExpression;
@@ -347,7 +368,7 @@ namespace EntityFramework.Batch
                 }
 
                 sqlBuilder.AppendLine(" ");
-                sqlBuilder.AppendFormat("FROM {0} AS j0 INNER JOIN (", entityMap.TableName);
+                sqlBuilder.AppendFormat("FROM {0} AS j0 INNER JOIN (", tableName);
                 sqlBuilder.AppendLine();
                 sqlBuilder.AppendLine(innerSelect);
                 sqlBuilder.Append(") AS j1 ON (");
@@ -448,6 +469,11 @@ namespace EntityFramework.Batch
             }
 
             return innerJoinSql;
+        }
+
+        private static string QuoteIdentifier(string name)
+        {
+            return ("[" + name.Replace("]", "]]") + "]");
         }
     }
 }

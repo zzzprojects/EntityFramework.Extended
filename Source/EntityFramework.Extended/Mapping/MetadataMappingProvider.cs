@@ -186,8 +186,6 @@ namespace EntityFramework.Mapping
 
         private static void SetTableName(EntityMap entityMap)
         {
-            var builder = new StringBuilder(50);
-
             EntitySet storeSet = entityMap.StoreSet;
 
             string table = null;
@@ -226,20 +224,14 @@ namespace EntityFramework.Mapping
                 schema = schemaProperty.Value as string;
             }
 
-            if (!string.IsNullOrWhiteSpace(schema))
-            {
-                builder.Append(QuoteIdentifier(schema));
-                builder.Append(".");
-            }
-
-            builder.Append(QuoteIdentifier(table));
-
-            entityMap.TableName = builder.ToString();
+            entityMap.SchemaName = schema;
+            entityMap.TableName = table;
         }
 
         private static string QuoteIdentifier(string name)
         {
             return ("[" + name.Replace("]", "]]") + "]");
         }
+
     }
 }
