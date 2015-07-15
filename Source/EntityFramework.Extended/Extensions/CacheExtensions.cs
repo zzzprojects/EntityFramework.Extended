@@ -65,11 +65,13 @@ namespace EntityFramework.Extensions
             // allow override of CacheManager
             var manager = Locator.Current.Resolve<CacheManager>();
 
-            var result = await manager.GetOrAddAsync(
-                cacheKey,
-                async k => await query.AsNoTracking().ToListAsync(),
-                cachePolicy ?? CachePolicy.Default
-            ) as IEnumerable<TEntity>;
+            var result = await manager
+                .GetOrAddAsync(
+                    cacheKey,
+                    async k => await query.AsNoTracking().ToListAsync().ConfigureAwait(false),
+                    cachePolicy ?? CachePolicy.Default
+                )
+                .ConfigureAwait(false) as IEnumerable<TEntity>;
 
             return result;
         }
@@ -107,10 +109,12 @@ namespace EntityFramework.Extensions
         public static async Task<TEntity> FromCacheFirstOrDefaultAsync<TEntity>(this IQueryable<TEntity> query, CachePolicy cachePolicy = null, IEnumerable<string> tags = null)
             where TEntity : class
         {
-            return (await query
+            var q = await query
                 .Take(1)
                 .FromCacheAsync(cachePolicy, tags)
-                ).FirstOrDefault();
+                .ConfigureAwait(false);
+
+            return q.FirstOrDefault();
         }
 
 #endif

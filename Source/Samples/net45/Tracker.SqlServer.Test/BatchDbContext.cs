@@ -43,6 +43,19 @@ namespace Tracker.SqlServer.Test
                 .Where(u => u.EmailAddress.EndsWith(emailDomain))
                 .DeleteAsync();
         }
+        
+        [Fact]
+        public void DeleteWhereWithExpressionContainingNullParameter()
+        {
+            var db = new TrackerContext();
+            string emailDomain = "@test.com";
+            string optionalComparisonString = null;
+
+            // This test verifies that the delete is processed correctly when the where expression uses a parameter with a null parameter
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain) && (string.IsNullOrEmpty(optionalComparisonString) || u.AvatarType == optionalComparisonString))
+                .Delete();
+        }
 
         [Fact]
         public void Update()
@@ -116,6 +129,19 @@ namespace Tracker.SqlServer.Test
             int count = db.Users
                 .Where(u => u.EmailAddress.EndsWith(emailDomain))
                 .Update(u => new User { Comment = u.LastName });
+        }
+
+        [Fact]
+        public void UpdateWithExpressionContainingNullParameter()
+        {
+            // This test verifies that the update is interpreted correctly when the where expression uses a parameter with a null parameter
+            var db = new TrackerContext();
+            string emailDomain = "@test.com";
+            string optionalComparisonString = null;
+
+            int count = db.Users
+                .Where(u => u.EmailAddress.EndsWith(emailDomain) && (string.IsNullOrEmpty(optionalComparisonString) || u.AvatarType == optionalComparisonString))
+                .Update(u => new User { IsApproved = false, LastActivityDate = DateTime.Now });
         }
 
     }
