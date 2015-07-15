@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.Entity.Core.EntityClient;
 using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure.Interception;
 using System.Text;
 using EntityFramework.Reflection;
 
@@ -29,10 +30,13 @@ namespace EntityFramework.Future
             dynamic contextProxy = new DynamicProxy(context);
             contextProxy.EnsureConnection(false);
 
+            //the (internal) InterceptionContext contains the registered loggers
+            DbInterceptionContext interceptionContext = contextProxy.InterceptionContext;
+
             try
             {
                 using (var command = CreateFutureCommand(context, futureQueries))
-                using (var reader = command.ExecuteReader())
+                using (var reader = DbInterception.Dispatch.Command.Reader(command, new DbCommandInterceptionContext(interceptionContext)))
                 {
                     foreach (var futureQuery in futureQueries)
                     {
@@ -104,7 +108,7 @@ namespace EntityFramework.Future
                 futureSql.AppendLine();
 
                 futureSql.Append(sql.Trim());
-                futureSql.AppendLine(";"); 
+                futureSql.AppendLine(";");
 
                 queryCount++;
             } // foreach query
