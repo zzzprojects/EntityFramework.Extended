@@ -100,10 +100,7 @@ namespace EntityFramework.Batch
                 string tableName;
                 if (entityMap.SchemaName != null)
                 {
-                    tableName = new StringBuilder(50)
-                        .Append(QuoteIdentifier(entityMap.SchemaName))
-                        .Append('.')
-                        .Append(QuoteIdentifier(entityMap.TableName)).ToString();
+                    tableName = QuoteIdentifier(entityMap.SchemaName) + '.' + QuoteIdentifier(entityMap.TableName);
                 }
                 else
                     tableName = QuoteIdentifier(entityMap.TableName);
@@ -237,10 +234,7 @@ namespace EntityFramework.Batch
                 string tableName;
                 if (entityMap.SchemaName != null)
                 {
-                    tableName = new StringBuilder(50)
-                        .Append(QuoteIdentifier(entityMap.SchemaName))
-                        .Append('.')
-                        .Append(QuoteIdentifier(entityMap.TableName)).ToString();
+                    tableName = QuoteIdentifier(entityMap.SchemaName) + '.' + QuoteIdentifier(entityMap.TableName);
                 }
                 else
                     tableName = QuoteIdentifier(entityMap.TableName);

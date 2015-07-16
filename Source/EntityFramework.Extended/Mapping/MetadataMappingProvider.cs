@@ -59,7 +59,9 @@ namespace EntityFramework.Mapping
             var entityMap = new EntityMap(type);
             var metadata = objectContext.MetadataWorkspace;
 
+            // Get the part of the model that contains info about the actual CLR types
             var objectItemCollection = ((ObjectItemCollection)metadata.GetItemCollection(DataSpace.OSpace));
+
             var entityType = metadata.GetItems<EntityType>(DataSpace.OSpace).Single(e => objectItemCollection.GetClrType(e) == type);
 
             var entitySet = metadata.GetItems<EntityContainer>(DataSpace.CSpace)
@@ -226,11 +228,6 @@ namespace EntityFramework.Mapping
 
             entityMap.SchemaName = schema;
             entityMap.TableName = table;
-        }
-
-        private static string QuoteIdentifier(string name)
-        {
-            return ("[" + name.Replace("]", "]]") + "]");
         }
 
     }
