@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Text;
 using EntityFramework.Extensions;
 using EntityFramework.Future;
 using Xunit;
@@ -238,6 +239,29 @@ namespace Tracker.SqlServer.Test
             Assert.True(((IFutureQuery)q1).IsLoaded);
             Assert.True(((IFutureQuery)q2).IsLoaded);
             Assert.True(((IFutureQuery)q3).IsLoaded);
+        }
+
+        [Fact]
+        public void LoggingInterception()
+        {
+            //log to a string builder
+            var sb = new StringBuilder();
+
+            var db = new TrackerContext();
+            db.Database.Log = s => sb.AppendLine(s);
+
+            const string emailDomain = "@battlestar.com";
+            var q1 = db.Users
+                .Where(p => p.EmailAddress.EndsWith(emailDomain))
+                .FutureFirstOrDefault();
+
+            //materialize it
+            var user = q1.Value;
+
+            //did we log anything?
+            var logged = sb.ToString();
+
+            Assert.Contains("[EmailAddress] LIKE N'%@battlestar.com'", logged);
         }
     }
 }
