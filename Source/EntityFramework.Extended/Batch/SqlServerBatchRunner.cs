@@ -134,7 +134,7 @@ namespace EntityFramework.Batch
 
 #if NET45
                 int result = async
-                    ? await deleteCommand.ExecuteNonQueryAsync()
+                    ? await deleteCommand.ExecuteNonQueryAsync().ConfigureAwait(false)
                     : deleteCommand.ExecuteNonQuery();
 #else
                 int result = deleteCommand.ExecuteNonQuery();
@@ -388,7 +388,7 @@ namespace EntityFramework.Batch
 
 #if NET45
                 int result = async
-                    ? await updateCommand.ExecuteNonQueryAsync()
+                    ? await updateCommand.ExecuteNonQueryAsync().ConfigureAwait(false)
                     : updateCommand.ExecuteNonQuery();
 #else
                 int result = updateCommand.ExecuteNonQuery();
