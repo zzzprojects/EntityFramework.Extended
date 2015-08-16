@@ -13,3 +13,4 @@ TestResults
 *.chm
 *.txt
 /xunit.xml
+!EntityFramework.*.nupkg
