@@ -254,22 +254,25 @@ namespace EntityFramework.Audit
                 if (Configuration.IsNotAudited(type, name))
                     continue;
 
-                bool isModified = modifiedMembers.Any(m => m == name);
-
-                if (state.IsModified && !isModified
-                  && !Configuration.IsAlwaysAudited(type, name))
-                    continue; // this means the property was not changed, skip it
-
                 var auditProperty = new AuditProperty();
+
                 try
                 {
+                    var currentValue = currentValues.GetValue(name);
+                    var originalValue = originalValues.GetValue(name);
+
+                    bool isModified = modifiedMembers.Any(m => m == name);
+
+                    if (state.IsModified && !isModified && !Configuration.IsAlwaysAudited(type, name))
+                        continue; // this means the property was not changed, skip it
+
                     auditProperty.Name = name;
                     auditProperty.Type = GetType(edmProperty);
 
-                    var currentValue = currentValues.GetValue(name);
+                    //var currentValue = currentValues.GetValue(name);
                     currentValue = FormatValue(state, name, currentValue);
 
-                    if (!state.IsModified && currentValue == null)
+                    if ((!state.IsModified && currentValue == null) || (originalValue == null && currentValue == null) || currentValue.Equals(originalValue))
                         continue; // ignore null properties?
 
                     switch (state.AuditEntity.Action)
@@ -282,7 +285,6 @@ namespace EntityFramework.Audit
 
                             if (originalValues != null)
                             {
-                                object originalValue = originalValues.GetValue(edmProperty.Name);
                                 originalValue = FormatValue(state, name, originalValue);
 
                                 auditProperty.Original = originalValue;

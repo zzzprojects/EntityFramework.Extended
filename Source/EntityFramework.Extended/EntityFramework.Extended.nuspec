@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>EntityFramework.Extended</id>
-    <version>6.1.0.0</version>
+    <version>6.1.0.1</version>
     <authors>LoreSoft</authors>
     <owners>LoreSoft</owners>
     <licenseUrl>https://github.com/loresoft/EntityFramework.Extended</licenseUrl>
     <projectUrl>https://github.com/loresoft/EntityFramework.Extended</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A library that extends the functionality of Entity Framework by adding batch update, future queries and audit logs.</description>
+    <description>A library that extends the functionality of Entity Framework by adding batch update, future queries and audit logs. Created by LoreSoft. Fixed by Peter Sbarski</description>
     <summary>Entity Framework extensions library.</summary>
     <copyright>Copyright (c) 2014, LoreSoft</copyright>
     <language>en-US</language>
