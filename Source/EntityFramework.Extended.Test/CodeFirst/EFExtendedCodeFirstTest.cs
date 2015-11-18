@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.ComponentModel.DataAnnotations.Schema;
 using EntityFramework.Audit;
 using System.Data;
+using System.Data.Common;
 using System.Data.Entity.Core;
 
 //using Utile.Money;
@@ -154,8 +155,38 @@ namespace EntityFramework.Test.CodeFirst
 
             var obj = log.Entities[0].Properties;
             Assert.AreEqual(3, obj.Count,"count equals number of properties in Transaction");
+            
 
-            var tran = (IExtendedDataRecord) obj[2].Current;
+        }
+
+        [TestMethod]
+        public void EFExtendedCodeFirst_Edit_Complex_type_property_Original_and_Current_not_the_same()
+        {
+            // Arrange
+            var trx = new Transaction
+            {
+                Money = new Money(123456789012.3456m, "USD"),
+                Detail = "Another Transaction"
+            };
+            _ctx.Transactions.Add(trx);
+            _ctx.SaveChanges();
+
+            //Act
+            var audit = _ctx.BeginAudit();
+            trx.Money.Amount = 10;
+            trx.Detail = "updated detail";
+            var t = _ctx.Set<Transaction>().FirstOrDefault(x => x.Id == trx.Id);
+            _ctx.Entry(t).CurrentValues.SetValues(trx);
+            _ctx.Entry(t).State = EntityState.Modified;
+            _ctx.SaveChanges();
+            var log = audit.LastLog;
+
+            // Assert
+            Assert.AreNotEqual(log.Entities[0].Properties[1].Original, log.Entities[0].Properties[1].Current,"Current and origional of string property Transaction.Detail are not the same.");
+            //cast complex type to DbDataRecord to access its property values.
+            var currentMoney = (DbDataRecord)log.Entities[0].Properties[2].Current;
+            var origionalMoney = (DbDataRecord)log.Entities[0].Properties[2].Original;
+            Assert.AreNotEqual(currentMoney.GetDecimal(1), origionalMoney.GetDecimal(1), "Current and origional of complex type property Transaction.Money.Amount are not the same.");
 
         }
 
