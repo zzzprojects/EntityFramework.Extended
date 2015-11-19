@@ -75,7 +75,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Utile.Money, Version=1.0.1.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Utile.Money\Utile.Money\bin\Debug\Utile.Money.dll</HintPath>
+      <HintPath>..\..\..\Utile.Money\Utile.Money\bin\Release\Utile.Money.dll</HintPath>
     </Reference>
     <Reference Include="xunit">
       <HintPath>..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>

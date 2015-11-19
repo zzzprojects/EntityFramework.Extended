@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Linq;
 using EntityFramework.Extensions;
@@ -8,7 +9,6 @@ using EntityFramework.Audit;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity.Core;
-
 //using Utile.Money;
 
 namespace EntityFramework.Test.CodeFirst
@@ -28,15 +28,34 @@ namespace EntityFramework.Test.CodeFirst
         }
         public string CurrencyCode { get; set; }
         public decimal Amount { get; set; }
-
     }
     public class Transaction
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        [AuditPropertyFormat(typeof(TransactionFormat), "FormatMoney")]
         public Money Money { get; set; }
         public string Detail { get; set; }
+    }
+
+    public class TransactionFormat
+    {
+        public static object FormatMoney(AuditPropertyContext auditProperty)
+         {
+             DbDataRecord d = auditProperty.Value as DbDataRecord;
+             if (d == null)
+                 return null;
+            try
+            {
+                Money m = new Money(d.GetDecimal(1),d.GetString(0));
+                return m;
+            }
+            catch (InvalidCastException)
+            {
+                return null;
+            }
+         }
     }
 
     public class EFExtendedEntities : DbContext
@@ -184,9 +203,7 @@ namespace EntityFramework.Test.CodeFirst
             // Assert
             Assert.AreNotEqual(log.Entities[0].Properties[1].Original, log.Entities[0].Properties[1].Current,"Current and origional of string property Transaction.Detail are not the same.");
             //cast complex type to DbDataRecord to access its property values.
-            var currentMoney = (DbDataRecord)log.Entities[0].Properties[2].Current;
-            var origionalMoney = (DbDataRecord)log.Entities[0].Properties[2].Original;
-            Assert.AreNotEqual(currentMoney.GetDecimal(1), origionalMoney.GetDecimal(1), "Current and origional of complex type property Transaction.Money.Amount are not the same.");
+            Assert.AreNotEqual(log.Entities[0].Properties[2].Current, log.Entities[0].Properties[2].Original, "Current and origional of complex type property Transaction.Money.Amount are not the same.");
 
         }
 
