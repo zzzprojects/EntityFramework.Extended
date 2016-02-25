@@ -10,7 +10,7 @@ namespace EntityFramework.Future
     /// <typeparam name="T">The type for the future query.</typeparam>
     /// <example>The following is an example of how to use FutureValue.
     /// <code><![CDATA[
-    /// var db = new TrackeContext;
+    /// var db = new TrackedContext();
     /// // build up queries
     /// var q1 = db.User.ByEmailAddress("one@test.com").FutureValue();
     /// var q2 = db.Task.Where(t => t.Summary == "Test").Future();
@@ -20,7 +20,7 @@ namespace EntityFramework.Future
     /// ]]>
     /// </code>
     /// </example>
-    [DebuggerDisplay("IsLoaded={IsLoaded}, Value={UnderlingValue}")]
+    [DebuggerDisplay("IsLoaded={IsLoaded}, Value={UnderlyingValue}")]
     public class FutureValue<T> : FutureQueryBase<T>
     {
         private bool _hasValue;

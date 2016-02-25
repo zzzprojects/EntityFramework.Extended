@@ -65,8 +65,6 @@ namespace EntityFramework.Extensions
 
             // create query from expression using internal ObjectQueryProvider
             ObjectQuery countQuery = sourceQuery.CreateQuery(expression, typeof(int));
-            if (countQuery == null)
-                throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
 
             var futureContext = GetFutureContext(sourceQuery);
             var future = new FutureCount(countQuery, futureContext.ExecuteFutureQueries);
@@ -137,8 +135,6 @@ namespace EntityFramework.Extensions
             IQueryable<TEntity> firstQuery = source.Take(1);
 
             ObjectQuery<TEntity> objectQuery = firstQuery.ToObjectQuery();
-            if (objectQuery == null)
-                throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
 
             var futureContext = GetFutureContext(sourceQuery);
             var future = new FutureValue<TEntity>(objectQuery, futureContext.ExecuteFutureQueries);
