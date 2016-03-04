@@ -84,13 +84,11 @@ namespace EntityFramework.Batch
                     ownConnection = true;
                 }
 
-                // When in TransactionScope PostgreSQL does not allow to create nested transaction
-                if (deleteTransaction == null && System.Transactions.Transaction.Current == null)
+                if (deleteTransaction == null)
                 {
                     deleteTransaction = deleteConnection.BeginTransaction();
                     ownTransaction = true;
                 }
-
 
                 deleteCommand = deleteConnection.CreateCommand();
                 deleteCommand.Transaction = deleteTransaction;
@@ -213,9 +211,7 @@ namespace EntityFramework.Batch
                     ownConnection = true;
                 }
 
-                // use existing transaction or create new
-                // When in TransactionScope PostgreSQL does not allow to create nested transaction
-                if (updateTransaction == null && System.Transactions.Transaction.Current != null)
+                if (updateTransaction == null)
                 {
                     updateTransaction = updateConnection.BeginTransaction();
                     ownTransaction = true;
