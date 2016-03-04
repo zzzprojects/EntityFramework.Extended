@@ -117,7 +117,7 @@ namespace EntityFramework.Batch
                 }
                 sqlBuilder.Append(")");
 
-                deleteCommand.CommandText = sqlBuilder.ToString().Replace("[", "").Replace("]", "");
+                deleteCommand.CommandText = sqlBuilder.ToString().Replace("[", "\"").Replace("]", "\"");
 
 #if NET45
                 int result = async
@@ -361,7 +361,7 @@ namespace EntityFramework.Batch
                 }
                 sqlBuilder.AppendLine(")");
 
-                updateCommand.CommandText = sqlBuilder.ToString().Replace("[", "").Replace("]", "");
+                updateCommand.CommandText = sqlBuilder.ToString().Replace("[", "\"").Replace("]", "\"");
 
 #if NET45
                 int result = async
