@@ -239,7 +239,7 @@ namespace EntityFramework.Mapping
 
         private static string QuoteIdentifier(string name)
         {
-            return ("[" + name.Replace("]", "]]") + "]");
+            return Extensions.BatchExtensions.ResolveRunner().Quote(name);
         }
     }
 }

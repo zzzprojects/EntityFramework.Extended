@@ -89,6 +89,7 @@ namespace EntityFramework
         {
             container.Register<IMappingProvider>(() => new MetadataMappingProvider());
             container.Register<IBatchRunner>(() => new SqlServerBatchRunner());
+            //container.Register<IBatchRunner>(() => new MySqlBatchRunner());
             container.Register<IFutureRunner>(() => new FutureRunner());
 
             container.Register<ICacheProvider>(() => new MemoryCacheProvider());

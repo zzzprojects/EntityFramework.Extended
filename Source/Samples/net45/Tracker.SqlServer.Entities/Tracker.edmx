@@ -18,6 +18,38 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="RowVersion" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
         </EntityType>
+        <EntityType Name="Item">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="ProductId" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="ListPrice" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="UnitCost" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Supplier" Type="int" />
+          <Property Name="Status" Type="varchar" MaxLength="2" />
+          <Property Name="Attr1" Type="varchar" MaxLength="80" />
+          <Property Name="Attr2" Type="varchar" MaxLength="80" />
+          <Property Name="Attr3" Type="varchar" MaxLength="80" />
+          <Property Name="Attr4" Type="varchar" MaxLength="80" />
+          <Property Name="Attr5" Type="varchar" MaxLength="80" />
+        </EntityType>
+        <EntityType Name="Item 2">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="ProductId" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="ListPrice" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="UnitCost" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Supplier" Type="int" />
+          <Property Name="Status" Type="varchar" MaxLength="2" />
+          <Property Name="Attr1" Type="varchar" MaxLength="80" />
+          <Property Name="Attr2" Type="varchar" MaxLength="80" />
+          <Property Name="Attr3" Type="varchar" MaxLength="80" />
+          <Property Name="Attr4" Type="varchar" MaxLength="80" />
+          <Property Name="Attr5" Type="varchar" MaxLength="80" />
+        </EntityType>
         <EntityType Name="Priority">
           <Key>
             <PropertyRef Name="Id" />
@@ -29,6 +61,24 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Nullable="false" />
           <Property Name="RowVersion" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Category" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="80" />
+          <Property Name="Descn" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="ProductSummary">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="80" />
+          <Property Name="AvgPrice" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Verified" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -112,6 +162,30 @@
           <Property Name="UserId" Type="int" Nullable="false" />
           <Property Name="RoleId" Type="int" Nullable="false" />
         </EntityType>
+        <Association Name="FK__Item 2__ProductI__0A9D95DB">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Item 2" Type="Self.Item 2" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="Item 2">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Item__ProductId__04E4BC85">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Item" Type="Self.Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="Item">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Audit_Task">
           <End Role="Task" Type="Self.Task" Multiplicity="0..1" />
           <End Role="Audit" Type="Self.Audit" Multiplicity="*" />
@@ -222,13 +296,25 @@
         </Association>
         <EntityContainer Name="TrackerSqlServerEntitiesStoreContainer">
           <EntitySet Name="Audit" EntityType="Self.Audit" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Item" EntityType="Self.Item" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Item 2" EntityType="Self.Item 2" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Priority" EntityType="Self.Priority" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductSummary" EntityType="Self.ProductSummary" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Status" EntityType="Self.Status" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Task" EntityType="Self.Task" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TaskExtended" EntityType="Self.TaskExtended" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Item 2__ProductI__0A9D95DB" Association="Self.FK__Item 2__ProductI__0A9D95DB">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Item 2" EntitySet="Item 2" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Item__ProductId__04E4BC85" Association="Self.FK__Item__ProductId__04E4BC85">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Item" EntitySet="Item" />
+          </AssociationSet>
           <AssociationSet Name="FK_Audit_Task" Association="Self.FK_Audit_Task">
             <End Role="Task" EntitySet="Task" />
             <End Role="Audit" EntitySet="Audit" />
@@ -513,7 +599,97 @@
             <End Role="Role" EntitySet="Roles" />
             <End Role="User" EntitySet="Users" />
           </AssociationSet>
+          <EntitySet Name="Items" EntityType="Tracker.SqlServer.Entities.Item" />
+          <EntitySet Name="Products" EntityType="Tracker.SqlServer.Entities.Product" />
+          <EntitySet Name="ProductSummaries" EntityType="Tracker.SqlServer.Entities.ProductSummary" />
+          <AssociationSet Name="FK__Item__ProductId__04E4BC85" Association="Tracker.SqlServer.Entities.FK__Item__ProductId__04E4BC85">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Item" EntitySet="Items" />
+          </AssociationSet>
+          <EntitySet Name="Item_2" EntityType="Tracker.SqlServer.Entities.Item_2" />
+          <AssociationSet Name="FK__Item_2__ProductI__0A9D95DB" Association="Tracker.SqlServer.Entities.FK__Item_2__ProductI__0A9D95DB">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Item_2" EntitySet="Item_2" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Item">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ProductId" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ListPrice" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="UnitCost" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Supplier" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="Attr1" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr2" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr3" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr4" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr5" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Product" Relationship="Tracker.SqlServer.Entities.FK__Item__ProductId__04E4BC85" FromRole="Item" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Category" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Descn" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Items" Relationship="Tracker.SqlServer.Entities.FK__Item__ProductId__04E4BC85" FromRole="Product" ToRole="Item" />
+          <NavigationProperty Name="Item_2" Relationship="Tracker.SqlServer.Entities.FK__Item_2__ProductI__0A9D95DB" FromRole="Product" ToRole="Item_2" />
+        </EntityType>
+        <EntityType Name="ProductSummary">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="AvgPrice" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Verified" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Item__ProductId__04E4BC85">
+          <End Type="Tracker.SqlServer.Entities.Product" Role="Product" Multiplicity="1" />
+          <End Type="Tracker.SqlServer.Entities.Item" Role="Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="Item">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Item_2">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ProductId" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ListPrice" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="UnitCost" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Supplier" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="Attr1" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr2" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr3" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr4" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr5" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Product" Relationship="Tracker.SqlServer.Entities.FK__Item_2__ProductI__0A9D95DB" FromRole="Item_2" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK__Item_2__ProductI__0A9D95DB">
+          <End Type="Tracker.SqlServer.Entities.Product" Role="Product" Multiplicity="1" />
+          <End Type="Tracker.SqlServer.Entities.Item_2" Role="Item_2" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="Item_2">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -634,6 +810,60 @@
               <ScalarProperty Name="Id" ColumnName="UserId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="Items">
+            <EntityTypeMapping TypeName="Tracker.SqlServer.Entities.Item">
+              <MappingFragment StoreEntitySet="Item">
+                <ScalarProperty Name="Attr5" ColumnName="Attr5" />
+                <ScalarProperty Name="Attr4" ColumnName="Attr4" />
+                <ScalarProperty Name="Attr3" ColumnName="Attr3" />
+                <ScalarProperty Name="Attr2" ColumnName="Attr2" />
+                <ScalarProperty Name="Attr1" ColumnName="Attr1" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Supplier" ColumnName="Supplier" />
+                <ScalarProperty Name="UnitCost" ColumnName="UnitCost" />
+                <ScalarProperty Name="ListPrice" ColumnName="ListPrice" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Products">
+            <EntityTypeMapping TypeName="Tracker.SqlServer.Entities.Product">
+              <MappingFragment StoreEntitySet="Product">
+                <ScalarProperty Name="Descn" ColumnName="Descn" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductSummaries">
+            <EntityTypeMapping TypeName="Tracker.SqlServer.Entities.ProductSummary">
+              <MappingFragment StoreEntitySet="ProductSummary">
+                <ScalarProperty Name="Verified" ColumnName="Verified" />
+                <ScalarProperty Name="AvgPrice" ColumnName="AvgPrice" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Item_2">
+            <EntityTypeMapping TypeName="Tracker.SqlServer.Entities.Item_2">
+              <MappingFragment StoreEntitySet="Item 2">
+                <ScalarProperty Name="Attr5" ColumnName="Attr5" />
+                <ScalarProperty Name="Attr4" ColumnName="Attr4" />
+                <ScalarProperty Name="Attr3" ColumnName="Attr3" />
+                <ScalarProperty Name="Attr2" ColumnName="Attr2" />
+                <ScalarProperty Name="Attr1" ColumnName="Attr1" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Supplier" ColumnName="Supplier" />
+                <ScalarProperty Name="UnitCost" ColumnName="UnitCost" />
+                <ScalarProperty Name="ListPrice" ColumnName="ListPrice" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

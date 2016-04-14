@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="da8d9e84db6140faa14b46d3ca4a7951" Name="Diagram1">
+      <Diagram DiagramId="da8d9e84db6140faa14b46d3ca4a7951" Name="Diagram1" ZoomLevel="89">
         <EntityTypeShape EntityType="Tracker.SqlServer.Entities.Audit" Width="1.5" PointX="5.25" PointY="4.25" IsExpanded="true" />
         <EntityTypeShape EntityType="Tracker.SqlServer.Entities.Priority" Width="1.5" PointX="6" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Tracker.SqlServer.Entities.Role" Width="1.5" PointX="0.75" PointY="4.5" IsExpanded="true" />
@@ -20,6 +20,12 @@
         <AssociationConnector Association="Tracker.SqlServer.Entities.FK_Task_User_Created" ManuallyRouted="false" />
         <AssociationConnector Association="Tracker.SqlServer.Entities.FK_TaskExtended_Task" ManuallyRouted="false" />
         <AssociationConnector Association="Tracker.SqlServer.Entities.UserRole" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="Tracker.SqlServer.Entities.Item" Width="1.5" PointX="3" PointY="10" />
+        <EntityTypeShape EntityType="Tracker.SqlServer.Entities.Product" Width="1.5" PointX="0.75" PointY="10.625" />
+        <EntityTypeShape EntityType="Tracker.SqlServer.Entities.ProductSummary" Width="1.5" PointX="8.75" PointY="9.75" />
+        <AssociationConnector Association="Tracker.SqlServer.Entities.FK__Item__ProductId__04E4BC85" />
+        <EntityTypeShape EntityType="Tracker.SqlServer.Entities.Item_2" Width="1.5" PointX="3" PointY="15" />
+        <AssociationConnector Association="Tracker.SqlServer.Entities.FK__Item_2__ProductI__0A9D95DB" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

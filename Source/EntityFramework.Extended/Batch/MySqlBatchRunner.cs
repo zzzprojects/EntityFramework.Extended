@@ -12,6 +12,9 @@ using EntityFramework.Extensions;
 using EntityFramework.Mapping;
 using EntityFramework.Reflection;
 using System.Threading.Tasks;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure.Interception;
+using System.Data.SqlClient;
 
 namespace EntityFramework.Batch
 {
@@ -20,6 +23,21 @@ namespace EntityFramework.Batch
     /// </summary>
     public class MySqlBatchRunner : IBatchRunner
     {
+        /// <summary>
+        /// NULL value for a parameter of <see cref="DbCommand"/>.
+        /// </summary>
+        public object DbNull { get { return null; } }
+
+        /// <summary>
+        /// To quote an SQL identifier so that it's safe to be included in an SQL statement
+        /// <param name="identifier">An identifier.</param>
+        /// <returns>The quoted identifier</returns>
+        /// </summary>
+        public string Quote(string identifier)
+        {
+            return "`" + identifier.Replace("`", "``") + "`";
+        }
+
         /// <summary>
         /// Create and run a batch delete statement.
         /// </summary>
@@ -65,38 +83,9 @@ namespace EntityFramework.Batch
             where TEntity : class
 #endif
         {
-            DbConnection deleteConnection = null;
-            DbTransaction deleteTransaction = null;
-            DbCommand deleteCommand = null;
-            bool ownConnection = false;
-            bool ownTransaction = false;
-
-            try
+            using (var db = QueryHelper.GetDb(objectContext))
             {
-                // get store connection and transaction
-                var store = GetStore(objectContext);
-                deleteConnection = store.Item1;
-                deleteTransaction = store.Item2;
-
-                if (deleteConnection.State != ConnectionState.Open)
-                {
-                    deleteConnection.Open();
-                    ownConnection = true;
-                }
-
-                if (deleteTransaction == null)
-                {
-                    deleteTransaction = deleteConnection.BeginTransaction();
-                    ownTransaction = true;
-                }
-
-
-                deleteCommand = deleteConnection.CreateCommand();
-                deleteCommand.Transaction = deleteTransaction;
-                if (objectContext.CommandTimeout.HasValue)
-                    deleteCommand.CommandTimeout = objectContext.CommandTimeout.Value;
-
-                var innerSelect = GetSelectSql(query, entityMap, deleteCommand);
+                var innerSelect = QueryHelper.GetSelectKeySql(query, entityMap, db.Command, this);
 
                 var sqlBuilder = new StringBuilder(innerSelect.Length * 2);
 
@@ -119,32 +108,21 @@ namespace EntityFramework.Batch
                 }
                 sqlBuilder.Append(")");
 
-                deleteCommand.CommandText = sqlBuilder.ToString().Replace("[", "").Replace("]", "");
+                db.Command.CommandText = sqlBuilder.ToString();
 
 #if NET45
                 int result = async
-                    ? await deleteCommand.ExecuteNonQueryAsync().ConfigureAwait(false)
-                    : deleteCommand.ExecuteNonQuery();
+                    ? await db.Command.ExecuteNonQueryAsync().ConfigureAwait(false)
+                    : db.Command.ExecuteNonQuery();
 #else
-                int result = deleteCommand.ExecuteNonQuery();
+                int result = db.Command.ExecuteNonQuery();
 #endif
 
                 // only commit if created transaction
-                if (ownTransaction)
-                    deleteTransaction.Commit();
+                if (db.OwnTransaction)
+                    db.Transaction.Commit();
 
                 return result;
-            }
-            finally
-            {
-                if (deleteCommand != null)
-                    deleteCommand.Dispose();
-
-                if (deleteTransaction != null && ownTransaction)
-                    deleteTransaction.Dispose();
-
-                if (deleteConnection != null && ownConnection)
-                    deleteConnection.Close();
             }
         }
 
@@ -194,38 +172,9 @@ namespace EntityFramework.Batch
             where TEntity : class
 #endif
         {
-            DbConnection updateConnection = null;
-            DbTransaction updateTransaction = null;
-            DbCommand updateCommand = null;
-            bool ownConnection = false;
-            bool ownTransaction = false;
-
-            try
+            using (var db = QueryHelper.GetDb(objectContext))
             {
-                // get store connection and transaction
-                var store = GetStore(objectContext);
-                updateConnection = store.Item1;
-                updateTransaction = store.Item2;
-
-                if (updateConnection.State != ConnectionState.Open)
-                {
-                    updateConnection.Open();
-                    ownConnection = true;
-                }
-
-                // use existing transaction or create new
-                if (updateTransaction == null)
-                {
-                    updateTransaction = updateConnection.BeginTransaction();
-                    ownTransaction = true;
-                }
-
-                updateCommand = updateConnection.CreateCommand();
-                updateCommand.Transaction = updateTransaction;
-                if (objectContext.CommandTimeout.HasValue)
-                    updateCommand.CommandTimeout = objectContext.CommandTimeout.Value;
-
-                var innerSelect = GetSelectSql(query, entityMap, updateCommand);
+                var innerSelect = QueryHelper.GetSelectKeySql(query, entityMap, db.Command, this);
                 var sqlBuilder = new StringBuilder(innerSelect.Length * 2);
 
                 sqlBuilder.Append("UPDATE ");
@@ -305,10 +254,10 @@ namespace EntityFramework.Batch
                         if (value != null)
                         {
                             string parameterName = "p__update__" + nameCount++;
-                            var parameter = updateCommand.CreateParameter();
+                            var parameter = db.Command.CreateParameter();
                             parameter.ParameterName = parameterName;
                             parameter.Value = value;
-                            updateCommand.Parameters.Add(parameter);
+                            db.Command.Parameters.Add(parameter);
 
                             sqlBuilder.AppendFormat("{0} = @{1}", columnName, parameterName);
                         }
@@ -353,10 +302,10 @@ namespace EntityFramework.Batch
                         {
                             string parameterName = "p__update__" + nameCount++;
 
-                            var parameter = updateCommand.CreateParameter();
+                            var parameter = db.Command.CreateParameter();
                             parameter.ParameterName = parameterName;
                             parameter.Value = objectParameter.Value;
-                            updateCommand.Parameters.Add(parameter);
+                            db.Command.Parameters.Add(parameter);
 
                             value = value.Replace(objectParameter.Name, parameterName);
                         }
@@ -366,88 +315,60 @@ namespace EntityFramework.Batch
                 }
 
 
-                updateCommand.CommandText = sqlBuilder.ToString().Replace("[", "").Replace("]", "");
+                db.Command.CommandText = sqlBuilder.ToString();
 
 #if NET45
                 int result = async
-                    ? await updateCommand.ExecuteNonQueryAsync().ConfigureAwait(false)
-                    : updateCommand.ExecuteNonQuery();
+                    ? await db.Command.ExecuteNonQueryAsync().ConfigureAwait(false)
+                    : db.Command.ExecuteNonQuery();
 #else
-                int result = updateCommand.ExecuteNonQuery();
+                int result = db.Command.ExecuteNonQuery();
 #endif
 
                 // only commit if created transaction
-                if (ownTransaction)
-                    updateTransaction.Commit();
+                if (db.OwnTransaction)
+                    db.Transaction.Commit();
 
                 return result;
             }
-            finally
-            {
-                if (updateCommand != null)
-                    updateCommand.Dispose();
-                if (updateTransaction != null && ownTransaction)
-                    updateTransaction.Dispose();
-                if (updateConnection != null && ownConnection)
-                    updateConnection.Close();
-            }
         }
 
-        private static Tuple<DbConnection, DbTransaction> GetStore(ObjectContext objectContext)
+        /// <summary>
+        /// Execute statement `<code>INSERT INTO [Table] (...) SELECT ...</code>`.
+        /// </summary>
+        /// <typeparam name="TModel">The type <paramref name="query"/> item.</typeparam>
+        /// <param name="query">The query to create SELECT clause statement.</param>
+        /// <param name="objectQuery">The query to create SELECT clause statement and it can also be used to get the information of db connection via
+        ///     <code>objectQuery.Context</code> property.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for entity type of the destination table (<see cref="IDbSet"/>).</param>
+        /// <returns>
+        /// The number of rows inserted.
+        /// </returns>
+        public int Insert<TModel>(IQueryable<TModel> query, ObjectQuery<TModel> objectQuery, EntityMap entityMap) where TModel : class
         {
-            DbConnection dbConnection = objectContext.Connection;
-            var entityConnection = dbConnection as EntityConnection;
-
-            // by-pass entity connection
-            if (entityConnection == null)
-                return new Tuple<DbConnection, DbTransaction>(dbConnection, null);
-
-            DbConnection connection = entityConnection.StoreConnection;
-
-            // get internal transaction
-            dynamic connectionProxy = new DynamicProxy(entityConnection);
-            dynamic entityTransaction = connectionProxy.CurrentTransaction;
-            if (entityTransaction == null)
-                return new Tuple<DbConnection, DbTransaction>(connection, null);
-
-            DbTransaction transaction = entityTransaction.StoreTransaction;
-            return new Tuple<DbConnection, DbTransaction>(connection, transaction);
+#if NET45
+            return this.InternalInsert(query, objectQuery, entityMap, false).Result;
+#else
+            return this.InternalInsert(query, objectQuery, entityMap, false);
+#endif
         }
 
-        private static string GetSelectSql<TEntity>(ObjectQuery<TEntity> query, EntityMap entityMap, DbCommand command)
-            where TEntity : class
+#if NET45
+        /// <summary>
+        /// Execute statement `<code>INSERT INTO [Table] (...) SELECT ...</code>`.
+        /// </summary>
+        /// <typeparam name="TModel">The type <paramref name="query"/> item.</typeparam>
+        /// <param name="query">The query to create SELECT clause statement.</param>
+        /// <param name="objectQuery">The query to create SELECT clause statement and it can also be used to get the information of db connection via
+        ///     <code>objectQuery.Context</code> property.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for entity type of the destination table (<see cref="IDbSet"/>).</param>
+        /// <returns>
+        /// The number of rows inserted.
+        /// </returns>
+        public Task<int> InsertAsync<TModel>(IQueryable<TModel> query, ObjectQuery<TModel> objectQuery, EntityMap entityMap) where TModel : class
         {
-            // changing query to only select keys
-            var selector = new StringBuilder(50);
-            selector.Append("new(");
-            foreach (var propertyMap in entityMap.KeyMaps)
-            {
-                if (selector.Length > 4)
-                    selector.Append((", "));
-
-                selector.Append(propertyMap.PropertyName);
-            }
-            selector.Append(")");
-
-            var selectQuery = DynamicQueryable.Select(query, selector.ToString());
-            var objectQuery = selectQuery as ObjectQuery;
-
-            if (objectQuery == null)
-                throw new ArgumentException("The query must be of type ObjectQuery.", "query");
-
-            string innerJoinSql = objectQuery.ToTraceString();
-
-            // create parameters
-            foreach (var objectParameter in objectQuery.Parameters)
-            {
-                var parameter = command.CreateParameter();
-                parameter.ParameterName = objectParameter.Name;
-                parameter.Value = objectParameter.Value;
-
-                command.Parameters.Add(parameter);
-            }
-
-            return innerJoinSql;
+            return this.InternalInsert(query, objectQuery, entityMap, true);
         }
+#endif
     }
 }
