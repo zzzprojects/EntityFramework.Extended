@@ -216,15 +216,10 @@ namespace EntityFramework.Mapping
 
             storeSet.MetadataProperties.TryGetValue("Schema", true, out schemaProperty);
             if (schemaProperty == null || schemaProperty.Value == null)
-            {
-                storeSet.MetadataProperties.TryGetValue("http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator:Schema",
-                    true, out schemaProperty);
-            }
+                storeSet.MetadataProperties.TryGetValue("http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator:Schema", true, out schemaProperty);
 
             if (schemaProperty != null)
-            {
                 schema = schemaProperty.Value as string;
-            }
 
             entityMap.SchemaName = schema;
             entityMap.TableName = table;

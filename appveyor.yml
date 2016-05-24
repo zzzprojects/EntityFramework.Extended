@@ -9,9 +9,11 @@ environment:
     
 services:
   - mssql2014
-  
+  - mysql
+
 before_build:
   - cmd: "\"C:\\Program Files (x86)\\Microsoft SQL Server\\120\\DAC\\bin\\SqlPackage.exe\" /a:Publish /sf:\"%APPVEYOR_BUILD_FOLDER%\\Database\\SqlServer\\Tracker.dacpac\" /tcs:\"Data Source=(local)\\SQL2014;Initial Catalog=Tracker;User ID=sa;Password=Password12!\""
+  - cmd: "\"C:\\Program Files\\MySql\\MySQL Server 5.6\\bin\\mysql.exe\" -uroot -pPassword12! -e \"CREATE SCHEMA Tracker;\""
 
 build:
   project: Master.proj
