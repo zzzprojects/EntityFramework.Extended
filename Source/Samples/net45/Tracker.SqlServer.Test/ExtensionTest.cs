@@ -6,6 +6,7 @@ using System.Transactions;
 using EntityFramework.Extensions;
 using Xunit;
 using Tracker.SqlServer.Entities;
+using System.Threading.Tasks;
 
 namespace Tracker.SqlServer.Test
 {
@@ -156,6 +157,84 @@ namespace Tracker.SqlServer.Test
             using (var db = new TrackerEntities())
             {
                 _Insert(db, true);
+            }
+        }
+
+        private void _InsertBulk(TrackerEntities db, bool isAsync = false)
+        {
+            db.ProductSummaries.Delete();
+
+            //Create 1000 random records
+            var entities = new List<ProductSummary>();
+            Random r = new Random();
+            int n = 1000;
+            int m = (int)Math.Pow(10, 8) - 1;
+            for (int i = 1; i <= n; i++)
+            {
+                entities.Add(new ProductSummary
+                {
+                    ProductId = i.ToString(),
+                    Name = Guid.NewGuid().ToString().Replace("-", "").PadRight(80).Substring(0, 80),
+                    AvgPrice = r.Next(-m, m),
+                    Verified = r.Next() % 2 == 0,
+                    Date = DateTime.Now.AddDays(r.Next(-100, 100)),
+                });
+            }
+
+            var start = DateTime.Now;
+
+            if (isAsync) db.ProductSummaries.InsertAsync(entities).Wait();
+            else db.ProductSummaries.Insert(entities);
+
+            /**
+             * Compare the execution time with these two lines of commented code below
+            // * **/
+            //db.ProductSummaries.AddRange(entities);
+            //db.SaveChanges();
+
+            System.Diagnostics.Debug.WriteLine("***** Executing bulk insert (" + n + " items) takes "
+                + DateTime.Now.Subtract(start).ToString(@"hh\:mm\:ss\.ffffff"));
+
+            Assert.True(db.ProductSummaries.Count() == n);
+        }
+
+        [Fact]
+        public void InsertBulkNoTransaction()
+        {
+            using (var db = new TrackerEntities())
+            {
+                _InsertBulk(db);
+            }
+        }
+
+        [Fact]
+        public void InsertBulkInTransaction()
+        {
+            using (var db = new TrackerEntities())
+            using (var tx = db.Database.BeginTransaction())
+            {
+                _InsertBulk(db);
+                tx.Commit();
+            }
+        }
+
+        [Fact]
+        public void InsertBulkInTransactionScope()
+        {
+            using (var tx = new TransactionScope())
+            using (var db = new TrackerEntities())
+            {
+                _InsertBulk(db);
+                tx.Complete();
+            }
+        }
+
+        [Fact]
+        public void InsertBulkAsync()
+        {
+            using (var db = new TrackerEntities())
+            {
+                _InsertBulk(db, true);
             }
         }
     }

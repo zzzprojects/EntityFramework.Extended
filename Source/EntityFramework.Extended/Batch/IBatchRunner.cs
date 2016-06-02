@@ -83,7 +83,7 @@ namespace EntityFramework.Batch
         /// <param name="query">The query to create SELECT clause statement.</param>
         /// <param name="objectQuery">The query to create SELECT clause statement and it can also be used to get the information of db connection via
         ///     <code>objectQuery.Context</code> property.</param>
-        /// <param name="entityMap">The <see cref="EntityMap"/> for entity type of the destination table (<see cref="IDbSet"/>).</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for entity type of the destination table (<code>IDbSet</code>).</param>
         /// <returns>
         /// The number of rows inserted.
         /// </returns>
@@ -97,11 +97,46 @@ namespace EntityFramework.Batch
         /// <param name="query">The query to create SELECT clause statement.</param>
         /// <param name="objectQuery">The query to create SELECT clause statement and it can also be used to get the information of db connection via
         ///     <code>objectQuery.Context</code> property.</param>
-        /// <param name="entityMap">The <see cref="EntityMap"/> for entity type of the destination table (<see cref="IDbSet"/>).</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for entity type of the destination table (<code>IDbSet</code>).</param>
         /// <returns>
         /// The number of rows inserted.
         /// </returns>
         Task<int> InsertAsync<TModel>(IQueryable<TModel> query, ObjectQuery<TModel> objectQuery, EntityMap entityMap) where TModel : class;
+#endif
+
+        /// <summary>
+        /// Inserts a lof of rows into a database table. It must be much faster than executing `<code>DbSet.AddRange</code>` or
+        /// repetitive `<code>DbSet.Add</code>` method and then executing '<code>DbContext.SaveChanges</code>' method.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of objects representing rows to be inserted into db table.</typeparam>
+        /// <param name="objectContext">The <code>ObjectContext</code> object corresponding to the database table to which the rows will be inserted.</param>
+        /// <param name="entities">The entity objects reprsenting the rows that will be inserted.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for entity type of the destination table.</param>
+        /// <param name="batchSize">Number of rows in each batch. At the end of each batch, the rows in the batch are sent to the server. Zero means there
+        /// will be a single batch</param>
+        /// <param name="timeout">Number of seconds for the operation to complete before it times out. Zero means no limit.</param>
+        /// <returns>
+        /// The number of rows inserted.
+        /// </returns>
+        int Insert<TEntity>(ObjectContext objectContext, IEnumerable<TEntity> entities, EntityMap entityMap, int batchSize, int timeout) where TEntity : class;
+
+#if NET45
+        /// <summary>
+        /// Inserts a lof of rows into a database table asynchronously. It must be much faster than executing `<code>DbSet.AddRange</code>` or
+        /// repetitive `<code>DbSet.Add</code>` method and then executing '<code>DbContext.SaveChanges</code>' method.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of objects representing rows to be inserted into db table.</typeparam>
+        /// <param name="objectContext">The <code>ObjectContext</code> object corresponding to the database table to which the rows will be inserted.</param>
+        /// <param name="entities">The entity objects reprsenting the rows that will be inserted.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for entity type of the destination table.</param>
+        /// <param name="batchSize">Number of rows in each batch. At the end of each batch, the rows in the batch are sent to the server. Zero means there
+        /// will be a single batch</param>
+        /// <param name="timeout">Number of seconds for the operation to complete before it times out. Zero means no limit.</param>
+        /// <returns>
+        /// The number of rows inserted.
+        /// </returns>
+        Task<int> InsertAsync<TEntity>(ObjectContext objectContext, IEnumerable<TEntity> entities, EntityMap entityMap, int batchSize, int timeout)
+            where TEntity : class;
 #endif
     }
 }

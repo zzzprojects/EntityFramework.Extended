@@ -79,6 +79,7 @@
           <Property Name="Name" Type="varchar" MaxLength="80" />
           <Property Name="AvgPrice" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="Verified" Type="bit" Nullable="false" />
+          <Property Name="Date" Type="datetime" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -210,6 +211,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ProductSummary_Product">
+          <End Role="Product" Type="Self.Product" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ProductSummary" Type="Self.ProductSummary" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductSummary">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Task_Priority">
           <End Role="Priority" Type="Self.Priority" Multiplicity="0..1" />
           <End Role="Task" Type="Self.Task" Multiplicity="*" />
@@ -322,6 +337,10 @@
           <AssociationSet Name="FK_Audit_User" Association="Self.FK_Audit_User">
             <End Role="User" EntitySet="User" />
             <End Role="Audit" EntitySet="Audit" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductSummary_Product" Association="Self.FK_ProductSummary_Product">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="ProductSummary" EntitySet="ProductSummary" />
           </AssociationSet>
           <AssociationSet Name="FK_Task_Priority" Association="Self.FK_Task_Priority">
             <End Role="Priority" EntitySet="Priority" />
@@ -601,7 +620,6 @@
           </AssociationSet>
           <EntitySet Name="Items" EntityType="Tracker.SqlServer.Entities.Item" />
           <EntitySet Name="Products" EntityType="Tracker.SqlServer.Entities.Product" />
-          <EntitySet Name="ProductSummaries" EntityType="Tracker.SqlServer.Entities.ProductSummary" />
           <AssociationSet Name="FK__Item__ProductId__04E4BC85" Association="Tracker.SqlServer.Entities.FK__Item__ProductId__04E4BC85">
             <End Role="Product" EntitySet="Products" />
             <End Role="Item" EntitySet="Items" />
@@ -610,6 +628,11 @@
           <AssociationSet Name="FK__Item_2__ProductI__0A9D95DB" Association="Tracker.SqlServer.Entities.FK__Item_2__ProductI__0A9D95DB">
             <End Role="Product" EntitySet="Products" />
             <End Role="Item_2" EntitySet="Item_2" />
+          </AssociationSet>
+          <EntitySet Name="ProductSummaries" EntityType="Tracker.SqlServer.Entities.ProductSummary" />
+          <AssociationSet Name="FK_ProductSummary_Product" Association="Tracker.SqlServer.Entities.FK_ProductSummary_Product">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="ProductSummary" EntitySet="ProductSummaries" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Item">
@@ -639,15 +662,7 @@
           <Property Name="Descn" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Items" Relationship="Tracker.SqlServer.Entities.FK__Item__ProductId__04E4BC85" FromRole="Product" ToRole="Item" />
           <NavigationProperty Name="Item_2" Relationship="Tracker.SqlServer.Entities.FK__Item_2__ProductI__0A9D95DB" FromRole="Product" ToRole="Item_2" />
-        </EntityType>
-        <EntityType Name="ProductSummary">
-          <Key>
-            <PropertyRef Name="ProductId" />
-          </Key>
-          <Property Name="ProductId" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
-          <Property Name="AvgPrice" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
-          <Property Name="Verified" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="ProductSummary" Relationship="Tracker.SqlServer.Entities.FK_ProductSummary_Product" FromRole="Product" ToRole="ProductSummary" />
         </EntityType>
         <Association Name="FK__Item__ProductId__04E4BC85">
           <End Type="Tracker.SqlServer.Entities.Product" Role="Product" Multiplicity="1" />
@@ -686,6 +701,31 @@
               <PropertyRef Name="ProductId" />
             </Principal>
             <Dependent Role="Item_2">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ProductSummary">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="AvgPrice" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="Verified" Type="Boolean" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Product" Relationship="Tracker.SqlServer.Entities.FK_ProductSummary_Product" FromRole="ProductSummary" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK_ProductSummary_Product">
+          <End Type="Tracker.SqlServer.Entities.Product" Role="Product" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="Tracker.SqlServer.Entities.ProductSummary" Role="ProductSummary" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ProductSummary">
               <PropertyRef Name="ProductId" />
             </Dependent>
           </ReferentialConstraint>
@@ -837,16 +877,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ProductSummaries">
-            <EntityTypeMapping TypeName="Tracker.SqlServer.Entities.ProductSummary">
-              <MappingFragment StoreEntitySet="ProductSummary">
-                <ScalarProperty Name="Verified" ColumnName="Verified" />
-                <ScalarProperty Name="AvgPrice" ColumnName="AvgPrice" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Item_2">
             <EntityTypeMapping TypeName="Tracker.SqlServer.Entities.Item_2">
               <MappingFragment StoreEntitySet="Item 2">
@@ -861,6 +891,17 @@
                 <ScalarProperty Name="ListPrice" ColumnName="ListPrice" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductSummaries">
+            <EntityTypeMapping TypeName="Tracker.SqlServer.Entities.ProductSummary">
+              <MappingFragment StoreEntitySet="ProductSummary">
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Verified" ColumnName="Verified" />
+                <ScalarProperty Name="AvgPrice" ColumnName="AvgPrice" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

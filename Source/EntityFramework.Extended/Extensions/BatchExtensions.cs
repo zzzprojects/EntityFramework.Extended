@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using EntityFramework.Batch;
 using EntityFramework.Mapping;
+using System.Collections.Generic;
 
 namespace EntityFramework.Extensions
 {
@@ -396,27 +397,31 @@ namespace EntityFramework.Extensions
         }
 #endif
 
+        private static Tuple<ObjectContext, EntityMap> GetQueryObjects<TEntity>(IDbSet<TEntity> dbSet) where TEntity : class
+        {
+            if (dbSet == null)
+                throw new ArgumentNullException("dbSet");
+            
+            ObjectQuery<TEntity> destQuery = dbSet.ToObjectQuery();
+            if (destQuery == null)
+                throw new ArgumentException("The DbSet must be of type ObjectQuery or DbQuery.", "dbSet");
+
+            ObjectContext destContext = destQuery.Context;
+            if (destContext == null)
+                throw new ArgumentException("The ObjectContext for the DbSet can not be null.", "dbSet");
+
+            EntityMap entityMap = destQuery.GetEntityMap<TEntity>();
+            if (entityMap == null)
+                throw new ArgumentException("Could not load the entity mapping information for the destination.", "dbSet");
+            return Tuple.Create(destContext, entityMap);
+        }
+
         private static Tuple<ObjectQuery<TModel>, EntityMap> CheckInsertParams<TEntity, TModel>(IDbSet<TEntity> destination,
             IQueryable<TModel> source)
             where TEntity : class
             where TModel : class
         {
-            if (destination == null)
-                throw new ArgumentNullException("destination");
-            if (source == null)
-                throw new ArgumentNullException("source");
-
-            ObjectQuery<TEntity> destQuery = destination.ToObjectQuery();
-            if (destQuery == null)
-                throw new ArgumentException("The DbSet must be of type ObjectQuery or DbQuery.", "destination");
-
-            //ObjectContext destContext = destQuery.Context;
-            //if (destContext == null)
-            //    throw new ArgumentException("The ObjectContext for the DbSet can not be null.", "destination");
-
-            EntityMap entityMap = destQuery.GetEntityMap<TEntity>();
-            if (entityMap == null)
-                throw new ArgumentException("Could not load the entity mapping information for the destination.", "destination");
+            EntityMap entityMap = GetQueryObjects<TEntity>(destination).Item2;
 
             ObjectQuery<TModel> sourceQuery = source.ToObjectQuery();
             if (sourceQuery == null)
@@ -492,6 +497,48 @@ namespace EntityFramework.Extensions
         {
             var p = CheckInsertParams(destination, source);
             return ResolveRunner().InsertAsync(source, p.Item1, p.Item2);
+        }
+#endif
+
+        /// <summary>
+        /// Inserts a lof of rows into a database table. It must be much faster than executing `<code>DbSet.AddRange</code>` or
+        /// repetitive `<code>DbSet.Add</code>` method and then executing '<code>DbContext.SaveChanges</code>' method.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of objects representing rows to be inserted into db table.</typeparam>
+        /// <param name="dbSet">The <code>IDbSet</code> object representing the table to which the rows will be inserted.</param>
+        /// <param name="entities">The entity objects reprsenting the rows that will be inserted.</param>
+        /// <param name="batchSize">Number of rows in each batch. At the end of each batch, the rows in the batch are sent to the server. Zero means there
+        /// will be a single batch</param>
+        /// <param name="timeout">Number of seconds for the operation to complete before it times out. Zero means no limit.</param>
+        /// <returns>
+        /// The number of rows inserted.
+        /// </returns>
+        public static int Insert<TEntity>(this IDbSet<TEntity> dbSet, IEnumerable<TEntity> entities, int batchSize = 1000, int timeout = 0)
+            where TEntity : class
+        {
+            var objects = GetQueryObjects(dbSet);
+            return ResolveRunner().Insert(objects.Item1, entities, objects.Item2, batchSize, timeout);
+        }
+
+#if NET45
+        /// <summary>
+        /// Inserts a lof of rows into a database table asynchronously. It must be much faster than executing `<code>DbSet.AddRange</code>` or
+        /// repetitive `<code>DbSet.Add</code>` method and then executing '<code>DbContext.SaveChanges</code>' method.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of objects representing rows to be inserted into db table.</typeparam>
+        /// <param name="dbSet">The <code>IDbSet</code> object representing the table to which the rows will be inserted.</param>
+        /// <param name="entities">The entity objects reprsenting the rows that will be inserted.</param>
+        /// <param name="batchSize">Number of rows in each batch. At the end of each batch, the rows in the batch are sent to the server. Zero means there
+        /// will be a single batch</param>
+        /// <param name="timeout">Number of seconds for the operation to complete before it times out. Zero means no limit.</param>
+        /// <returns>
+        /// The number of rows inserted.
+        /// </returns>
+        public static async Task<int> InsertAsync<TEntity>(this IDbSet<TEntity> dbSet, IEnumerable<TEntity> entities, int batchSize = 1000, int timeout = 0)
+            where TEntity : class
+        {
+            var objects = GetQueryObjects(dbSet);
+            return await ResolveRunner().InsertAsync(objects.Item1, entities, objects.Item2, batchSize, timeout);
         }
 #endif
 
