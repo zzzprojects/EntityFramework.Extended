@@ -5,6 +5,16 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="Tracker.SqlServer.Entities.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ATable">
+          <Key>
+            <PropertyRef Name="C" />
+          </Key>
+          <Property Name="A" Type="float" Nullable="false" />
+          <Property Name="B" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="C" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="D" Type="date" Nullable="false" />
+          <Property Name="E" Type="bit" />
+        </EntityType>
         <EntityType Name="Audit">
           <Key>
             <PropertyRef Name="Id" />
@@ -310,6 +320,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="TrackerSqlServerEntitiesStoreContainer">
+          <EntitySet Name="ATable" EntityType="Self.ATable" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Audit" EntityType="Self.Audit" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Item" EntityType="Self.Item" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Item 2" EntityType="Self.Item 2" Schema="dbo" store:Type="Tables" />
@@ -634,6 +645,7 @@
             <End Role="Product" EntitySet="Products" />
             <End Role="ProductSummary" EntitySet="ProductSummaries" />
           </AssociationSet>
+          <EntitySet Name="ATables" EntityType="Tracker.SqlServer.Entities.ATable" />
         </EntityContainer>
         <EntityType Name="Item">
           <Key>
@@ -730,6 +742,16 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ATable">
+          <Key>
+            <PropertyRef Name="C" />
+          </Key>
+          <Property Name="A" Type="Double" Nullable="false" />
+          <Property Name="B" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="C" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="D" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="E" Type="Boolean" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -902,6 +924,17 @@
                 <ScalarProperty Name="AvgPrice" ColumnName="AvgPrice" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ATables">
+            <EntityTypeMapping TypeName="Tracker.SqlServer.Entities.ATable">
+              <MappingFragment StoreEntitySet="ATable">
+                <ScalarProperty Name="E" ColumnName="E" />
+                <ScalarProperty Name="D" ColumnName="D" />
+                <ScalarProperty Name="C" ColumnName="C" />
+                <ScalarProperty Name="B" ColumnName="B" />
+                <ScalarProperty Name="A" ColumnName="A" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

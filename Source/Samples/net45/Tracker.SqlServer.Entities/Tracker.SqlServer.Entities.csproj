@@ -83,6 +83,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ATable.cs">
+      <DependentUpon>Tracker.tt</DependentUpon>
+    </Compile>
     <Compile Include="Audit.cs">
       <DependentUpon>Tracker.tt</DependentUpon>
     </Compile>

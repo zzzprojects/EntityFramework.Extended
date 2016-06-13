@@ -27,6 +27,7 @@
         <AssociationConnector Association="Tracker.SqlServer.Entities.FK__Item_2__ProductI__0A9D95DB" />
         <EntityTypeShape EntityType="Tracker.SqlServer.Entities.ProductSummary" Width="1.5" PointX="3" PointY="19.75" />
         <AssociationConnector Association="Tracker.SqlServer.Entities.FK_ProductSummary_Product" />
+        <EntityTypeShape EntityType="Tracker.SqlServer.Entities.ATable" Width="1.5" PointX="8.375" PointY="9.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

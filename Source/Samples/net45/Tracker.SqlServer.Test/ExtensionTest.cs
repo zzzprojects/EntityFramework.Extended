@@ -163,11 +163,12 @@ namespace Tracker.SqlServer.Test
         private void _InsertBulk(TrackerEntities db, bool isAsync = false)
         {
             db.ProductSummaries.Delete();
+            db.Database.ExecuteSqlCommand("TRUNCATE TABLE ATable");
 
             //Create 1000 random records
-            var entities = new List<ProductSummary>();
             Random r = new Random();
             int n = 1000;
+            var entities = new List<ProductSummary>();
             int m = (int)Math.Pow(10, 8) - 1;
             for (int i = 1; i <= n; i++)
             {
@@ -196,6 +197,24 @@ namespace Tracker.SqlServer.Test
                 + DateTime.Now.Subtract(start).ToString(@"hh\:mm\:ss\.ffffff"));
 
             Assert.True(db.ProductSummaries.Count() == n);
+
+            /** Dealing with Identity Column **/
+            var entities2 = new List<ATable>();
+            for (int i = 1; i <= n; i++)
+            {
+                entities2.Add(new ATable
+                {
+                    A = r.NextDouble(),
+                    B = Guid.NewGuid().ToString().Replace("-", "").PadRight(50).Substring(0, 50),
+                    //C is an Identity column
+                    D = DateTime.Now.AddDays(r.Next(-100, 100)),
+                    E = r.Next() % 2 == 0,
+                });
+            }
+
+            if (isAsync) db.ATables.InsertAsync(entities2).Wait();
+            else db.ATables.Insert(entities2);
+            Assert.True(db.ATables.Count() == n);
         }
 
         [Fact]

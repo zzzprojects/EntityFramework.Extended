@@ -36,5 +36,6 @@ namespace Tracker.SqlServer.Entities
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Item_2> Item_2 { get; set; }
         public virtual DbSet<ProductSummary> ProductSummaries { get; set; }
+        public virtual DbSet<ATable> ATables { get; set; }
     }
 }
