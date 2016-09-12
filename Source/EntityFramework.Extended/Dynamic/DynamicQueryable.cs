@@ -1,5 +1,7 @@
 ﻿//Copyright (C) Microsoft Corporation.  All rights reserved.
 
+#pragma warning disable 1591
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -285,8 +287,19 @@ namespace System.Linq.Dynamic
                 Type type;
                 if (!classes.TryGetValue(signature, out type))
                 {
-                    type = CreateDynamicClass(signature.properties);
-                    classes.Add(signature, type);
+    				LockCookie cookie = rwLock.UpgradeToWriterLock(Timeout.Infinite);
+    				try
+    				{
+    					if (!classes.TryGetValue(signature, out type))
+    					{
+    						type = CreateDynamicClass(signature.properties);
+    						classes.Add(signature, type);
+    					}
+    				}
+    				finally
+    				{
+    					rwLock.DowngradeFromWriterLock(ref cookie);
+    				}
                 }
                 return type;
             }
@@ -298,34 +311,26 @@ namespace System.Linq.Dynamic
 
         Type CreateDynamicClass(DynamicProperty[] properties)
         {
-            LockCookie cookie = rwLock.UpgradeToWriterLock(Timeout.Infinite);
+            string typeName = "DynamicClass" + (classCount + 1);
+#if ENABLE_LINQ_PARTIAL_TRUST
+            new ReflectionPermission(PermissionState.Unrestricted).Assert();
+#endif
             try
             {
-                string typeName = "DynamicClass" + (classCount + 1);
-#if ENABLE_LINQ_PARTIAL_TRUST
-                new ReflectionPermission(PermissionState.Unrestricted).Assert();
-#endif
-                try
-                {
-                    TypeBuilder tb = this.module.DefineType(typeName, TypeAttributes.Class |
-                        TypeAttributes.Public, typeof(DynamicClass));
-                    FieldInfo[] fields = GenerateProperties(tb, properties);
-                    GenerateEquals(tb, fields);
-                    GenerateGetHashCode(tb, fields);
-                    Type result = tb.CreateType();
-                    classCount++;
-                    return result;
-                }
-                finally
-                {
-#if ENABLE_LINQ_PARTIAL_TRUST
-                    PermissionSet.RevertAssert();
-#endif
-                }
+                TypeBuilder tb = this.module.DefineType(typeName, TypeAttributes.Class |
+                    TypeAttributes.Public, typeof(DynamicClass));
+                FieldInfo[] fields = GenerateProperties(tb, properties);
+                GenerateEquals(tb, fields);
+                GenerateGetHashCode(tb, fields);
+                Type result = tb.CreateType();
+                classCount++;
+                return result;
             }
             finally
             {
-                rwLock.DowngradeFromWriterLock(ref cookie);
+#if ENABLE_LINQ_PARTIAL_TRUST
+                PermissionSet.RevertAssert();
+#endif
             }
         }
 
@@ -2290,3 +2295,4 @@ namespace System.Linq.Dynamic
         public const string IdentifierExpected = "Identifier expected";
     }
 }
+#pragma warning restore 1591
