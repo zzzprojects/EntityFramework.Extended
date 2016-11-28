@@ -18,7 +18,7 @@ namespace EntityFramework.Future
         /// <param name="futureQueries">The future queries list.</param>
         void ExecuteFutureQueries(ObjectContext context, IList<IFutureQuery> futureQueries);
 
-
+#if NET45
         /// <summary>
         /// Executes the future queries.
         /// </summary>
@@ -27,5 +27,6 @@ namespace EntityFramework.Future
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task ExecuteFutureQueriesAsync(ObjectContext context, IList<IFutureQuery> futureQueries, CancellationToken cancellationToken);
-        }
+#endif
+    }
 }

@@ -55,6 +55,7 @@ namespace EntityFramework.Future
             }
             }
 
+#if NET45
         /// <summary>
         /// Executes the future queries.
         /// </summary>
@@ -99,6 +100,7 @@ namespace EntityFramework.Future
                 futureQueries.Clear();
             }
         }
+#endif
 
         private static DbCommand CreateFutureCommand(ObjectContext context, IEnumerable<IFutureQuery> futureQueries)
         {

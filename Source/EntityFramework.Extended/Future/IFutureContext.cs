@@ -21,12 +21,14 @@ namespace EntityFramework.Future
         /// </summary>
         void ExecuteFutureQueries();
 
+#if NET45
         /// <summary>
         /// Executes the future queries.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task ExecuteFutureQueriesAsync(CancellationToken cancellationToken);
+#endif
 
         /// <summary>
         /// Adds the future query to the waiting queries list on this context.

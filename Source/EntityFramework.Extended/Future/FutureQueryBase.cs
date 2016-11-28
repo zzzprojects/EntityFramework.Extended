@@ -70,11 +70,9 @@ namespace EntityFramework.Future
         }
 
         /// <summary>
-        /// Gets the result by invoking the <see cref="LoadAction"/> if not already loaded.
+        /// Gets the result.
         /// </summary>
-        /// <returns>
-        /// An <see cref="T:System.Collections.Generic.IEnumerable`1"/> that can be used to iterate through the collection.
-        /// </returns>
+        /// <returns></returns>
         protected virtual IList<T> GetResult()
         {
             if (IsLoaded)
@@ -95,6 +93,7 @@ namespace EntityFramework.Future
             return _result ?? new List<T>();
         }
 
+#if NET45
         /// <summary>
         /// Gets the result asynchronous.
         /// </summary>
@@ -118,6 +117,7 @@ namespace EntityFramework.Future
             await _futureContext.ExecuteFutureQueriesAsync(cancellationToken).ConfigureAwait(false);
             return _result ?? new List<T>();
         }
+#endif
 
         /// <summary>
         /// Gets the data command for this query.
@@ -212,7 +212,7 @@ namespace EntityFramework.Future
             }
         }
 
-
+#if NET45
         /// <summary>
         /// Sets the underling value after the query has been executed.
         /// </summary>
@@ -277,5 +277,6 @@ namespace EntityFramework.Future
                 Exception = ex;
             }
         }
+#endif
     }
 }

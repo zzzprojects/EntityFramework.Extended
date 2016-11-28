@@ -38,6 +38,7 @@ namespace EntityFramework.Future
         /// <param name="reader">The <see cref="DbDataReader"/> to get the result from.</param>
         void SetResult(ObjectContext dataContext, DbDataReader reader);
 
+#if NET45
         /// <summary>
         /// Sets the underling value after the query has been executed.
         /// </summary>
@@ -46,5 +47,6 @@ namespace EntityFramework.Future
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         Task SetResultAsync(ObjectContext dataContext, DbDataReader reader, CancellationToken cancellationToken = default(CancellationToken));
-        }
+#endif
+    }
 }

@@ -65,6 +65,7 @@ namespace EntityFramework.Future
             return GetEnumerator();
         }
 
+#if NET45
         /// <summary>
         /// To the list asynchronous.
         /// </summary>
@@ -82,5 +83,6 @@ namespace EntityFramework.Future
 
             return result;
         }
+#endif
     }
 }

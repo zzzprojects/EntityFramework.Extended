@@ -79,6 +79,7 @@ namespace EntityFramework.Future
             }
         }
 
+#if NET45
         /// <summary>
         /// Gets the value asynchronous.
         /// </summary>
@@ -90,9 +91,7 @@ namespace EntityFramework.Future
             if (!_hasValue)
                 {
                 _hasValue = true;
-
                 var resultingList = await GetResultAsync(cancellationToken).ConfigureAwait(false);
-
                 UnderlyingValue = resultingList != null ? resultingList.FirstOrDefault() : default(T);
                 }
 
@@ -101,6 +100,7 @@ namespace EntityFramework.Future
 
             return UnderlyingValue;
             }
+#endif
 
         /// <summary>
         /// Performs an implicit conversion from <see cref="T:EntityFramework.Future.FutureValue`1" /> to T.

@@ -87,6 +87,7 @@ namespace EntityFramework.Future
             runner.ExecuteFutureQueries(context, FutureQueries);
         }
 
+#if NET45
         /// <summary>
         /// Executes the future queries as a single batch.
         /// </summary>
@@ -102,6 +103,7 @@ namespace EntityFramework.Future
 
             await runner.ExecuteFutureQueriesAsync(context, FutureQueries, cancellationToken).ConfigureAwait(false);
             }
+#endif
 
         /// <summary>
         /// Adds the future query to the waiting queries list on this context.
