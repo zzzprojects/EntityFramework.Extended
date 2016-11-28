@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace EntityFramework.Future
 {
@@ -26,12 +29,12 @@ namespace EntityFramework.Future
         private bool _hasValue;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:EntityFramework.Future.FutureValue`1"/> class.
+        /// Initializes a new instance of the <see cref="T:EntityFramework.Future.FutureValue`1" /> class.
         /// </summary>
         /// <param name="query">The query source to use when materializing.</param>
-        /// <param name="loadAction">The action to execute when the query is accessed.</param>
-        internal FutureValue(IQueryable query, Action loadAction)
-            : base(query, loadAction)
+        /// <param name="futureContext">The future context.</param>
+        internal FutureValue(IQueryable<T> query, IFutureContext futureContext)
+            : base(query, futureContext)
         { }
 
         /// <summary>
@@ -75,6 +78,29 @@ namespace EntityFramework.Future
                 _hasValue = true;
             }
         }
+
+        /// <summary>
+        /// Gets the value asynchronous.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <exception cref="FutureException">An error occurred executing the future query.</exception>
+        public async Task<T> GetValueAsync(CancellationToken cancellationToken = default(CancellationToken))
+            {
+            if (!_hasValue)
+                {
+                _hasValue = true;
+
+                var resultingList = await GetResultAsync(cancellationToken).ConfigureAwait(false);
+
+                UnderlyingValue = resultingList != null ? resultingList.FirstOrDefault() : default(T);
+                }
+
+            if (Exception != null)
+                throw new FutureException("An error occurred executing the future query.", Exception);
+
+            return UnderlyingValue;
+            }
 
         /// <summary>
         /// Performs an implicit conversion from <see cref="T:EntityFramework.Future.FutureValue`1" /> to T.

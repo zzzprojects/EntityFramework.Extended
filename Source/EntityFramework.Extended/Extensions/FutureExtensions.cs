@@ -33,7 +33,7 @@ namespace EntityFramework.Extensions
                 throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
 
             var futureContext = GetFutureContext(sourceQuery);
-            var future = new FutureQuery<TEntity>(sourceQuery, futureContext.ExecuteFutureQueries);
+            var future = new FutureQuery<TEntity>(sourceQuery, futureContext);
             futureContext.AddQuery(future);
 
             return future;
@@ -52,7 +52,7 @@ namespace EntityFramework.Extensions
             if (source == null)
                 return new FutureCount(0);
 
-            ObjectQuery sourceQuery = source.ToObjectQuery();
+            ObjectQuery<TEntity> sourceQuery = source.ToObjectQuery();
             if (sourceQuery == null)
                 throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
 
@@ -64,12 +64,12 @@ namespace EntityFramework.Extensions
               source.Expression);
 
             // create query from expression using internal ObjectQueryProvider
-            ObjectQuery countQuery = sourceQuery.CreateQuery(expression, typeof(int));
+            var countQuery = sourceQuery.CreateQuery(expression, typeof(int)) as ObjectQuery<int>;
             if (countQuery == null)
                 throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
 
             var futureContext = GetFutureContext(sourceQuery);
-            var future = new FutureCount(countQuery, futureContext.ExecuteFutureQueries);
+            var future = new FutureCount(countQuery, futureContext);
             futureContext.AddQuery(future);
             return future;
         }
@@ -106,12 +106,12 @@ namespace EntityFramework.Extensions
             }
 
             var expression = Expression.Call(null, methodExpr.Method, arguments);
-            var valueQuery = sourceQuery.CreateQuery(expression, typeof(TResult));
+            var valueQuery = sourceQuery.CreateQuery(expression, typeof(TResult)) as ObjectQuery<TResult>;
             if (valueQuery == null)
                 throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
 
             var futureContext = GetFutureContext(sourceQuery);
-            var future = new FutureValue<TResult>(valueQuery, futureContext.ExecuteFutureQueries);
+            var future = new FutureValue<TResult>(valueQuery, futureContext);
             futureContext.AddQuery(future);
             return future;
         }
@@ -141,7 +141,7 @@ namespace EntityFramework.Extensions
                 throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
 
             var futureContext = GetFutureContext(sourceQuery);
-            var future = new FutureValue<TEntity>(objectQuery, futureContext.ExecuteFutureQueries);
+            var future = new FutureValue<TEntity>(objectQuery, futureContext);
             futureContext.AddQuery(future);
             return future;
         }

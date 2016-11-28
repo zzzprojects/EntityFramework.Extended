@@ -2,6 +2,8 @@ using System;
 using System.Data.Common;
 using System.Data.Entity.Core.Objects;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace EntityFramework.Future
 {
@@ -35,5 +37,14 @@ namespace EntityFramework.Future
         /// <param name="dataContext">The data context to translate the results with.</param>
         /// <param name="reader">The <see cref="DbDataReader"/> to get the result from.</param>
         void SetResult(ObjectContext dataContext, DbDataReader reader);
-    }
+
+        /// <summary>
+        /// Sets the underling value after the query has been executed.
+        /// </summary>
+        /// <param name="dataContext">The data context to translate the results with.</param>
+        /// <param name="reader">The <see cref="DbDataReader" /> to get the result from.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        Task SetResultAsync(ObjectContext dataContext, DbDataReader reader, CancellationToken cancellationToken = default(CancellationToken));
+        }
 }
