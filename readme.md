@@ -1,8 +1,14 @@
 #Entity Framework Extended Library
 
+[![Join the chat at https://gitter.im/loresoft/EntityFramework.Extended](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/loresoft/EntityFramework.Extended?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A library the extends the functionality of Entity Framework.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/qq7y2l8lgipxh2be)](https://ci.appveyor.com/project/LoreSoft/entityframework-extended)
+
+![NuGet Version](https://img.shields.io/nuget/v/EntityFramework.Extended.svg?style=flat-square)
+
+![NuGet Version](https://img.shields.io/nuget/dt/EntityFramework.Extended.svg?style=flat-square)
 
 ##Download
 
@@ -38,14 +44,16 @@ A current limitations of the Entity Framework is that in order to update or dele
 **Deleting**
     
     //delete all users where FirstName matches
-    context.Users.Delete(u => u.FirstName == "firstname");
+    context.Users
+        .Where(u => u.FirstName == "firstname")
+        .Delete();
 
 **Update**
     
     //update all tasks with status of 1 to status of 2
-    context.Tasks.Update(
-        t => t.StatusId == 1, 
-        t2 => new Task {StatusId = 2});
+    context.Tasks
+        .Where(t => t.StatusId == 1)
+        .Update(t => new Task { StatusId = 2 });
     
     //example of using an IQueryable as the filter for the update
     var users = context.Users.Where(u => u.FirstName == "firstname");
@@ -160,7 +168,7 @@ Create an Audit Log
 
 ## License
 
-Copyright (c) 2012, LoreSoft
+Copyright (c) 2015, LoreSoft
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

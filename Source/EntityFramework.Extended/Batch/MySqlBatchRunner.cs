@@ -8,17 +8,17 @@ using System.Linq.Dynamic;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using EntityFramework.Extensions;
 using EntityFramework.Mapping;
 using EntityFramework.Reflection;
+using System.Threading.Tasks;
 
 namespace EntityFramework.Batch
 {
     /// <summary>
-    /// A batch execution runner for SQL Server.
+    /// A batch execution runner for MySQL Server.
     /// </summary>
-    public class SqlServerBatchRunner : IBatchRunner
+    public class MySqlBatchRunner : IBatchRunner
     {
         /// <summary>
         /// Create and run a batch delete statement.
@@ -30,7 +30,8 @@ namespace EntityFramework.Batch
         /// <returns>
         /// The number of rows deleted.
         /// </returns>
-        public int Delete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query) where TEntity : class
+        public int Delete<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query)
+            where TEntity : class
         {
 #if NET45
             return InternalDelete(objectContext, entityMap, query, false).Result;
@@ -99,8 +100,7 @@ namespace EntityFramework.Batch
 
                 var sqlBuilder = new StringBuilder(innerSelect.Length * 2);
 
-                sqlBuilder.Append("DELETE ");
-                sqlBuilder.Append(entityMap.TableName);
+                sqlBuilder.Append("DELETE j0");
                 sqlBuilder.AppendLine();
 
                 sqlBuilder.AppendFormat("FROM {0} AS j0 INNER JOIN (", entityMap.TableName);
@@ -114,12 +114,12 @@ namespace EntityFramework.Batch
                     if (wroteKey)
                         sqlBuilder.Append(" AND ");
 
-                    sqlBuilder.AppendFormat("j0.[{0}] = j1.[{0}]", keyMap.ColumnName);
+                    sqlBuilder.AppendFormat("j0.{0} = j1.{0}", keyMap.ColumnName);
                     wroteKey = true;
                 }
                 sqlBuilder.Append(")");
 
-                deleteCommand.CommandText = sqlBuilder.ToString();
+                deleteCommand.CommandText = sqlBuilder.ToString().Replace("[", "").Replace("]", "");
 
 #if NET45
                 int result = async
@@ -128,6 +128,7 @@ namespace EntityFramework.Batch
 #else
                 int result = deleteCommand.ExecuteNonQuery();
 #endif
+
                 // only commit if created transaction
                 if (ownTransaction)
                     deleteTransaction.Commit();
@@ -184,6 +185,7 @@ namespace EntityFramework.Batch
             return InternalUpdate(objectContext, entityMap, query, updateExpression, true);
         }
 #endif
+
 #if NET45
         private async Task<int> InternalUpdate<TEntity>(ObjectContext objectContext, EntityMap entityMap, ObjectQuery<TEntity> query, Expression<Func<TEntity, TEntity>> updateExpression, bool async = false)
             where TEntity : class
@@ -228,6 +230,23 @@ namespace EntityFramework.Batch
 
                 sqlBuilder.Append("UPDATE ");
                 sqlBuilder.Append(entityMap.TableName);
+                sqlBuilder.AppendFormat(" AS j0 INNER JOIN (", entityMap.TableName);
+                sqlBuilder.AppendLine();
+                sqlBuilder.AppendLine(innerSelect);
+                sqlBuilder.Append(") AS j1 ON (");
+
+                bool wroteKey = false;
+                foreach (var keyMap in entityMap.KeyMaps)
+                {
+                    if (wroteKey)
+                        sqlBuilder.Append(" AND ");
+
+                    sqlBuilder.AppendFormat("j0.{0} = j1.{0}", keyMap.ColumnName);
+                    wroteKey = true;
+                }
+                sqlBuilder.Append(")");
+                sqlBuilder.AppendLine(" ");
+
                 sqlBuilder.AppendLine(" SET ");
 
                 var memberInitExpression = updateExpression.Body as MemberInitExpression;
@@ -291,11 +310,11 @@ namespace EntityFramework.Batch
                             parameter.Value = value;
                             updateCommand.Parameters.Add(parameter);
 
-                            sqlBuilder.AppendFormat("[{0}] = @{1}", columnName, parameterName);
+                            sqlBuilder.AppendFormat("{0} = @{1}", columnName, parameterName);
                         }
                         else
                         {
-                            sqlBuilder.AppendFormat("[{0}] = NULL", columnName);
+                            sqlBuilder.AppendFormat("{0} = NULL", columnName);
                         }
                     }
                     else
@@ -320,7 +339,7 @@ namespace EntityFramework.Batch
                         string sql = selectQuery.ToTraceString();
 
                         // parse select part of sql to use as update
-                        string regex = @"SELECT\s*\r\n\s*(?<ColumnValue>.+)?\s*AS\s*(?<ColumnAlias>\[\w+\])\r\n\s*FROM\s*(?<TableName>\[\w+\]\.\[\w+\]|\[\w+\])\s*AS\s*(?<TableAlias>\[\w+\])";
+                        string regex = @"SELECT\s*\r\n(?<ColumnValue>.+)?\s*AS\s*(?<ColumnAlias>\w+)\r\nFROM\s*(?<TableName>\w+\.\w+|\w+)\s*AS\s*(?<TableAlias>\w+)";
                         Match match = Regex.Match(sql, regex);
                         if (!match.Success)
                             throw new ArgumentException("The MemberAssignment expression could not be processed.", "updateExpression");
@@ -336,34 +355,18 @@ namespace EntityFramework.Batch
 
                             var parameter = updateCommand.CreateParameter();
                             parameter.ParameterName = parameterName;
-                            parameter.Value = objectParameter.Value ?? DBNull.Value;
+                            parameter.Value = objectParameter.Value;
                             updateCommand.Parameters.Add(parameter);
 
                             value = value.Replace(objectParameter.Name, parameterName);
                         }
-                        sqlBuilder.AppendFormat("[{0}] = {1}", columnName, value);
+                        sqlBuilder.AppendFormat("{0} = {1}", columnName, value);
                     }
                     wroteSet = true;
                 }
 
-                sqlBuilder.AppendLine(" ");
-                sqlBuilder.AppendFormat("FROM {0} AS j0 INNER JOIN (", entityMap.TableName);
-                sqlBuilder.AppendLine();
-                sqlBuilder.AppendLine(innerSelect);
-                sqlBuilder.Append(") AS j1 ON (");
 
-                bool wroteKey = false;
-                foreach (var keyMap in entityMap.KeyMaps)
-                {
-                    if (wroteKey)
-                        sqlBuilder.Append(" AND ");
-
-                    sqlBuilder.AppendFormat("j0.[{0}] = j1.[{0}]", keyMap.ColumnName);
-                    wroteKey = true;
-                }
-                sqlBuilder.Append(")");
-
-                updateCommand.CommandText = sqlBuilder.ToString();
+                updateCommand.CommandText = sqlBuilder.ToString().Replace("[", "").Replace("]", "");
 
 #if NET45
                 int result = async
@@ -372,6 +375,7 @@ namespace EntityFramework.Batch
 #else
                 int result = updateCommand.ExecuteNonQuery();
 #endif
+
                 // only commit if created transaction
                 if (ownTransaction)
                     updateTransaction.Commit();
@@ -391,8 +395,6 @@ namespace EntityFramework.Batch
 
         private static Tuple<DbConnection, DbTransaction> GetStore(ObjectContext objectContext)
         {
-            // TODO, re-eval if this is needed
-
             DbConnection dbConnection = objectContext.Connection;
             var entityConnection = dbConnection as EntityConnection;
 
@@ -415,8 +417,6 @@ namespace EntityFramework.Batch
         private static string GetSelectSql<TEntity>(ObjectQuery<TEntity> query, EntityMap entityMap, DbCommand command)
             where TEntity : class
         {
-            // TODO change to esql?
-
             // changing query to only select keys
             var selector = new StringBuilder(50);
             selector.Append("new(");
@@ -442,7 +442,7 @@ namespace EntityFramework.Batch
             {
                 var parameter = command.CreateParameter();
                 parameter.ParameterName = objectParameter.Name;
-                parameter.Value = objectParameter.Value ?? DBNull.Value;
+                parameter.Value = objectParameter.Value;
 
                 command.Parameters.Add(parameter);
             }

@@ -45,12 +45,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -78,6 +78,7 @@
     <Compile Include="Audit\AuditLog.cs" />
     <Compile Include="Audit\AuditLogger.cs" />
     <Compile Include="Batch\IBatchRunner.cs" />
+    <Compile Include="Batch\MySqlBatchRunner.cs" />
     <Compile Include="Batch\SqlServerBatchRunner.cs" />
     <Compile Include="Caching\CacheExpirationMode.cs" />
     <Compile Include="Caching\CacheKey.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Caching\Query\QueryCache.cs" />
     <Compile Include="Caching\Query\Utility.cs" />
     <Compile Include="Future\IFutureRunner.cs" />
+    <Compile Include="IQueryUnwrapper.cs" />
     <Compile Include="Locator.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="Dynamic\DynamicQueryable.cs" />

@@ -103,7 +103,7 @@ namespace EntityFramework.Caching
 
             // get value and add to cache, not bothered
             // if it succeeds or not just rerturn the value
-            var value = await valueFactory(cacheKey);
+            var value = await valueFactory(cacheKey).ConfigureAwait(false);
             this.Add(cacheKey, value, cachePolicy);
 
             return value;
@@ -156,6 +156,16 @@ namespace EntityFramework.Caching
             MemoryCache.Default.Set(item, policy);
             return true;
         }
+
+        /// <summary>
+        /// Clears all entries from the cache
+        /// </summary>
+        /// <returns></returns>
+        public long ClearCache()
+        {
+            return MemoryCache.Default.Trim(100);
+        }
+
 
         // internal for testing
         internal static string GetKey(CacheKey cacheKey)
