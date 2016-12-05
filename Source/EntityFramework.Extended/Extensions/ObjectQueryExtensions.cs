@@ -32,8 +32,18 @@ namespace EntityFramework.Extensions
 
           // next try case to DbQuery
           var dbQuery = query as DbQuery<TEntity>;
+
+          // next look for an ObjectQuery property
           if (dbQuery == null)
-              return null;
+          {
+              var queryType = query.GetType();
+              var prop = queryType.GetProperties().FirstOrDefault(p => p.PropertyType == typeof(ObjectQuery));
+
+              if (prop == null)
+                  return null;
+
+              return (ObjectQuery<TEntity>)prop.GetValue(query);
+          }
 
           // access internal property InternalQuery
           dynamic dbQueryProxy = new DynamicProxy(dbQuery);
