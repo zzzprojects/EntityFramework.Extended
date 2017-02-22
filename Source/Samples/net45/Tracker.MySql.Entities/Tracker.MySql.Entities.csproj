@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{54F22D5C-AF73-4805-B743-659D228ED6AF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tracker.MySql.Entities</RootNamespace>
+    <AssemblyName>Tracker.MySql.Entities</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Tracker.SqlServer.Entities\Audit.cs">
+      <Link>Audit.cs</Link>
+    </Compile>
+    <Compile Include="..\Tracker.SqlServer.Entities\Priority.cs">
+      <Link>Priority.cs</Link>
+    </Compile>
+    <Compile Include="..\Tracker.SqlServer.Entities\Role.cs">
+      <Link>Role.cs</Link>
+    </Compile>
+    <Compile Include="..\Tracker.SqlServer.Entities\Status.cs">
+      <Link>Status.cs</Link>
+    </Compile>
+    <Compile Include="..\Tracker.SqlServer.Entities\Task.cs">
+      <Link>Task.cs</Link>
+    </Compile>
+    <Compile Include="..\Tracker.SqlServer.Entities\TaskExtended.cs">
+      <Link>TaskExtended.cs</Link>
+    </Compile>
+    <Compile Include="..\Tracker.SqlServer.Entities\Tracker.Context.cs">
+      <Link>Tracker.Context.cs</Link>
+    </Compile>
+    <Compile Include="..\Tracker.SqlServer.Entities\Tracker.Context1.cs">
+      <Link>Tracker.Context1.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Tracker.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="..\Tracker.SqlServer.Entities\Tracker.cs">
+      <Link>Tracker.cs</Link>
+    </Compile>
+    <Compile Include="..\Tracker.SqlServer.Entities\Tracker.Designer.cs">
+      <Link>Tracker.Designer.cs</Link>
+    </Compile>
+    <Compile Include="..\Tracker.SqlServer.Entities\Tracker1.cs">
+      <Link>Tracker1.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Tracker.tt</DependentUpon>
+    </Compile>
+    <Compile Include="..\Tracker.SqlServer.Entities\Tracker1.Designer.cs">
+      <Link>Tracker1.Designer.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Tracker.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="..\Tracker.SqlServer.Entities\User.cs">
+      <Link>User.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Tracker.SqlServer.Entities\Tracker.Context.tt">
+      <Link>Tracker.Context.tt</Link>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Tracker.Context1.cs</LastGenOutput>
+    </None>
+    <EntityDeploy Include="..\Tracker.SqlServer.Entities\Tracker.edmx">
+      <Link>Tracker.edmx</Link>
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Tracker1.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="..\Tracker.SqlServer.Entities\Tracker.edmx.diagram">
+      <Link>Tracker.edmx.diagram</Link>
+    </None>
+    <None Include="..\Tracker.SqlServer.Entities\Tracker.tt">
+      <Link>Tracker.tt</Link>
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Tracker1.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

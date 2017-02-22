@@ -9,6 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.Extended.Te
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BE12C461-E0A7-43E3-B304-8D80D7E3D046}"
 	ProjectSection(SolutionItems) = preProject
+		..\appveyor.yml = ..\appveyor.yml
 		..\Master.proj = ..\Master.proj
 		..\readme.md = ..\readme.md
 	EndProjectSection
@@ -20,6 +21,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlServer.Test", "Samples\net45\Tracker.SqlServer.Test\Tracker.SqlServer.Test.csproj", "{ACB6E31F-C2B8-48BF-97C5-22FED0F6D6AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlServer.Entities", "Samples\net45\Tracker.SqlServer.Entities\Tracker.SqlServer.Entities.csproj", "{60743577-CDBD-4E89-AC63-F46CF914458D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{80A2F9BD-EB60-4BCF-A051-E3339EDE85FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.MySql.CodeFirst", "Samples\net45\Tracker.MySql.CodeFirst\Tracker.MySql.CodeFirst.csproj", "{5F273EEF-E673-48F3-A116-075DA6DAF780}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.MySql.Test", "Samples\net45\Tracker.MySql.Test\Tracker.MySql.Test.csproj", "{E58134C4-E5C6-4929-A60F-A340464AF36E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +54,14 @@ Global
 		{60743577-CDBD-4E89-AC63-F46CF914458D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60743577-CDBD-4E89-AC63-F46CF914458D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60743577-CDBD-4E89-AC63-F46CF914458D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F273EEF-E673-48F3-A116-075DA6DAF780}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F273EEF-E673-48F3-A116-075DA6DAF780}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F273EEF-E673-48F3-A116-075DA6DAF780}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F273EEF-E673-48F3-A116-075DA6DAF780}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E58134C4-E5C6-4929-A60F-A340464AF36E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E58134C4-E5C6-4929-A60F-A340464AF36E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E58134C4-E5C6-4929-A60F-A340464AF36E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E58134C4-E5C6-4929-A60F-A340464AF36E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +70,8 @@ Global
 		{FA68FB7C-D87E-497B-A300-F2A7827FE92C} = {14134A51-5696-4B7C-B257-40E06494C315}
 		{ACB6E31F-C2B8-48BF-97C5-22FED0F6D6AC} = {14134A51-5696-4B7C-B257-40E06494C315}
 		{60743577-CDBD-4E89-AC63-F46CF914458D} = {14134A51-5696-4B7C-B257-40E06494C315}
+		{5F273EEF-E673-48F3-A116-075DA6DAF780} = {80A2F9BD-EB60-4BCF-A051-E3339EDE85FA}
+		{E58134C4-E5C6-4929-A60F-A340464AF36E} = {80A2F9BD-EB60-4BCF-A051-E3339EDE85FA}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = EntityFramework.Extended.vsmdi

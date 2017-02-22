@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity.Core.EntityClient;
@@ -8,17 +8,17 @@ using System.Linq.Dynamic;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using EntityFramework.Extensions;
 using EntityFramework.Mapping;
 using EntityFramework.Reflection;
-using System.Threading.Tasks;
 
 namespace EntityFramework.Batch
 {
     /// <summary>
-    /// A batch execution runner for MySQL Server.
+    /// A batch execution runner for PostgreSQL Server.
     /// </summary>
-    public class MySqlBatchRunner : IBatchRunner
+    public class PgSqlBatchRunner : IBatchRunner
     {
         /// <summary>
         /// Create and run a batch delete statement.
@@ -90,7 +90,6 @@ namespace EntityFramework.Batch
                     ownTransaction = true;
                 }
 
-
                 deleteCommand = deleteConnection.CreateCommand();
                 deleteCommand.Transaction = deleteTransaction;
                 if (objectContext.CommandTimeout.HasValue)
@@ -100,13 +99,12 @@ namespace EntityFramework.Batch
 
                 var sqlBuilder = new StringBuilder(innerSelect.Length * 2);
 
-                sqlBuilder.Append("DELETE j0");
+                sqlBuilder.AppendFormat("DELETE FROM {0} AS j0", entityMap.TableName);
                 sqlBuilder.AppendLine();
-
-                sqlBuilder.AppendFormat("FROM {0} AS j0 INNER JOIN (", QuoteIdentifier(entityMap.TableName));
-                sqlBuilder.AppendLine();
+                sqlBuilder.AppendLine("USING (");
                 sqlBuilder.AppendLine(innerSelect);
-                sqlBuilder.Append(") AS j1 ON (");
+                sqlBuilder.AppendLine(") AS j1");
+                sqlBuilder.Append("WHERE (");
 
                 bool wroteKey = false;
                 foreach (var keyMap in entityMap.KeyMaps)
@@ -119,7 +117,7 @@ namespace EntityFramework.Batch
                 }
                 sqlBuilder.Append(")");
 
-                deleteCommand.CommandText = sqlBuilder.ToString().Replace("[", "`").Replace("]", "`");
+                deleteCommand.CommandText = sqlBuilder.ToString().Replace("[", "\"").Replace("]", "\"");
 
 #if NET45
                 int result = async
@@ -213,7 +211,6 @@ namespace EntityFramework.Batch
                     ownConnection = true;
                 }
 
-                // use existing transaction or create new
                 if (updateTransaction == null)
                 {
                     updateTransaction = updateConnection.BeginTransaction();
@@ -228,26 +225,9 @@ namespace EntityFramework.Batch
                 var innerSelect = GetSelectSql(query, entityMap, updateCommand);
                 var sqlBuilder = new StringBuilder(innerSelect.Length * 2);
 
-                sqlBuilder.Append("UPDATE ");
-                sqlBuilder.Append(entityMap.TableName);
-                sqlBuilder.AppendFormat(" AS j0 INNER JOIN (", QuoteIdentifier(entityMap.TableName));
+                sqlBuilder.AppendFormat("UPDATE {0} AS j0", entityMap.TableName);
                 sqlBuilder.AppendLine();
-                sqlBuilder.AppendLine(innerSelect);
-                sqlBuilder.Append(") AS j1 ON (");
-
-                bool wroteKey = false;
-                foreach (var keyMap in entityMap.KeyMaps)
-                {
-                    if (wroteKey)
-                        sqlBuilder.Append(" AND ");
-
-                    sqlBuilder.AppendFormat("j0.{0} = j1.{0}", keyMap.ColumnName);
-                    wroteKey = true;
-                }
-                sqlBuilder.Append(")");
-                sqlBuilder.AppendLine(" ");
-
-                sqlBuilder.AppendLine(" SET ");
+                sqlBuilder.AppendLine("SET ");
 
                 var memberInitExpression = updateExpression.Body as MemberInitExpression;
                 if (memberInitExpression == null)
@@ -310,7 +290,7 @@ namespace EntityFramework.Batch
                             parameter.Value = value;
                             updateCommand.Parameters.Add(parameter);
 
-                            sqlBuilder.AppendFormat("{0} = @{1}", columnName, parameterName);
+                            sqlBuilder.AppendFormat("{0} = :{1}", columnName, parameterName);
                         }
                         else
                         {
@@ -339,7 +319,7 @@ namespace EntityFramework.Batch
                         string sql = selectQuery.ToTraceString();
 
                         // parse select part of sql to use as update
-                        string regex = @"SELECT\s*\r\n(?<ColumnValue>.+)?\s*AS\s*(?<ColumnAlias>\w+)\r\nFROM\s*(?<TableName>\w+\.\w+|\w+)\s*AS\s*(?<TableAlias>\w+)";
+                        string regex = @"SELECT\s*\r\n(?<ColumnValue>.+)(\s+AS\s+(?<ColumnAlias>\w+))?\r\nFROM\s+(?<TableName>\w+\.\w+|\w+)(\s*AS\s*(?<TableAlias>("")?\w+("")?))?";
                         Match match = Regex.Match(sql, regex);
                         if (!match.Success)
                             throw new ArgumentException("The MemberAssignment expression could not be processed.", "updateExpression");
@@ -365,8 +345,23 @@ namespace EntityFramework.Batch
                     wroteSet = true;
                 }
 
+                sqlBuilder.AppendLine();
+                sqlBuilder.AppendLine("FROM (");
+                sqlBuilder.AppendLine(innerSelect);
+                sqlBuilder.AppendLine(") as j1");
+                sqlBuilder.Append("WHERE (");
+                bool wroteKey = false;
+                foreach (var keyMap in entityMap.KeyMaps)
+                {
+                    if (wroteKey)
+                        sqlBuilder.Append(" AND ");
 
-                updateCommand.CommandText = sqlBuilder.ToString().Replace("[", "").Replace("]", "");
+                    sqlBuilder.AppendFormat("j0.{0} = j1.{0}", keyMap.ColumnName);
+                    wroteKey = true;
+                }
+                sqlBuilder.AppendLine(")");
+
+                updateCommand.CommandText = sqlBuilder.ToString().Replace("[", "\"").Replace("]", "\"");
 
 #if NET45
                 int result = async
@@ -448,11 +443,6 @@ namespace EntityFramework.Batch
             }
 
             return innerJoinSql;
-        }
-
-        private static string QuoteIdentifier(string name)
-        {
-            return ("`" + name + "`");
         }
     }
 }

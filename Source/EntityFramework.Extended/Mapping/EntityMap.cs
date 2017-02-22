@@ -57,6 +57,14 @@ namespace EntityFramework.Mapping
         /// </value>
         public string TableName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the name of the schema
+        /// </summary>
+        /// <value>
+        /// The name of the schema (usually `dbo` on MS SQL Server)
+        /// </value>
+        public string SchemaName { get; set; }
+
         private readonly List<PropertyMap> _propertyMaps;
         /// <summary>
         /// Gets the property maps.
