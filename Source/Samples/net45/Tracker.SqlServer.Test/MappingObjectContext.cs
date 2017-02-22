@@ -12,7 +12,7 @@ namespace Tracker.SqlServer.Test
     /// <summary>
     /// Summary description for MappingObjectContext
     /// </summary>
-    
+
     public class MappingObjectContext
     {
         [Fact]
@@ -37,7 +37,8 @@ namespace Tracker.SqlServer.Test
 
             //var map = db.Audits.ToObjectQuery().GetEntityMap<AuditData>();
 
-            Assert.Equal("[dbo].[Audit]", map.TableName);
+            Assert.Equal("Audit", map.TableName);
+            Assert.Equal("dbo", map.SchemaName);
         }
 
 
@@ -51,7 +52,8 @@ namespace Tracker.SqlServer.Test
 
             //var map = db.Audits.ToObjectQuery().GetEntityMap<AuditData>();
 
-            Assert.Equal("[dbo].[Task]", map.TableName);
+            Assert.Equal("Task", map.TableName);
+            Assert.Equal("dbo", map.SchemaName);
         }
 
     }
