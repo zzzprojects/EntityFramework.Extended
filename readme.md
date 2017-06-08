@@ -1,4 +1,4 @@
-#Entity Framework Extended Library
+# Entity Framework Extended Library
 
 [![Join the chat at https://gitter.im/loresoft/EntityFramework.Extended](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/loresoft/EntityFramework.Extended?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -10,7 +10,7 @@ A library the extends the functionality of Entity Framework.
 
 ![NuGet Version](https://img.shields.io/nuget/dt/EntityFramework.Extended.svg?style=flat-square)
 
-##Download
+## Download
 
 The Entity Framework Extended library is available on nuget.org via package name `EntityFramework.Extended`.
 
@@ -21,7 +21,7 @@ To install EntityFramework.Extended, run the following command in the Package Ma
 More information about NuGet package avaliable at
 https://nuget.org/packages/EntityFramework.Extended
 
-##Development Builds
+## Development Builds
 
 Development builds are available on the myget.org feed.  A development build is promoted to the main NuGet feed when it's determined to be stable. 
 
@@ -29,7 +29,7 @@ In your Package Manager settings add the following package source for developmen
 http://www.myget.org/F/loresoft/
 
 
-##Features
+## Features
 
 
 - [Batch Update and Delete](https://github.com/loresoft/EntityFramework.Extended/wiki/Batch-Update-and-Delete)
