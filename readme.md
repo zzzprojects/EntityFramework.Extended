@@ -1,5 +1,34 @@
 > **IMPORTANT:** This library is no longer supported since 2015. We highly recommend you to move to [Entity Framework Plus](http://entityframework-plus.net/?z=ef-extended).
 
+### Entity Framework Plus
+Website: http://entityframework-plus.net/
+
+Free & Open source library that support following features:
+
+- Audit
+- Batch Operations
+    - Batch Delete
+    - Batch Update
+- Query
+    - Query Cache 
+    - Query Deferred
+    - Query Filter
+    - Query Future
+    - Query IncludeFilter
+    - Query IncludeOptimized
+
+### Entity Framework Extensions
+Website: http://entityframework-extensions.net/
+
+Paid library to dramatically improve Entity Framework performance:
+
+- BulkSaveChanges
+- BulkInsert
+- BulkUpdate
+- BulkDelete
+- BulkMerge
+- BulkSynchronize
+
 # Entity Framework Extended Library
 
 ## Download
