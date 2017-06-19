@@ -1,6 +1,6 @@
-# Entity Framework Extended Library
-
 > **IMPORTANT:** This library is no longer supported since 2015. We highly recommend you to move to [Entity Framework Plus](http://entityframework-plus.net/?z=ef-extended).
+
+# Entity Framework Extended Library
 
 ## Download
 
