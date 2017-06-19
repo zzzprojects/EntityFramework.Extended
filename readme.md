@@ -1,14 +1,6 @@
 # Entity Framework Extended Library
 
-[![Join the chat at https://gitter.im/loresoft/EntityFramework.Extended](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/loresoft/EntityFramework.Extended?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-A library the extends the functionality of Entity Framework.
-
-[![Build status](https://ci.appveyor.com/api/projects/status/qq7y2l8lgipxh2be)](https://ci.appveyor.com/project/LoreSoft/entityframework-extended)
-
-![NuGet Version](https://img.shields.io/nuget/v/EntityFramework.Extended.svg?style=flat-square)
-
-![NuGet Version](https://img.shields.io/nuget/dt/EntityFramework.Extended.svg?style=flat-square)
+> **IMPORTANT:** This library is no longer supported since 2015. We highly recommend you to move to [Entity Framework Plus](http://entityframework-plus.net/?z=ef-extended).
 
 ## Download
 
