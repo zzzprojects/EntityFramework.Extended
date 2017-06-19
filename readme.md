@@ -3,7 +3,7 @@
 **IMPORTANT:** This library is no longer supported since 2015. We highly recommend you to move to [Entity Framework Plus](http://entityframework-plus.net/?z=ef-extended).
 
 ### Entity Framework Plus
-Website: http://entityframework-plus.net/
+Website: [http://entityframework-plus.net/](http://entityframework-plus.net/?z=ef-extended)
 
 Free & Open source library that support following features:
 
@@ -20,7 +20,7 @@ Free & Open source library that support following features:
     - Query IncludeOptimized
 
 ### Entity Framework Extensions
-Website: http://entityframework-extensions.net/
+Website: [http://entityframework-extensions.net/](http://entityframework-extensions.net/?z=ef-extended)
 
 Paid library to dramatically improve Entity Framework performance:
 
