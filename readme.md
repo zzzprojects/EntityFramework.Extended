@@ -1,4 +1,6 @@
-> **IMPORTANT:** This library is no longer supported since 2015. We highly recommend you to move to [Entity Framework Plus](http://entityframework-plus.net/?z=ef-extended).
+## NO LONGER SUPPORTED SINCE 2015
+
+**IMPORTANT:** This library is no longer supported since 2015. We highly recommend you to move to [Entity Framework Plus](http://entityframework-plus.net/?z=ef-extended).
 
 ### Entity Framework Plus
 Website: http://entityframework-plus.net/
