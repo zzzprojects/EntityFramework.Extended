@@ -2,6 +2,18 @@
 
 **IMPORTANT:** This library is no longer supported since 2015. We highly recommend you to move to [Entity Framework Plus](http://entityframework-plus.net/?z=ef-extended).
 
+### Entity Framework Extensions
+Website: [http://entityframework-extensions.net/](http://entityframework-extensions.net/?z=ef-extended)
+
+Paid library to dramatically improve Entity Framework performance:
+
+- BulkSaveChanges
+- BulkInsert
+- BulkUpdate
+- BulkDelete
+- BulkMerge
+- BulkSynchronize
+
 ### Entity Framework Plus
 Website: [http://entityframework-plus.net/](http://entityframework-plus.net/?z=ef-extended)
 
@@ -18,18 +30,6 @@ Free & Open source library that support following features:
     - Query Future
     - Query IncludeFilter
     - Query IncludeOptimized
-
-### Entity Framework Extensions
-Website: [http://entityframework-extensions.net/](http://entityframework-extensions.net/?z=ef-extended)
-
-Paid library to dramatically improve Entity Framework performance:
-
-- BulkSaveChanges
-- BulkInsert
-- BulkUpdate
-- BulkDelete
-- BulkMerge
-- BulkSynchronize
 
 # Entity Framework Extended Library
 
@@ -76,7 +76,7 @@ A current limitations of the Entity Framework is that in order to update or dele
 
 ### Future Queries
 
-Build up a list of queries for the data that you need and the first time any of the results are accessed, all the data will retrieved in one round trip to the database server. Reducing the number of trips to the database is a great. Using this feature is as simple as appending `.Future()` to the end of your queries. To use the Future Queries, make sure to import the `EntityFramework.Extensions` namespace. 
+Build up a list of queries for the data that you need and the first time any of the results are accessed, all the data will retrieved in one round trip to the database server. Reducing the number of trips to the database is a great. Using this feature is as simple as appending `.Future()` to the end of your queries. To use the Future Queries. 
 
 Future queries are created with the following extension methods...
 
@@ -120,7 +120,7 @@ Future queries work by creating the appropriate IFutureQuery object that keeps t
 
 ### Query Result Cache
 
-To cache query results, use the `FromCache` extension method located in the `EntityFramework.Extensions` namespace. Below is a sample caching query results. Simply construct the LINQ query as you normally would, then append the `FromCache` extension.
+To cache query results, use the `FromCache` extension method. Below is a sample caching query results. Simply construct the LINQ query as you normally would, then append the `FromCache` extension.
      
     //query is cached using the default settings
     var tasks = db.Tasks
