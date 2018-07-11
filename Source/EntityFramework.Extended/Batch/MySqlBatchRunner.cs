@@ -370,6 +370,7 @@ namespace EntityFramework.Batch
         {
             return this.InternalInsert(query, objectQuery, entityMap, true);
         }
+#endif
 
         /// <summary>
         /// Inserts a lof of rows into a database table. It must be much faster than executing `<code>DbSet.AddRange</code>` or
@@ -390,7 +391,6 @@ namespace EntityFramework.Batch
         {
             throw new NotImplementedException();
         }
-#endif
 
 #if NET45
         /// <summary>

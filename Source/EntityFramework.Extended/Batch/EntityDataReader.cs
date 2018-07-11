@@ -233,7 +233,7 @@ namespace EntityFramework.Batch
         {
             bool isNext = _entityEnumerator.MoveNext();
             _current = isNext ? _entityEnumerator.Current : null;
-            if (_current != null) for (int i=0; i<_propInfos.Length; i++) if (_propInfos[i] != null) _values[i] = _propInfos[i].GetValue(_current);
+            if (_current != null) for (int i=0; i<_propInfos.Length; i++) if (_propInfos[i] != null) _values[i] = _propInfos[i].GetValue(_current, null);
             return isNext;
         }
     }

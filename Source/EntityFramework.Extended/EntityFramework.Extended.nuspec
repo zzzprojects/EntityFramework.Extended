@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>EntityFramework.Extended</id>
-    <version>6.1.0.0</version>
-    <authors>LoreSoft</authors>
-    <owners>LoreSoft</owners>
-    <licenseUrl>https://github.com/loresoft/EntityFramework.Extended</licenseUrl>
-    <projectUrl>https://github.com/loresoft/EntityFramework.Extended</projectUrl>
+    <id>EntityFrameworkExtended</id>
+    <version>6.2.0.0</version>
+    <authors>LoreSoft, AT Mulyana</authors>
+    <owners>LoreSoft, AT Mulyana</owners>
+    <licenseUrl>https://github.com/atmulyana/EntityFramework.Extended</licenseUrl>
+    <projectUrl>https://github.com/atmulyana/EntityFramework.Extended</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A library that extends the functionality of Entity Framework by adding batch update, future queries and audit logs.</description>
     <summary>Entity Framework extensions library.</summary>
-    <copyright>Copyright (c) 2014, LoreSoft</copyright>
+    <copyright>Copyright (c) 2014, LoreSoft, Modified by AT Mulyana in 2016</copyright>
     <language>en-US</language>
     <tags>EntityFramework</tags>
     <dependencies>
-      <dependency id="EntityFramework" version="6.1.0" />
+      <dependency id="EntityFramework" version="6.0.0" />
     </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="" />
