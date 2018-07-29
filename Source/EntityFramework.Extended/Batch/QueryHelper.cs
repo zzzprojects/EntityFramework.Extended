@@ -109,7 +109,7 @@ namespace EntityFramework.Batch
         }
 
         public static string GetSelectSql<TModel>(ObjectQuery<TModel> query, IEnumerable<string> selectedProperties, DbCommand command = null,
-            IBatchRunner runner = null)
+            IBatchRunner runner = null, IList<string> fields = null)
         {
             if (selectedProperties == null || selectedProperties.Count() < 1)
                 throw new ArgumentException("The selected properties must be defined.", "selectedProperties");
@@ -123,6 +123,22 @@ namespace EntityFramework.Batch
 
             string selectSql = objectQuery.ToTraceString();
             if (command != null) objectQuery.Parameters.CopyTo(command, runner: runner);
+
+            if (fields != null)
+            {
+                fields.Clear();
+                var maps = new NonPublicMember(objectQuery).GetProperty("QueryState").GetField("_cachedPlan").GetField("CommandDefinition")
+                    .GetField("_columnMapGenerators").Idx(0).GetField("_columnMap").GetProperty("Element").GetProperty("Properties").Value as Array;
+                foreach (var m in maps)
+                {
+                    var mm = new NonPublicMember(m);
+                    int pos = (int)mm.GetProperty("ColumnPos").Value;
+                    string name = (string)mm.GetProperty("Name").Value;
+                    while (pos+1 > fields.Count) fields.Add(null);
+                    fields[pos] = name;
+                }
+            }
+
             return selectSql;
         }
 
@@ -140,6 +156,7 @@ namespace EntityFramework.Batch
             var methodExp = queryExpression as MethodCallExpression;
             if (methodExp == null) return null;
             if (methodExp.Method.Name != "Select" && methodExp.Method.Name != "SelectMany" //From Select method we know the selected properties
+                && methodExp.Method.Name != "Join" && methodExp.Method.Name != "GroupBy" //It can also from Join or GroupBy method
                 && methodExp.Method.Name != "MergeAs" /*MergeAs, if ends up at a dbContext.DbSet, without Select method */
             )
                 return GetSelectedProperties(methodExp.Arguments[0], entityMap);
@@ -185,19 +202,38 @@ namespace EntityFramework.Batch
                 if (selectedProperties == null)
                     throw new ArgumentException("Cannot read the selected fields in the query", "sourceQuery");
 
-                var selectSql = GetSelectSql(objectQuery, selectedProperties, db.Command, runner);
-                string quotedC1 = runner.Quote("C1").Insert(0, @"\").Insert(4, @"\"); //quote the string "C1" and escape the quote for regex.
-                selectSql = new Regex(@"^SELECT\s+1\s+AS\s+" + quotedC1 + @"\s*,", RegexOptions.IgnoreCase).Replace(selectSql, "SELECT ");
-
-                var sqlBuilder = new StringBuilder(selectSql.Length * 2)
-                    .Append("INSERT INTO ").Append(entityMap.TableName).Append(" (")
+                var insertFields = new List<string>();
+                var selectSql = GetSelectSql(objectQuery, selectedProperties, db.Command, runner, insertFields);
+                bool isThereUnusedField = false;
+                foreach (var f in insertFields) if (f == null) { isThereUnusedField = true;  break; }
+                var selectFields = isThereUnusedField ? new SelectedFields(selectSql, runner.CharToEscapeQuote) : null;
+                var sqlBuilder = new StringBuilder(selectSql.Length * 2);
+                sqlBuilder.Append("INSERT INTO ").Append(entityMap.TableName).Append(" (")
                     .Append(string.Join(", ",
-                            from propName in selectedProperties
+                            from propName in insertFields
                             join map in entityMap.PropertyMaps on propName equals map.PropertyName
+                            where propName != null
                             select runner.Quote(map.ColumnName)
                     ))
-                    .Append(") ")
-                    .Append(selectSql);
+                    .Append(")")
+                    .Append(Environment.NewLine);
+                if (isThereUnusedField)
+                {
+                    sqlBuilder.Append("SELECT");
+                    string separator = " ";
+                    for (int i = 0; i < insertFields.Count; i++)
+                    {
+                        if (insertFields[i] != null)
+                        {
+                            sqlBuilder.Append(separator).Append(selectFields[i]);
+                            separator = ", ";
+                        }
+                    }
+                    sqlBuilder.Append(Environment.NewLine);
+                    sqlBuilder.Append(selectSql.Substring(selectFields.FromIndex));
+                }
+                else
+                    sqlBuilder.Append(selectSql);
 
                 db.Command.CommandText = sqlBuilder.ToString();
 
@@ -215,5 +251,107 @@ namespace EntityFramework.Batch
                 return result;
             }
         }
+
+        public class SelectedFields : List<string>
+        {
+            public SelectedFields(string sql, char escapingQuoteChar)
+            {
+                if (!sql.StartsWith("SELECT", StringComparison.OrdinalIgnoreCase)) return;
+                bool isEnd = false, isInStr = false;
+                var field = new List<char>();
+                int idx = "SELECT".Length;
+                while (idx < sql.Length)
+                {
+                    if (field.Count < 1 /*The beginning of a field section*/) while (char.IsWhiteSpace(sql[idx])) idx++;
+                    char ch = sql[idx];
+                    if (isInStr)
+                    {
+                        field.Add(ch);
+                        int idx2 = idx + 1;
+                        if (ch == escapingQuoteChar && idx2 < sql.Length && sql[idx2] == '\'')
+                        {
+                                field.Add(sql[++idx]); //Don't consider this quote character as the end of string
+                        }
+                        else if (ch == '\'') //The end of string
+                        {
+                            isInStr = false;
+                        }
+                    }
+                    else
+                    {
+                        if (ch == ',')
+                        {
+                            this.Add(new string(field.ToArray()).TrimEnd());
+                            field.Clear();
+                        }
+                        else
+                        {
+                            field.Add(ch);
+                            if (ch == '\'') //The beginning of string. In the string, "FROM" and ',' will not be interpreted as a boundary
+                                isInStr = true;
+                            else if (field.Count >= 6 && char.IsWhiteSpace(field[field.Count-6])
+                                && "FROM".Equals(new string(field.GetRange(field.Count-5, 4).ToArray()), StringComparison.OrdinalIgnoreCase)
+                                && char.IsWhiteSpace(field.Last())) //The beginning of FROM clause (the end of SELECT clause)
+                            {
+                                isEnd = true;
+                                FromIndex = idx - 4;
+                                this.Add(new string(field.GetRange(0, field.Count - 6).ToArray()).TrimEnd());
+                                break;
+                            }
+                        }
+                    }
+                    idx++;
+                }
+                if (!isEnd) this.Clear();
+            }
+
+            public int FromIndex { get; private set; }
+        }
+    }
+
+
+    public class NonPublicMember
+    {
+        private object _obj;
+        public NonPublicMember(object obj)
+        {
+            if (obj == null) throw new ArgumentNullException("obj");
+            _obj = obj;
+        }
+
+        public NonPublicMember GetProperty(string name)
+        {
+            var p = GetProperty(_obj, name);
+            if (p == null) throw new Exception("No property named " + name + " in type " + _obj.GetType().FullName);
+            object value = p.GetValue(_obj, null);
+            return new NonPublicMember(value);
+        }
+
+        public static PropertyInfo GetProperty(object obj, string name)
+        {
+            return obj.GetType().GetProperty(name, BindingFlags.NonPublic | BindingFlags.Instance);
+        }
+
+        public NonPublicMember GetField(string name)
+        {
+            var f = GetField(_obj, name);
+            if (f == null) throw new Exception("No field named " + name + " in type " + _obj.GetType().FullName);
+            object value = f.GetValue(_obj);
+            return new NonPublicMember(value);
+        }
+
+        public static FieldInfo GetField(object obj, string name)
+        {
+            return obj.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance);
+        }
+
+        public NonPublicMember Idx(int idx)
+        {
+            var objs = _obj as Array;
+            if (objs == null) throw new Exception(_obj?.GetType().FullName + " not an array");
+            return new NonPublicMember(objs.GetValue(idx));
+        }
+
+        public object Value { get { return _obj; } }
     }
 }

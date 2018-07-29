@@ -28,6 +28,11 @@ namespace EntityFramework.Batch
         string Quote(string identifier);
 
         /// <summary>
+        /// The character to escape quote (') character in string
+        /// </summary>
+        char CharToEscapeQuote { get; }
+
+        /// <summary>
         /// Create and runs a batch delete statement.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>

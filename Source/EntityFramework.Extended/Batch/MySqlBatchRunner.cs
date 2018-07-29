@@ -40,6 +40,11 @@ namespace EntityFramework.Batch
         }
 
         /// <summary>
+        /// The character to escape quote (') character in string
+        /// </summary>
+        public char CharToEscapeQuote { get { return '\\'; } }
+
+        /// <summary>
         /// Create and run a batch delete statement.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
@@ -297,7 +302,7 @@ namespace EntityFramework.Batch
                         string value = match.Groups["ColumnValue"].Value;
                         string alias = match.Groups["TableAlias"].Value;
 
-                        value = value.Replace(alias + ".", "");
+                        value = value.Replace(alias + ".", "j0.");
 
                         foreach (ObjectParameter objectParameter in selectQuery.Parameters)
                         {
