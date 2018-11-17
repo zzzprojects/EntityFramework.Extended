@@ -11,10 +11,10 @@
 [assembly: System.Reflection.AssemblyProduct("EntityFramework.Extended (.NET 4.5)")]
 [assembly: System.Reflection.AssemblyDescription("Entity Framework extensions library. Built for .NET 4.5")]
 [assembly: System.Reflection.AssemblyCompany("LoreSoft")]
-[assembly: System.Reflection.AssemblyCopyright("Copyright © 2015 LoreSoft, Modified by AT Mulyana in 2016")]
+[assembly: System.Reflection.AssemblyCopyright("Copyright © 2015 LoreSoft, Modified by AT Mulyana in 2016-2018")]
 [assembly: System.Reflection.AssemblyVersion("6.0.0.0")]
-[assembly: System.Reflection.AssemblyFileVersion("6.2.0.2")]
-[assembly: System.Reflection.AssemblyInformationalVersion("6.2.0.2")]
+[assembly: System.Reflection.AssemblyFileVersion("6.2.0.3")]
+[assembly: System.Reflection.AssemblyInformationalVersion("6.2.0.3")]
 
 
 
@@ -30,9 +30,9 @@ internal sealed partial class ThisAssembly {
     
     internal const string AssemblyVersion = "6.0.0.0";
     
-    internal const string AssemblyFileVersion = "6.2.0.2";
+    internal const string AssemblyFileVersion = "6.2.0.3";
     
-    internal const string AssemblyInformationalVersion = "6.2.0.2";
+    internal const string AssemblyInformationalVersion = "6.2.0.3";
     
     private ThisAssembly() {
     }

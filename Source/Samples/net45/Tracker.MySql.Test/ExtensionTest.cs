@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Transactions;
 using EntityFramework.Extensions;
 using Xunit;
 using Tracker.MySql.Entities;
@@ -21,6 +20,7 @@ namespace Tracker.MySql.Test
                 using (var db = new TrackerEntities())
                 using (var tx = db.Database.BeginTransaction())
                 {
+                    db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
                     string emailDomain = "@test.com";
 
                     int count = db.users
@@ -48,6 +48,7 @@ namespace Tracker.MySql.Test
             {
                 using (var db = new TrackerEntities())
                 {
+                    db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
                     string emailDomain = "@test.com";
 
                     int count = db.users
@@ -93,6 +94,7 @@ namespace Tracker.MySql.Test
             Locator.Current.Register<IBatchRunner>(() => new MySqlBatchRunner());
             try
             {
+                db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
                 db.productsummaries.Delete();
                 var query = from product in db.products
                             join item2 in (

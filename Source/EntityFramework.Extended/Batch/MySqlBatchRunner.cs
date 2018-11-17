@@ -115,6 +115,7 @@ namespace EntityFramework.Batch
                 sqlBuilder.Append(")");
 
                 db.Command.CommandText = sqlBuilder.ToString();
+                db.Log(db.Command.CommandText);
 
 #if NET45
                 int result = async
@@ -320,8 +321,8 @@ namespace EntityFramework.Batch
                     wroteSet = true;
                 }
 
-
                 db.Command.CommandText = sqlBuilder.ToString();
+                db.Log(db.Command.CommandText);
 
 #if NET45
                 int result = async
@@ -337,6 +338,16 @@ namespace EntityFramework.Batch
 
                 return result;
             }
+        }
+
+        public int Update<TModel>(IQueryable<TModel> query, ObjectQuery<TModel> objectQuery, EntityMap entityMap) where TModel : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> UpdateAsync<TModel>(IQueryable<TModel> query, ObjectQuery<TModel> objectQuery, EntityMap entityMap) where TModel : class
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

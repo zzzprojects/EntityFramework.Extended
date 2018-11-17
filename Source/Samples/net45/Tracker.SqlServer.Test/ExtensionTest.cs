@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
 using EntityFramework.Extensions;
 using Xunit;
 using Tracker.SqlServer.Entities;
-using System.Threading.Tasks;
 
 namespace Tracker.SqlServer.Test
 {
@@ -73,6 +71,7 @@ namespace Tracker.SqlServer.Test
 
         private void _Insert(TrackerEntities db, bool isAsync=false)
         {
+            db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
             db.ProductSummaries.Delete();
             var query = from product in db.Products
                         join item2 in (
@@ -162,6 +161,7 @@ namespace Tracker.SqlServer.Test
 
         private void _InsertBulk(TrackerEntities db, bool isAsync = false)
         {
+            db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
             db.ProductSummaries.Delete();
             db.Database.ExecuteSqlCommand("TRUNCATE TABLE ATable");
 
@@ -193,7 +193,7 @@ namespace Tracker.SqlServer.Test
             //db.ProductSummaries.AddRange(entities);
             //db.SaveChanges();
 
-            System.Diagnostics.Debug.WriteLine("***** Executing bulk insert (" + n + " items) takes "
+            System.Diagnostics.Trace.WriteLine("***** Executing bulk insert (" + n + " items) takes "
                 + DateTime.Now.Subtract(start).ToString(@"hh\:mm\:ss\.ffffff"));
 
             Assert.True(db.ProductSummaries.Count() == n);

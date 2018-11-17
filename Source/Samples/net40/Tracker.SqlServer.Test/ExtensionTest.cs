@@ -73,6 +73,7 @@ namespace Tracker.SqlServer.Test
 
         private void _Insert(TrackerEntities db)
         {
+            db.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
             db.ProductSummaries.Delete();
             var query = from product in db.Products
                         join item2 in (

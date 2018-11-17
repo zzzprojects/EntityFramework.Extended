@@ -115,6 +115,7 @@ namespace EntityFramework.Batch
                 sqlBuilder.Append(")");
 
                 db.Command.CommandText = sqlBuilder.ToString();
+                db.Log(db.Command.CommandText);
 
 #if NET45
                 int result = async
@@ -320,6 +321,7 @@ namespace EntityFramework.Batch
                 sqlBuilder.Append(")");
 
                 db.Command.CommandText = sqlBuilder.ToString();
+                db.Log(db.Command.CommandText);
 
 #if NET45
                 int result = async
@@ -335,6 +337,46 @@ namespace EntityFramework.Batch
                 return result;
             }
         }
+
+        /// <summary>
+        /// Execute statement `<code>INSERT INTO [Table] (...) SELECT ...</code>`.
+        /// </summary>
+        /// <typeparam name="TModel">The type <paramref name="query"/> item.</typeparam>
+        /// <param name="query">The query to create SELECT clause statement.</param>
+        /// <param name="objectQuery">The query to create SELECT clause statement and it can also be used to get the information of db connection via
+        ///     <code>objectQuery.Context</code> property.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for entity type of the destination table (<code>IDbSet</code>).</param>
+        /// <returns>
+        /// The number of rows inserted.
+        /// </returns>
+        public int Update<TModel>(IQueryable<TModel> query, ObjectQuery<TModel> objectQuery, EntityMap entityMap)
+            where TModel : class
+        {
+#if NET45
+            return this.InternalUpdate(query, objectQuery, entityMap, false).Result;
+#else
+            return this.InternalUpdate(query, objectQuery, entityMap);
+#endif
+        }
+
+#if NET45
+        /// <summary>
+        /// Execute statement `<code>INSERT INTO [Table] (...) SELECT ...</code>`.
+        /// </summary>
+        /// <typeparam name="TModel">The type <paramref name="query"/> item.</typeparam>
+        /// <param name="query">The query to create SELECT clause statement.</param>
+        /// <param name="objectQuery">The query to create SELECT clause statement and it can also be used to get the information of db connection via
+        ///     <code>objectQuery.Context</code> property.</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for entity type of the destination table (<code>IDbSet</code>).</param>
+        /// <returns>
+        /// The number of rows inserted.
+        /// </returns>
+        public Task<int> UpdateAsync<TModel>(IQueryable<TModel> query, ObjectQuery<TModel> objectQuery, EntityMap entityMap)
+            where TModel : class
+        {
+            return this.InternalUpdate(query, objectQuery, entityMap, true);
+        }
+#endif
 
         /// <summary>
         /// Execute statement `<code>INSERT INTO [Table] (...) SELECT ...</code>`.

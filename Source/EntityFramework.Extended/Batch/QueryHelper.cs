@@ -21,11 +21,23 @@ namespace EntityFramework.Batch
     {
         public class Db : IDisposable
         {
+            public Db(ObjectContext context)
+            {
+                _loggers = context.InterceptionContext.DbContexts.Select(ctx => ctx.Database.Log).Where(log => log != null).ToArray();
+            }
+
             public DbConnection Connection;
             public DbTransaction Transaction;
             public DbCommand Command;
             public bool OwnConnection;
             public bool OwnTransaction;
+
+            private Action<string>[] _loggers;
+
+            public void Log(string log)
+            {
+                foreach (var logger in _loggers) logger(log);
+            }
 
             public void Dispose()
             {
@@ -63,7 +75,7 @@ namespace EntityFramework.Batch
 
         public static Db GetDb(ObjectContext context)
         {
-            var db = new Db();
+            var db = new Db(context);
             try
             {
                 var store = GetStore(context);
@@ -108,6 +120,24 @@ namespace EntityFramework.Batch
             }
         }
 
+        public static IList<string> GetPropertyPositions(IQueryable query, IList<string> fields = null)
+        {
+            if (fields == null) fields = new List<string>();
+            fields.Clear();
+            var objectQuery = query as ObjectQuery;
+            var maps = new NonPublicMember(objectQuery).GetProperty("QueryState").GetField("_cachedPlan").GetField("CommandDefinition")
+                    .GetField("_columnMapGenerators").Idx(0).GetField("_columnMap").GetProperty("Element").GetProperty("Properties").Value as Array;
+            foreach (var m in maps)
+            {
+                var mm = new NonPublicMember(m);
+                int pos = (int)mm.GetProperty("ColumnPos").Value;
+                string name = (string)mm.GetProperty("Name").Value;
+                while (pos + 1 > fields.Count) fields.Add(null); //advance the size of [fields] if the pos index is not covered by it
+                fields[pos] = name;
+            }
+            return fields;
+        }
+
         public static string GetSelectSql<TModel>(ObjectQuery<TModel> query, IEnumerable<string> selectedProperties, DbCommand command = null,
             IBatchRunner runner = null, IList<string> fields = null)
         {
@@ -126,29 +156,25 @@ namespace EntityFramework.Batch
 
             if (fields != null)
             {
-                fields.Clear();
-                var maps = new NonPublicMember(objectQuery).GetProperty("QueryState").GetField("_cachedPlan").GetField("CommandDefinition")
-                    .GetField("_columnMapGenerators").Idx(0).GetField("_columnMap").GetProperty("Element").GetProperty("Properties").Value as Array;
-                foreach (var m in maps)
-                {
-                    var mm = new NonPublicMember(m);
-                    int pos = (int)mm.GetProperty("ColumnPos").Value;
-                    string name = (string)mm.GetProperty("Name").Value;
-                    while (pos+1 > fields.Count) fields.Add(null);
-                    fields[pos] = name;
-                }
+                GetPropertyPositions(selectQuery, fields);
             }
 
             return selectSql;
         }
 
-        public static string GetSelectKeySql<TEntity>(ObjectQuery<TEntity> query, EntityMap entityMap, DbCommand command, IBatchRunner runner)
+        public static string GetSelectKeySql<TEntity>(ObjectQuery<TEntity> query, EntityMap entityMap, DbCommand command, IBatchRunner runner, IList<string> fields = null)
             where TEntity : class
         {
             // TODO change to esql?
 
             // changing query to only select keys
-            return GetSelectSql(query, entityMap.KeyMaps.Select(key => key.PropertyName), command, runner);
+            var idFields = entityMap.KeyMaps.Select(key => key.PropertyName);
+            string sql = GetSelectSql(query, idFields, command, runner, fields);
+            //if (fields != null)
+            //{
+            //    for (int i = 0; i < fields.Count; i++) if (!idFields.Contains(fields[i])) fields[i] = null;
+            //}
+            return sql;
         }
 
         public static IEnumerable<string> GetSelectedProperties(Expression queryExpression, EntityMap entityMap)
@@ -236,6 +262,112 @@ namespace EntityFramework.Batch
                     sqlBuilder.Append(selectSql);
 
                 db.Command.CommandText = sqlBuilder.ToString();
+                db.Log(db.Command.CommandText);
+
+#if NET45
+                int result = async
+                    ? await db.Command.ExecuteNonQueryAsync().ConfigureAwait(false)
+                    : db.Command.ExecuteNonQuery();
+#else
+                int result = db.Command.ExecuteNonQuery();
+#endif
+                // only commit if created transaction
+                if (db.OwnTransaction)
+                    db.Transaction.Commit();
+
+                return result;
+            }
+        }
+
+#if NET45
+        internal static async Task<int> InternalUpdate<TModel>(this IBatchRunner runner, IQueryable<TModel> query, ObjectQuery<TModel> objectQuery,
+            EntityMap entityMap, bool async = false)
+            where TModel : class
+#else
+        internal static int InternalUpdate<TModel>(this IBatchRunner runner, IQueryable<TModel> query, ObjectQuery<TModel> objectQuery,
+            EntityMap entityMap, bool async = false)
+            where TModel : class
+#endif
+        {
+            using (var db = GetDb(objectQuery.Context))
+            {
+                string keySelect = null, aliasTableUpdate;
+                int i = 0;
+                var idFields = new List<string>();
+                try
+                {
+                    keySelect = GetSelectKeySql(objectQuery, entityMap, null, runner, idFields);
+                }
+                catch (NotSupportedException ex)
+                {
+                    //if (ex.HResult == -2146233067)
+                        throw new ArgumentException("The select statement must include the key(s) of updated table. The keys themselves would not be updated.", "query");
+                    //throw ex;
+                }
+                var selectKeyFields = new SelectedFields(keySelect, runner.CharToEscapeQuote);
+                var idFieldsMap = new Dictionary<string, string>();
+                for (i = 0; i < idFields.Count; i++)
+                {
+                    if (idFields[i] == null) continue;
+                    string valueField = selectKeyFields[i];
+                    if (selectKeyFields.AliasIndexes[i] > 0) valueField = valueField.Substring(0, selectKeyFields.AliasIndexes[i]);
+                    idFieldsMap[idFields[i]] = valueField;
+                }
+                aliasTableUpdate = idFieldsMap.First().Value.Split('.')[0];
+
+                var selectedProperties = GetSelectedProperties(query.Expression, entityMap);
+                if (selectedProperties == null || selectedProperties.Count() < 1)
+                    throw new ArgumentException("Cannot read the selected fields in the query", "query");
+
+                var updateFields = new List<string>();
+                string selectSql = GetSelectSql(objectQuery, selectedProperties, db.Command, runner, updateFields);
+                var selectFields = new SelectedFields(selectSql, runner.CharToEscapeQuote);
+
+                var sqlFrom = selectSql.Substring(selectFields.FromIndex);
+                string strRegex = @"\s+AS\s+" + Regex.Escape(aliasTableUpdate),
+                       strRegex2 = Regex.Escape(entityMap.TableName) + strRegex;
+                if (!Regex.IsMatch(sqlFrom, strRegex2, RegexOptions.IgnoreCase))
+                {
+                    var match = Regex.Match(sqlFrom, strRegex, RegexOptions.IgnoreCase);
+                    if (match != null && match.Success)
+                    {
+                        int nextLine = sqlFrom.IndexOf('\n', match.Index + match.Length);
+                        if (nextLine < 0) nextLine = sqlFrom.Length; else nextLine++;
+                        aliasTableUpdate = runner.Quote("__alias1");
+                        var joinUpdate = new StringBuilder("JOIN ").Append(entityMap.TableName).Append(" AS ").Append(aliasTableUpdate);
+                        string conjunction = " ON ";
+                        foreach (var kvp in idFieldsMap)
+                        {
+                            joinUpdate.Append(conjunction).Append(kvp.Value).Append(" = ")
+                                .Append(aliasTableUpdate).Append(".")
+                                .Append(entityMap.PropertyMaps.Where(p => p.PropertyName == kvp.Key).Select(p => runner.Quote(p.ColumnName)).First());
+                            conjunction = " AND ";
+                        }
+                        joinUpdate.AppendLine();
+                        sqlFrom = sqlFrom.Insert(nextLine, joinUpdate.ToString());
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Cannot read the updated table in the query", "query");
+                    }
+                }
+
+                var sqlBuilder = new StringBuilder(selectSql.Length * 2);
+                sqlBuilder.Append("UPDATE ").Append(aliasTableUpdate).Append(" SET").Append(Environment.NewLine);
+                for (i=0; i < updateFields.Count; i++)
+                {
+                    if (updateFields[i] == null || idFieldsMap.ContainsKey(updateFields[i])) continue;
+                    string valueField = selectFields[i];
+                    if (selectFields.AliasIndexes[i] > 0) valueField = valueField.Substring(0, selectFields.AliasIndexes[i]);
+                    sqlBuilder.Append(entityMap.PropertyMaps.Where(p => p.PropertyName == updateFields[i]).Select(p => runner.Quote(p.ColumnName)).First())
+                        .Append(" = ").Append(valueField);
+                    if (i < updateFields.Count - 1) sqlBuilder.Append(",");
+                    sqlBuilder.AppendLine();
+                }
+                sqlBuilder.Append(sqlFrom);
+
+                db.Command.CommandText = sqlBuilder.ToString();
+                db.Log(db.Command.CommandText);
 
 #if NET45
                 int result = async
@@ -258,6 +390,8 @@ namespace EntityFramework.Batch
             {
                 if (!sql.StartsWith("SELECT", StringComparison.OrdinalIgnoreCase)) return;
                 bool isEnd = false, isInStr = false;
+                int beginAlias = 0;
+                List<int> aliasIdxs = new List<int>();
                 var field = new List<char>();
                 int idx = "SELECT".Length;
                 while (idx < sql.Length)
@@ -270,7 +404,7 @@ namespace EntityFramework.Batch
                         int idx2 = idx + 1;
                         if (ch == escapingQuoteChar && idx2 < sql.Length && sql[idx2] == '\'')
                         {
-                                field.Add(sql[++idx]); //Don't consider this quote character as the end of string
+                            field.Add(sql[++idx]); //Don't consider this quote character as the end of string
                         }
                         else if (ch == '\'') //The end of string
                         {
@@ -282,7 +416,9 @@ namespace EntityFramework.Batch
                         if (ch == ',')
                         {
                             this.Add(new string(field.ToArray()).TrimEnd());
+                            aliasIdxs.Add(beginAlias);
                             field.Clear();
+                            beginAlias = 0;
                         }
                         else
                         {
@@ -296,16 +432,25 @@ namespace EntityFramework.Batch
                                 isEnd = true;
                                 FromIndex = idx - 4;
                                 this.Add(new string(field.GetRange(0, field.Count - 6).ToArray()).TrimEnd());
+                                aliasIdxs.Add(beginAlias);
                                 break;
+                            }
+                            else if (field.Count > 4 && char.IsWhiteSpace(field[field.Count - 4])
+                                && char.ToUpper(field[field.Count - 3]) == 'A' && char.ToUpper(field[field.Count - 2]) == 'S'
+                                && char.IsWhiteSpace(field.Last())) //The beginning of FROM clause (the end of SELECT clause)
+                            {
+                                beginAlias = field.Count - 4;
                             }
                         }
                     }
                     idx++;
                 }
                 if (!isEnd) this.Clear();
+                else AliasIndexes = aliasIdxs.ToArray();
             }
 
             public int FromIndex { get; private set; }
+            public int[] AliasIndexes { get; private set; }
         }
     }
 

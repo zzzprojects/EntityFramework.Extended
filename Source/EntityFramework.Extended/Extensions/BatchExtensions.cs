@@ -401,7 +401,7 @@ namespace EntityFramework.Extensions
         {
             if (dbSet == null)
                 throw new ArgumentNullException("dbSet");
-            
+
             ObjectQuery<TEntity> destQuery = dbSet.ToObjectQuery();
             if (destQuery == null)
                 throw new ArgumentException("The DbSet must be of type ObjectQuery or DbQuery.", "dbSet");
@@ -416,12 +416,12 @@ namespace EntityFramework.Extensions
             return Tuple.Create(destContext, entityMap);
         }
 
-        private static Tuple<ObjectQuery<TModel>, EntityMap> CheckInsertParams<TEntity, TModel>(IDbSet<TEntity> destination,
+        private static Tuple<ObjectQuery<TModel>, EntityMap> CheckDbQueryParams<TEntity, TModel>(IDbSet<TEntity> destination,
             IQueryable<TModel> source)
             where TEntity : class
             where TModel : class
         {
-            EntityMap entityMap = GetQueryObjects<TEntity>(destination).Item2;
+            EntityMap entityMap = GetQueryObjects(destination).Item2;
 
             ObjectQuery<TModel> sourceQuery = source.ToObjectQuery();
             if (sourceQuery == null)
@@ -456,13 +456,79 @@ namespace EntityFramework.Extensions
         /// and is not part of the change tracking system.  Also, changes will not be reflected on 
         /// any entities that have already been materialized in the current context.        
         /// </remarks>
+        public static int Update<TEntity, TModel>(
+            this IDbSet<TEntity> destination,
+            IQueryable<TModel> source)
+            where TEntity : class
+            where TModel : class
+        {
+            var p = CheckDbQueryParams(destination, source);
+            return ResolveRunner().Update(source, p.Item1, p.Item2);
+        }
+
+#if NET45
+        /// <summary>
+        /// Executes a statement `<code>INSERT INTO [Table] (...) SELECT ...</code>` asynchronously.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity representing a record in database table.</typeparam>
+        /// <typeparam name="TModel">The type of the <paramref name="source"/> query item.</typeparam>
+        /// <param name="destination">The target table where the new data will be inserted into.</param>
+        /// <param name="source">The query which retrieves the new data that will be inserted into the target table.</param>
+        /// <returns>The number of row inserted.</returns>
+        /// <example>Copy all items whose product id "K9-RT-02" from table item into item_2.
+        /// <code><![CDATA[
+        /// var db = new TrackerContext();
+        /// //var query = from item in db.items where item.ProductId == "K9-RT-02" select item; //Using MySQL provider, the parameter won't be caught if the parameter is constant
+        /// string productId = "K9-RT-02";
+        /// var query = from item in db.items where item.ProductId == productId select item;
+        /// db.item_2.InsertAsync(query);
+        /// ]]></code>
+        /// </example>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
+        public static Task<int> UpdateAsync<TEntity, TModel>(
+            this IDbSet<TEntity> destination,
+            IQueryable<TModel> source)
+            where TEntity : class
+            where TModel : class
+        {
+            var p = CheckDbQueryParams(destination, source);
+            return ResolveRunner().UpdateAsync(source, p.Item1, p.Item2);
+        }
+#endif
+
+        /// <summary>
+        /// Executes a statement `<code>INSERT INTO [Table] (...) SELECT ...</code>`.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity representing a record in database table.</typeparam>
+        /// <typeparam name="TModel">The type of the <paramref name="source"/> query item.</typeparam>
+        /// <param name="destination">The target table where the new data will be inserted into.</param>
+        /// <param name="source">The query which retrieves the new data that will be inserted into the target table.</param>
+        /// <returns>The number of row inserted.</returns>
+        /// <example>Copy all items whose product id "K9-RT-02" from table item into item_2.
+        /// <code><![CDATA[
+        /// var db = new TrackerContext();
+        /// //var query = from item in db.items where item.ProductId == "K9-RT-02" select item; //Using MySQL provider, the parameter won't be caught if the parameter is constant
+        /// string productId = "K9-RT-02";
+        /// var query = from item in db.items where item.ProductId == productId select item;
+        /// db.item_2.Insert(query);
+        /// ]]></code>
+        /// </example>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
         public static int Insert<TEntity, TModel>(
             this IDbSet<TEntity> destination,
             IQueryable<TModel> source)
             where TEntity : class
             where TModel : class
         {
-            var p = CheckInsertParams(destination, source);
+            var p = CheckDbQueryParams(destination, source);
             return ResolveRunner().Insert(source, p.Item1, p.Item2);
         }
 
@@ -495,7 +561,7 @@ namespace EntityFramework.Extensions
             where TEntity : class
             where TModel : class
         {
-            var p = CheckInsertParams(destination, source);
+            var p = CheckDbQueryParams(destination, source);
             return ResolveRunner().InsertAsync(source, p.Item1, p.Item2);
         }
 #endif
