@@ -338,43 +338,115 @@ namespace EntityFramework.Batch
             }
         }
 
+        private int InternalUpdate<TModel>(IQueryable<TModel> query, ObjectQuery<TModel> objectQuery, EntityMap entityMap, Func<QueryHelper.Db, int> updateCommand) where TModel : class
+        {
+            var param = this.UpdateJoinParam(query, objectQuery, entityMap);
+            using (var db = param.Item1)
+            {
+                string keySelect = param.Item2;
+                var selectKeyFields = param.Item3;
+                var idFieldsMap = param.Item4;
+                string selectSql = param.Item5;
+                var selectFields = param.Item6;
+                var updateFields = param.Item7;
+
+                string aliasTableUpdate = idFieldsMap.First().Value.Split('.')[0];
+                var sqlFrom = selectSql.Substring(selectFields.FromIndex);
+                string strRegex = @"\s+AS\s+" + Regex.Escape(aliasTableUpdate),
+                       strRegex2 = Regex.Escape(entityMap.TableName) + strRegex;
+                if (!Regex.IsMatch(sqlFrom, strRegex2, RegexOptions.IgnoreCase))
+                {
+                    var match = Regex.Match(sqlFrom, strRegex, RegexOptions.IgnoreCase);
+                    if (match != null && match.Success)
+                    {
+                        int nextLine = sqlFrom.IndexOf('\n', match.Index + match.Length);
+                        if (nextLine < 0) nextLine = sqlFrom.Length; else nextLine++;
+                        aliasTableUpdate = Quote("__alias1");
+                        var joinUpdate = new StringBuilder(" JOIN ").Append(entityMap.TableName).Append(" AS ").Append(aliasTableUpdate);
+                        string conjunction = " ON ";
+                        foreach (var kvp in idFieldsMap)
+                        {
+                            joinUpdate.Append(conjunction).Append(kvp.Value).Append(" = ")
+                                .Append(aliasTableUpdate).Append(".")
+                                .Append(entityMap.PropertyMaps.Where(p => p.PropertyName == kvp.Key).Select(p => Quote(p.ColumnName)).First());
+                            conjunction = " AND ";
+                        }
+                        joinUpdate.AppendLine();
+                        sqlFrom = sqlFrom.Insert(nextLine, joinUpdate.ToString());
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Cannot read the updated table in the query", "query");
+                    }
+                }
+
+                var sqlBuilder = new StringBuilder(selectSql.Length * 2);
+                sqlBuilder.Append("UPDATE ").Append(aliasTableUpdate).Append(" SET").Append(Environment.NewLine);
+                for (int i = 0; i < updateFields.Count; i++)
+                {
+                    if (updateFields[i] == null || idFieldsMap.ContainsKey(updateFields[i])) continue;
+                    string valueField = selectFields[i];
+                    if (selectFields.AliasIndexes[i] > 0) valueField = valueField.Substring(0, selectFields.AliasIndexes[i]);
+                    sqlBuilder.Append(entityMap.PropertyMaps.Where(p => p.PropertyName == updateFields[i]).Select(p => Quote(p.ColumnName)).First())
+                        .Append(" = ").Append(valueField);
+                    if (i < updateFields.Count - 1) sqlBuilder.Append(",");
+                    sqlBuilder.AppendLine();
+                }
+                sqlBuilder.Append(sqlFrom);
+
+                db.Command.CommandText = sqlBuilder.ToString();
+                db.Log(db.Command.CommandText);
+                int result = updateCommand(db);
+
+                // only commit if created transaction
+                if (db.OwnTransaction)
+                    db.Transaction.Commit();
+                return result;
+            }
+        }
+
         /// <summary>
-        /// Execute statement `<code>INSERT INTO [Table] (...) SELECT ...</code>`.
+        /// Execute statement `<code>UPDATE [Table] SET ... FROM [Table] {JOIN Another Table ...} ...</code>`.
         /// </summary>
         /// <typeparam name="TModel">The type <paramref name="query"/> item.</typeparam>
-        /// <param name="query">The query to create SELECT clause statement.</param>
-        /// <param name="objectQuery">The query to create SELECT clause statement and it can also be used to get the information of db connection via
+        /// <param name="query">The SELECT query from which we determine what field to be set (updated). It must include primary key(s) field so that the update statement
+        /// will appropriately update the true records. The key field(s) will not updated.</param>
+        /// <param name="objectQuery">The query to create SQL statement and it can also be used to get the information of db connection via
         ///     <code>objectQuery.Context</code> property.</param>
-        /// <param name="entityMap">The <see cref="EntityMap"/> for entity type of the destination table (<code>IDbSet</code>).</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for entity type of the updated table (<code>IDbSet</code>).</param>
         /// <returns>
-        /// The number of rows inserted.
+        /// The number of rows updated.
         /// </returns>
         public int Update<TModel>(IQueryable<TModel> query, ObjectQuery<TModel> objectQuery, EntityMap entityMap)
             where TModel : class
         {
-#if NET45
-            return this.InternalUpdate(query, objectQuery, entityMap, false).Result;
-#else
-            return this.InternalUpdate(query, objectQuery, entityMap);
-#endif
+            return InternalUpdate(query, objectQuery, entityMap,
+                db => db.Command.ExecuteNonQuery());
         }
 
 #if NET45
         /// <summary>
-        /// Execute statement `<code>INSERT INTO [Table] (...) SELECT ...</code>`.
+        /// Execute statement `<code>UPDATE [Table] SET ... FROM [Table] {JOIN Another Table ...} ...</code>`.
         /// </summary>
         /// <typeparam name="TModel">The type <paramref name="query"/> item.</typeparam>
-        /// <param name="query">The query to create SELECT clause statement.</param>
-        /// <param name="objectQuery">The query to create SELECT clause statement and it can also be used to get the information of db connection via
+        /// <param name="query">The SELECT query from which we determine what field to be set (updated). It must include primary key(s) field so that the update statement
+        /// will appropriately update the true records. The key field(s) will not updated.</param>
+        /// <param name="objectQuery">The query to create SQL statement and it can also be used to get the information of db connection via
         ///     <code>objectQuery.Context</code> property.</param>
-        /// <param name="entityMap">The <see cref="EntityMap"/> for entity type of the destination table (<code>IDbSet</code>).</param>
+        /// <param name="entityMap">The <see cref="EntityMap"/> for entity type of the updated table (<code>IDbSet</code>).</param>
         /// <returns>
-        /// The number of rows inserted.
+        /// The number of rows updated.
         /// </returns>
         public Task<int> UpdateAsync<TModel>(IQueryable<TModel> query, ObjectQuery<TModel> objectQuery, EntityMap entityMap)
             where TModel : class
         {
-            return this.InternalUpdate(query, objectQuery, entityMap, true);
+            Func<QueryHelper.Db, Task<int>> update = async (QueryHelper.Db db) =>
+            {
+                return await db.Command.ExecuteNonQueryAsync();
+            };
+            return new Task<int>( () =>
+                InternalUpdate(query, objectQuery, entityMap, db => update(db).Result)
+            );
         }
 #endif
 

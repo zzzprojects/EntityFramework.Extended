@@ -279,109 +279,43 @@ namespace EntityFramework.Batch
             }
         }
 
-#if NET45
-        internal static async Task<int> InternalUpdate<TModel>(this IBatchRunner runner, IQueryable<TModel> query, ObjectQuery<TModel> objectQuery,
-            EntityMap entityMap, bool async = false)
+        internal static Tuple<Db, string, SelectedFields, Dictionary<string, string>, string, SelectedFields, List<string>> UpdateJoinParam<TModel>(this IBatchRunner runner,
+            IQueryable<TModel> query, ObjectQuery<TModel> objectQuery, EntityMap entityMap)
             where TModel : class
-#else
-        internal static int InternalUpdate<TModel>(this IBatchRunner runner, IQueryable<TModel> query, ObjectQuery<TModel> objectQuery,
-            EntityMap entityMap, bool async = false)
-            where TModel : class
-#endif
         {
-            using (var db = GetDb(objectQuery.Context))
+            var db = GetDb(objectQuery.Context);
+            string keySelect = null;
+            int i = 0;
+            var idFields = new List<string>();
+            try
             {
-                string keySelect = null, aliasTableUpdate;
-                int i = 0;
-                var idFields = new List<string>();
-                try
-                {
-                    keySelect = GetSelectKeySql(objectQuery, entityMap, null, runner, idFields);
-                }
-                catch (NotSupportedException ex)
-                {
-                    //if (ex.HResult == -2146233067)
-                        throw new ArgumentException("The select statement must include the key(s) of updated table. The keys themselves would not be updated.", "query");
-                    //throw ex;
-                }
-                var selectKeyFields = new SelectedFields(keySelect, runner.CharToEscapeQuote);
-                var idFieldsMap = new Dictionary<string, string>();
-                for (i = 0; i < idFields.Count; i++)
-                {
-                    if (idFields[i] == null) continue;
-                    string valueField = selectKeyFields[i];
-                    if (selectKeyFields.AliasIndexes[i] > 0) valueField = valueField.Substring(0, selectKeyFields.AliasIndexes[i]);
-                    idFieldsMap[idFields[i]] = valueField;
-                }
-                aliasTableUpdate = idFieldsMap.First().Value.Split('.')[0];
-
-                var selectedProperties = GetSelectedProperties(query.Expression, entityMap);
-                if (selectedProperties == null || selectedProperties.Count() < 1)
-                    throw new ArgumentException("Cannot read the selected fields in the query", "query");
-
-                var updateFields = new List<string>();
-                string selectSql = GetSelectSql(objectQuery, selectedProperties, db.Command, runner, updateFields);
-                var selectFields = new SelectedFields(selectSql, runner.CharToEscapeQuote);
-
-                var sqlFrom = selectSql.Substring(selectFields.FromIndex);
-                string strRegex = @"\s+AS\s+" + Regex.Escape(aliasTableUpdate),
-                       strRegex2 = Regex.Escape(entityMap.TableName) + strRegex;
-                if (!Regex.IsMatch(sqlFrom, strRegex2, RegexOptions.IgnoreCase))
-                {
-                    var match = Regex.Match(sqlFrom, strRegex, RegexOptions.IgnoreCase);
-                    if (match != null && match.Success)
-                    {
-                        int nextLine = sqlFrom.IndexOf('\n', match.Index + match.Length);
-                        if (nextLine < 0) nextLine = sqlFrom.Length; else nextLine++;
-                        aliasTableUpdate = runner.Quote("__alias1");
-                        var joinUpdate = new StringBuilder("JOIN ").Append(entityMap.TableName).Append(" AS ").Append(aliasTableUpdate);
-                        string conjunction = " ON ";
-                        foreach (var kvp in idFieldsMap)
-                        {
-                            joinUpdate.Append(conjunction).Append(kvp.Value).Append(" = ")
-                                .Append(aliasTableUpdate).Append(".")
-                                .Append(entityMap.PropertyMaps.Where(p => p.PropertyName == kvp.Key).Select(p => runner.Quote(p.ColumnName)).First());
-                            conjunction = " AND ";
-                        }
-                        joinUpdate.AppendLine();
-                        sqlFrom = sqlFrom.Insert(nextLine, joinUpdate.ToString());
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Cannot read the updated table in the query", "query");
-                    }
-                }
-
-                var sqlBuilder = new StringBuilder(selectSql.Length * 2);
-                sqlBuilder.Append("UPDATE ").Append(aliasTableUpdate).Append(" SET").Append(Environment.NewLine);
-                for (i=0; i < updateFields.Count; i++)
-                {
-                    if (updateFields[i] == null || idFieldsMap.ContainsKey(updateFields[i])) continue;
-                    string valueField = selectFields[i];
-                    if (selectFields.AliasIndexes[i] > 0) valueField = valueField.Substring(0, selectFields.AliasIndexes[i]);
-                    sqlBuilder.Append(entityMap.PropertyMaps.Where(p => p.PropertyName == updateFields[i]).Select(p => runner.Quote(p.ColumnName)).First())
-                        .Append(" = ").Append(valueField);
-                    if (i < updateFields.Count - 1) sqlBuilder.Append(",");
-                    sqlBuilder.AppendLine();
-                }
-                sqlBuilder.Append(sqlFrom);
-
-                db.Command.CommandText = sqlBuilder.ToString();
-                db.Log(db.Command.CommandText);
-
-#if NET45
-                int result = async
-                    ? await db.Command.ExecuteNonQueryAsync().ConfigureAwait(false)
-                    : db.Command.ExecuteNonQuery();
-#else
-                int result = db.Command.ExecuteNonQuery();
-#endif
-                // only commit if created transaction
-                if (db.OwnTransaction)
-                    db.Transaction.Commit();
-
-                return result;
+                keySelect = GetSelectKeySql(objectQuery, entityMap, null, runner, idFields);
             }
+            catch (NotSupportedException ex)
+            {
+                //if (ex.HResult == -2146233067)
+                    throw new ArgumentException("The select statement must include the key(s) of updated table. The keys themselves would not be updated.", "query");
+                //throw ex;
+            }
+            var selectKeyFields = new SelectedFields(keySelect, runner.CharToEscapeQuote);
+            var idFieldsMap = new Dictionary<string, string>();
+            for (i = 0; i < idFields.Count; i++)
+            {
+                if (idFields[i] == null) continue;
+                string valueField = selectKeyFields[i];
+                if (selectKeyFields.AliasIndexes[i] > 0) valueField = valueField.Substring(0, selectKeyFields.AliasIndexes[i]);
+                idFieldsMap[idFields[i]] = valueField;
+            }
+
+            var selectedProperties = GetSelectedProperties(query.Expression, entityMap);
+            if (selectedProperties == null || selectedProperties.Count() < 1)
+                throw new ArgumentException("Cannot read the selected fields in the query", "query");
+
+            var updateFields = new List<string>();
+            string selectSql = GetSelectSql(objectQuery, selectedProperties, db.Command, runner, updateFields);
+            var selectFields = new SelectedFields(selectSql, runner.CharToEscapeQuote);
+
+            return Tuple.Create(db, keySelect, selectKeyFields, idFieldsMap, selectSql, selectFields, updateFields);
         }
 
         public class SelectedFields : List<string>
