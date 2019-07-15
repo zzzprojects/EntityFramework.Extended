@@ -1,6 +1,8 @@
-## NO LONGER SUPPORTED SINCE 2015
+**IMPORTANT:** This library is no longer supported since 2015. 
 
-**IMPORTANT:** This library is no longer supported since 2015. We highly recommend you to move to [Entity Framework Plus](https://entityframework-plus.net/?z=ef-extended).
+We highly recommend you to move to:
+- [Entity Framework Extensions](https://entityframework-extensions.net/?z=ef-extended) for pro features
+- [Entity Framework Plus](https://entityframework-plus.net/?z=ef-extended) for free features
 
 ### Entity Framework Extensions
 Website: [https://entityframework-extensions.net/](https://entityframework-extensions.net/?z=ef-extended)
@@ -30,6 +32,8 @@ Free & Open source library that support following features:
     - Query Future
     - Query IncludeFilter
     - Query IncludeOptimized
+
+## NO LONGER SUPPORTED SINCE 2015
 
 # Entity Framework Extended Library
 
