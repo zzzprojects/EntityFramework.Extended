@@ -1,3 +1,15 @@
+## Library Powered By
+
+This library is powered by [Entity Framework Extensions](https://entityframework-extensions.net/?z=github&y=entityframework-plus)
+
+<a href="https://entityframework-extensions.net/?z=github&y=entityframework-plus">
+<kbd>
+<img src="https://zzzprojects.github.io/images/logo/entityframework-extensions-pub.jpg" alt="Entity Framework Extensions" />
+</kbd>
+</a>
+
+---
+
 **IMPORTANT:** This library is no longer supported since 2015. 
 
 We highly recommend you to move to:
@@ -33,9 +45,7 @@ Free & Open source library that support following features:
     - Query IncludeFilter
     - Query IncludeOptimized
 
-## NO LONGER SUPPORTED SINCE 2015
-
-# Entity Framework Extended Library
+# What's Entity Framework Extended? 
 
 ## Download
 
@@ -45,11 +55,7 @@ To install EntityFramework.Extended, run the following command in the Package Ma
 
     PM> Install-Package EntityFramework.Extended
     
-More information about NuGet package avaliable at
-https://nuget.org/packages/EntityFramework.Extended
-
 ## Features
-
 
 - [Batch Update and Delete](https://github.com/loresoft/EntityFramework.Extended/wiki/Batch-Update-and-Delete)
 - [Future Queries](https://github.com/loresoft/EntityFramework.Extended/wiki/Future-Queries)
@@ -102,9 +108,7 @@ Sample
     // this triggers the loading of all the future queries
     var users = q1.ToList();
 
-
 In the example above, there are 2 queries built up, as soon as one of the queries is enumerated, it triggers the batch load of both queries.
-
      
     // base query
     var q = db.Tasks.Where(t => t.Priority == 2);
@@ -117,7 +121,6 @@ In the example above, there are 2 queries built up, as soon as one of the querie
     int total = q1.Value;
     var tasks = q2.ToList();
     
-
 In this example, we have a common senerio where you want to page a list of tasks. In order for the GUI to setup the paging control, you need a total count. With Future, we can batch together the queries to get all the data in one database call.
 
 Future queries work by creating the appropriate IFutureQuery object that keeps the IQuerable. The IFutureQuery object is then stored in IFutureContext.FutureQueries list. Then, when one of the IFutureQuery objects is enumerated, it calls back to IFutureContext.ExecuteFutureQueries() via the LoadAction delegate. ExecuteFutureQueries builds a batch query from all the stored IFutureQuery objects. Finally, all the IFutureQuery objects are updated with the results from the query.
@@ -184,6 +187,40 @@ Create an Audit Log
 
     db.SaveChanges();
     var log = audit.LastLog;
+
+## Usefull links
+
+- [Documentation](https://entityframework.net/ef-extended)
+- [NuGet](https://nuget.org/packages/EntityFramework.Extended)
+- You can also consult several questions on 
+[Stack Overflow](https://stackoverflow.com/questions/tagged/entity-framework-extended)
+
+## Contribute
+
+You want to help us? 
+Your donation directly helps us maintaining and growing ZZZ Free Projects. We can’t thank you enough for your support.
+
+### Why should I contribute to this free & open source library?
+We all love free and open source libraries!
+But there is a catch! Nothing is free in this world.
+Contributions allow us to spend more of our time on: Bug Fix, Content Writing, Development and Support.
+
+We NEED your help. Last year alone, we spent over **3000 hours** maintaining all our open source libraries.
+
+### How much should I contribute?
+Any amount is much appreciated. All our libraries together have more than 100 million downloads, if everyone could contribute a tiny amount, it would help us to make the .NET community a better place to code!
+
+Another great free way to contribute is  **spreading the word** about the library!
+ 
+A **HUGE THANKS** for your help.
+
+## More Projects
+
+- [EntityFramework Extensions](https://entityframework-extensions.net/)
+- [Dapper Plus](https://dapper-plus.net/)
+- [C# Eval Expression](https://eval-expression.net/)
+- and much more! 
+To view all our free and paid librariries visit our [website](https://zzzprojects.com/).
 
 ## License
 
