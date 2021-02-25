@@ -188,7 +188,7 @@ Create an Audit Log
     db.SaveChanges();
     var log = audit.LastLog;
 
-## Usefull links
+## Useful links
 
 - [Documentation](https://entityframework.net/ef-extended)
 - [NuGet](https://nuget.org/packages/EntityFramework.Extended)
