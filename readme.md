@@ -51,7 +51,7 @@ Free & Open source library that support following features:
 
 The Entity Framework Extended library is available on nuget.org via package name `EntityFramework.Extended`.
 
-To install EntityFramework.Extended, run the following command in the Package Manager Console
+To install EntityFramework.Extended, run the following command in the Package Manager Console.
 
     PM> Install-Package EntityFramework.Extended
     
@@ -64,7 +64,7 @@ To install EntityFramework.Extended, run the following command in the Package Ma
  
 ### Batch Update and Delete
 
-A current limitations of the Entity Framework is that in order to update or delete an entity you have to first retrieve it into memory. Now in most scenarios this is just fine. There are however some senerios where performance would suffer. Also, for single deletes, the object must be retrieved before it can be deleted requiring two calls to the database. Batch update and delete eliminates the need to retrieve and load an entity before modifying it.
+The Entity Framework's current limitation is that you have first to retrieve it into memory to update or delete an entity. Now in most scenarios, this is just fine. There are, however, some scenarios where performance would suffer. Also, the object must be retrieved for single deletes before it can be deleted, requiring two calls to the database. Batch update and delete eliminate the need to retrieve and load an entity before modifying it.
 
 **Deleting**
     
@@ -86,9 +86,9 @@ A current limitations of the Entity Framework is that in order to update or dele
 
 ### Future Queries
 
-Build up a list of queries for the data that you need and the first time any of the results are accessed, all the data will retrieved in one round trip to the database server. Reducing the number of trips to the database is a great. Using this feature is as simple as appending `.Future()` to the end of your queries. To use the Future Queries. 
+Build up a list of queries for the data that you need, and the first time any of the results are accessed, all the data will retrieved in one round trip to the database server. Reducing the number of trips to the database is a great. Using this feature is as simple as appending `.Future()` to the end of your queries to use the Future Queries. 
 
-Future queries are created with the following extension methods...
+Future queries are created with the following extension methods:
 
 - Future()
 - FutureFirstOrDefault()
@@ -108,7 +108,7 @@ Sample
     // this triggers the loading of all the future queries
     var users = q1.ToList();
 
-In the example above, there are 2 queries built up, as soon as one of the queries is enumerated, it triggers the batch load of both queries.
+In the example above, there are two queries built up. As soon as one of the queries is enumerated, it triggers the batch load of both queries.
      
     // base query
     var q = db.Tasks.Where(t => t.Priority == 2);
@@ -121,13 +121,13 @@ In the example above, there are 2 queries built up, as soon as one of the querie
     int total = q1.Value;
     var tasks = q2.ToList();
     
-In this example, we have a common senerio where you want to page a list of tasks. In order for the GUI to setup the paging control, you need a total count. With Future, we can batch together the queries to get all the data in one database call.
+In this example, we have a common scenario where you want to page a list of tasks. For the GUI to set up the paging control, you need a total count. With Future, we can batch together the queries to get all the data in one database call.
 
 Future queries work by creating the appropriate IFutureQuery object that keeps the IQuerable. The IFutureQuery object is then stored in IFutureContext.FutureQueries list. Then, when one of the IFutureQuery objects is enumerated, it calls back to IFutureContext.ExecuteFutureQueries() via the LoadAction delegate. ExecuteFutureQueries builds a batch query from all the stored IFutureQuery objects. Finally, all the IFutureQuery objects are updated with the results from the query.
 
 ### Query Result Cache
 
-To cache query results, use the `FromCache` extension method. Below is a sample caching query results. Simply construct the LINQ query as you normally would, then append the `FromCache` extension.
+To cache query results, use the `FromCache` extension method. Below is a caching query result. Construct the LINQ query as you normally would, then append the `FromCache` extension.
      
     //query is cached using the default settings
     var tasks = db.Tasks
@@ -156,7 +156,7 @@ The `CacheManager` has support for providers.  The default provider uses `Memory
 
 ### Audit Log
 
-The Audit Log feature will capture the changes to entities anytime they are submitted to the database. The Audit Log captures only the entities that are changed and only the properties on those entities that were changed. The before and after values are recorded.  `AuditLogger.LastAudit` is where this information is held and there is a `ToXml()` method that makes it easy to turn the AuditLog into xml for easy storage. 
+The Audit Log feature will capture the changes to entities anytime they are submitted to the database. The Audit Log captures only the changed entities and only the changed properties. The before and after values are recorded. `AuditLogger.LastAudit` is where this information is held and there is a `ToXml()` method that makes it easy to turn the AuditLog into xml for easy storage.
 
 The AuditLog can be customized via attributes on the entities or via a Fluent Configuration API.
 
@@ -197,22 +197,29 @@ Create an Audit Log
 
 ## Contribute
 
-You want to help us? 
-Your donation directly helps us maintaining and growing ZZZ Free Projects. We can’t thank you enough for your support.
+Want to help us? Your donation directly helps us maintain and grow ZZZ Free Projects. 
 
-### Why should I contribute to this free & open source library?
-We all love free and open source libraries!
-But there is a catch! Nothing is free in this world.
-Contributions allow us to spend more of our time on: Bug Fix, Content Writing, Development and Support.
+We can't thank you enough for your support 🙏.
+
+👍 [One-time donation](https://zzzprojects.com/contribute)
+
+❤️ [Become a sponsor](https://github.com/sponsors/zzzprojects) 
+
+### Why should I contribute to this free & open-source library?
+We all love free and open-source libraries! But there is a catch... nothing is free in this world.
 
 We NEED your help. Last year alone, we spent over **3000 hours** maintaining all our open source libraries.
 
-### How much should I contribute?
-Any amount is much appreciated. All our libraries together have more than 100 million downloads, if everyone could contribute a tiny amount, it would help us to make the .NET community a better place to code!
+Contributions allow us to spend more of our time on: Bug Fix, Development, Documentation, and Support.
 
-Another great free way to contribute is  **spreading the word** about the library!
- 
-A **HUGE THANKS** for your help.
+### How much should I contribute?
+Any amount is much appreciated. All our free libraries together have more than **100 million** downloads.
+
+If everyone could contribute a tiny amount, it would help us make the .NET community a better place to code!
+
+Another great free way to contribute is  **spreading the word** about the library.
+
+A **HUGE THANKS** for your help!
 
 ## More Projects
 
@@ -220,17 +227,5 @@ A **HUGE THANKS** for your help.
 - [Dapper Plus](https://dapper-plus.net/)
 - [C# Eval Expression](https://eval-expression.net/)
 - and much more! 
-To view all our free and paid librariries visit our [website](https://zzzprojects.com/).
 
-## License
-
-Copyright (c) 2015, LoreSoft
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-- Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-- Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-- Neither the name of LoreSoft nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+To view all our free and paid projects, visit our [website](https://zzzprojects.com/).
