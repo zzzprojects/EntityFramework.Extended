@@ -57,10 +57,10 @@ To install EntityFramework.Extended, run the following command in the Package Ma
     
 ## Features
 
-- [Batch Update and Delete](https://github.com/loresoft/EntityFramework.Extended/wiki/Batch-Update-and-Delete)
-- [Future Queries](https://github.com/loresoft/EntityFramework.Extended/wiki/Future-Queries)
-- [Query Result Cache](https://github.com/loresoft/EntityFramework.Extended/wiki/Query-Result-Cache)
-- [Audit Log](https://github.com/loresoft/EntityFramework.Extended/wiki/Audit-Log)
+- [Batch Update and Delete](https://entityframework-plus.net/ef-core-batch-update)
+- [Future Queries](https://entityframework-plus.net/ef-core-query-future)
+- [Query Result Cache](https://entityframework-plus.net/ef-core-query-cache)
+- [Audit Log](https://entityframework-plus.net/ef-core-audit)
  
 ### Batch Update and Delete
 
