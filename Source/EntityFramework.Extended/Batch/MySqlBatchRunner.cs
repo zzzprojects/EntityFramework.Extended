@@ -230,7 +230,7 @@ namespace EntityFramework.Batch
 
                 sqlBuilder.Append("UPDATE ");
                 sqlBuilder.Append(entityMap.TableName);
-                sqlBuilder.AppendFormat(" AS j0 INNER JOIN (", entityMap.TableName);
+                sqlBuilder.Append(" AS j0 INNER JOIN (");
                 sqlBuilder.AppendLine();
                 sqlBuilder.AppendLine(innerSelect);
                 sqlBuilder.Append(") AS j1 ON (");
