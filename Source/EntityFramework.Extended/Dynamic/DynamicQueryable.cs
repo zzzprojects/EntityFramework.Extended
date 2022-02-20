@@ -11,7 +11,11 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
 
-namespace System.Linq.Dynamic
+//Given the strongname debate, it's unlikely that the nuget System.Linq.Dynamic will be strong named, and as this library is, we can't
+//use that nuget package.  Because of this, prefixing the normal System.Linq.Dynamic Namespace avoids conflicts with 
+//the package in projects that use both EF.Extended and System.Linq.Dynamic.  If/When this is no longer strong named, or If/When 
+//System.Dynamic.Linq nuget package IS strong named, then this class could be removed, and would just use nuget.
+namespace EntityFramework.DynamicLinq //System.Linq.Dynamic
 {
     public static class DynamicQueryable
     {
