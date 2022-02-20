@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using EntityFramework.Extensions;
 using EntityFramework.Mapping;
 using EntityFramework.Reflection;
+using System.Data.Entity.Infrastructure.Interception;
 
 namespace EntityFramework.Batch
 {
@@ -121,6 +122,7 @@ namespace EntityFramework.Batch
 
                 deleteCommand.CommandText = sqlBuilder.ToString();
 
+                DbInterception.Dispatch.Command.NonQuery(deleteCommand, new DbCommandInterceptionContext<int>(objectContext.InterceptionContext));
 #if NET45
                 int result = async
                     ? await deleteCommand.ExecuteNonQueryAsync().ConfigureAwait(false)
@@ -364,6 +366,7 @@ namespace EntityFramework.Batch
                 sqlBuilder.Append(")");
 
                 updateCommand.CommandText = sqlBuilder.ToString();
+                DbInterception.Dispatch.Command.NonQuery(updateCommand, new DbCommandInterceptionContext<int>(objectContext.InterceptionContext));
 
 #if NET45
                 int result = async
