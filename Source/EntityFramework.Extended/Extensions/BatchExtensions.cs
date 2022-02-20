@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using EntityFramework.Batch;
 using EntityFramework.Mapping;
+using System.Collections.Generic;
 
 namespace EntityFramework.Extensions
 {
@@ -394,10 +395,220 @@ namespace EntityFramework.Extensions
             var runner = ResolveRunner();
             return runner.UpdateAsync(objectContext, entityMap, sourceQuery, updateExpression);
         }
-
 #endif
 
-        private static IBatchRunner ResolveRunner()
+        private static Tuple<ObjectContext, EntityMap> GetQueryObjects<TEntity>(IDbSet<TEntity> dbSet) where TEntity : class
+        {
+            if (dbSet == null)
+                throw new ArgumentNullException("dbSet");
+
+            ObjectQuery<TEntity> destQuery = dbSet.ToObjectQuery();
+            if (destQuery == null)
+                throw new ArgumentException("The DbSet must be of type ObjectQuery or DbQuery.", "dbSet");
+
+            ObjectContext destContext = destQuery.Context;
+            if (destContext == null)
+                throw new ArgumentException("The ObjectContext for the DbSet can not be null.", "dbSet");
+
+            EntityMap entityMap = destQuery.GetEntityMap<TEntity>();
+            if (entityMap == null)
+                throw new ArgumentException("Could not load the entity mapping information for the destination.", "dbSet");
+            return Tuple.Create(destContext, entityMap);
+        }
+
+        private static Tuple<ObjectQuery<TModel>, EntityMap> CheckDbQueryParams<TEntity, TModel>(IDbSet<TEntity> destination,
+            IQueryable<TModel> source)
+            where TEntity : class
+            where TModel : class
+        {
+            EntityMap entityMap = GetQueryObjects(destination).Item2;
+
+            ObjectQuery<TModel> sourceQuery = source.ToObjectQuery();
+            if (sourceQuery == null)
+                throw new ArgumentException("The query must be of type ObjectQuery or DbQuery.", "source");
+
+            ObjectContext sourceContext = sourceQuery.Context;
+            if (sourceContext == null)
+                throw new ArgumentException("The ObjectContext for the query can not be null.", "source");
+
+            return Tuple.Create(sourceQuery, entityMap);
+        }
+
+        /// <summary>
+        /// Executes a statement `<code>INSERT INTO [Table] (...) SELECT ...</code>`.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity representing a record in database table.</typeparam>
+        /// <typeparam name="TModel">The type of the <paramref name="source"/> query item.</typeparam>
+        /// <param name="destination">The target table where the new data will be inserted into.</param>
+        /// <param name="source">The query which retrieves the new data that will be inserted into the target table.</param>
+        /// <returns>The number of row inserted.</returns>
+        /// <example>Copy all items whose product id "K9-RT-02" from table item into item_2.
+        /// <code><![CDATA[
+        /// var db = new TrackerContext();
+        /// //var query = from item in db.items where item.ProductId == "K9-RT-02" select item; //Using MySQL provider, the parameter won't be caught if the parameter is constant
+        /// string productId = "K9-RT-02";
+        /// var query = from item in db.items where item.ProductId == productId select item;
+        /// db.item_2.Insert(query);
+        /// ]]></code>
+        /// </example>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
+        public static int Update<TEntity, TModel>(
+            this IDbSet<TEntity> destination,
+            IQueryable<TModel> source)
+            where TEntity : class
+            where TModel : class
+        {
+            var p = CheckDbQueryParams(destination, source);
+            return ResolveRunner().Update(source, p.Item1, p.Item2);
+        }
+
+#if NET45
+        /// <summary>
+        /// Executes a statement `<code>INSERT INTO [Table] (...) SELECT ...</code>` asynchronously.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity representing a record in database table.</typeparam>
+        /// <typeparam name="TModel">The type of the <paramref name="source"/> query item.</typeparam>
+        /// <param name="destination">The target table where the new data will be inserted into.</param>
+        /// <param name="source">The query which retrieves the new data that will be inserted into the target table.</param>
+        /// <returns>The number of row inserted.</returns>
+        /// <example>Copy all items whose product id "K9-RT-02" from table item into item_2.
+        /// <code><![CDATA[
+        /// var db = new TrackerContext();
+        /// //var query = from item in db.items where item.ProductId == "K9-RT-02" select item; //Using MySQL provider, the parameter won't be caught if the parameter is constant
+        /// string productId = "K9-RT-02";
+        /// var query = from item in db.items where item.ProductId == productId select item;
+        /// db.item_2.InsertAsync(query);
+        /// ]]></code>
+        /// </example>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
+        public static Task<int> UpdateAsync<TEntity, TModel>(
+            this IDbSet<TEntity> destination,
+            IQueryable<TModel> source)
+            where TEntity : class
+            where TModel : class
+        {
+            var p = CheckDbQueryParams(destination, source);
+            return ResolveRunner().UpdateAsync(source, p.Item1, p.Item2);
+        }
+#endif
+
+        /// <summary>
+        /// Executes a statement `<code>INSERT INTO [Table] (...) SELECT ...</code>`.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity representing a record in database table.</typeparam>
+        /// <typeparam name="TModel">The type of the <paramref name="source"/> query item.</typeparam>
+        /// <param name="destination">The target table where the new data will be inserted into.</param>
+        /// <param name="source">The query which retrieves the new data that will be inserted into the target table.</param>
+        /// <returns>The number of row inserted.</returns>
+        /// <example>Copy all items whose product id "K9-RT-02" from table item into item_2.
+        /// <code><![CDATA[
+        /// var db = new TrackerContext();
+        /// //var query = from item in db.items where item.ProductId == "K9-RT-02" select item; //Using MySQL provider, the parameter won't be caught if the parameter is constant
+        /// string productId = "K9-RT-02";
+        /// var query = from item in db.items where item.ProductId == productId select item;
+        /// db.item_2.Insert(query);
+        /// ]]></code>
+        /// </example>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
+        public static int Insert<TEntity, TModel>(
+            this IDbSet<TEntity> destination,
+            IQueryable<TModel> source)
+            where TEntity : class
+            where TModel : class
+        {
+            var p = CheckDbQueryParams(destination, source);
+            return ResolveRunner().Insert(source, p.Item1, p.Item2);
+        }
+
+#if NET45
+        /// <summary>
+        /// Executes a statement `<code>INSERT INTO [Table] (...) SELECT ...</code>` asynchronously.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity representing a record in database table.</typeparam>
+        /// <typeparam name="TModel">The type of the <paramref name="source"/> query item.</typeparam>
+        /// <param name="destination">The target table where the new data will be inserted into.</param>
+        /// <param name="source">The query which retrieves the new data that will be inserted into the target table.</param>
+        /// <returns>The number of row inserted.</returns>
+        /// <example>Copy all items whose product id "K9-RT-02" from table item into item_2.
+        /// <code><![CDATA[
+        /// var db = new TrackerContext();
+        /// //var query = from item in db.items where item.ProductId == "K9-RT-02" select item; //Using MySQL provider, the parameter won't be caught if the parameter is constant
+        /// string productId = "K9-RT-02";
+        /// var query = from item in db.items where item.ProductId == productId select item;
+        /// db.item_2.InsertAsync(query);
+        /// ]]></code>
+        /// </example>
+        /// <remarks>
+        /// When executing this method, the statement is immediately executed on the database provider
+        /// and is not part of the change tracking system.  Also, changes will not be reflected on 
+        /// any entities that have already been materialized in the current context.        
+        /// </remarks>
+        public static Task<int> InsertAsync<TEntity, TModel>(
+            this IDbSet<TEntity> destination,
+            IQueryable<TModel> source)
+            where TEntity : class
+            where TModel : class
+        {
+            var p = CheckDbQueryParams(destination, source);
+            return ResolveRunner().InsertAsync(source, p.Item1, p.Item2);
+        }
+#endif
+
+        /// <summary>
+        /// Inserts a lof of rows into a database table. It must be much faster than executing `<code>DbSet.AddRange</code>` or
+        /// repetitive `<code>DbSet.Add</code>` method and then executing '<code>DbContext.SaveChanges</code>' method.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of objects representing rows to be inserted into db table.</typeparam>
+        /// <param name="dbSet">The <code>IDbSet</code> object representing the table to which the rows will be inserted.</param>
+        /// <param name="entities">The entity objects reprsenting the rows that will be inserted.</param>
+        /// <param name="batchSize">Number of rows in each batch. At the end of each batch, the rows in the batch are sent to the server. Zero means there
+        /// will be a single batch</param>
+        /// <param name="timeout">Number of seconds for the operation to complete before it times out. Zero means no limit.</param>
+        /// <returns>
+        /// The number of rows inserted.
+        /// </returns>
+        public static int Insert<TEntity>(this IDbSet<TEntity> dbSet, IEnumerable<TEntity> entities, int batchSize = 1000, int timeout = 0)
+            where TEntity : class
+        {
+            var objects = GetQueryObjects(dbSet);
+            return ResolveRunner().Insert(objects.Item1, entities, objects.Item2, batchSize, timeout);
+        }
+
+#if NET45
+        /// <summary>
+        /// Inserts a lof of rows into a database table asynchronously. It must be much faster than executing `<code>DbSet.AddRange</code>` or
+        /// repetitive `<code>DbSet.Add</code>` method and then executing '<code>DbContext.SaveChanges</code>' method.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of objects representing rows to be inserted into db table.</typeparam>
+        /// <param name="dbSet">The <code>IDbSet</code> object representing the table to which the rows will be inserted.</param>
+        /// <param name="entities">The entity objects reprsenting the rows that will be inserted.</param>
+        /// <param name="batchSize">Number of rows in each batch. At the end of each batch, the rows in the batch are sent to the server. Zero means there
+        /// will be a single batch</param>
+        /// <param name="timeout">Number of seconds for the operation to complete before it times out. Zero means no limit.</param>
+        /// <returns>
+        /// The number of rows inserted.
+        /// </returns>
+        public static async Task<int> InsertAsync<TEntity>(this IDbSet<TEntity> dbSet, IEnumerable<TEntity> entities, int batchSize = 1000, int timeout = 0)
+            where TEntity : class
+        {
+            var objects = GetQueryObjects(dbSet);
+            return await ResolveRunner().InsertAsync(objects.Item1, entities, objects.Item2, batchSize, timeout);
+        }
+#endif
+
+        internal static IBatchRunner ResolveRunner()
         {
             var provider = Locator.Current.Resolve<IBatchRunner>();
             if (provider == null)

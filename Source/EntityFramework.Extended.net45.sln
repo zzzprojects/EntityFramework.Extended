@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25029.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.Extended.net45", "EntityFramework.Extended\EntityFramework.Extended.net45.csproj", "{D390C235-242C-4E92-9E0B-D2463E87B0F0}"
 EndProject
@@ -20,6 +20,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlServer.Test", "Samples\net45\Tracker.SqlServer.Test\Tracker.SqlServer.Test.csproj", "{ACB6E31F-C2B8-48BF-97C5-22FED0F6D6AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.SqlServer.Entities", "Samples\net45\Tracker.SqlServer.Entities\Tracker.SqlServer.Entities.csproj", "{60743577-CDBD-4E89-AC63-F46CF914458D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MySql", "MySql", "{4B39DF59-7C8C-419F-8DD5-464288EE8A0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.MySql.Entities", "Samples\net45\Tracker.MySql.Entities\Tracker.MySql.Entities.csproj", "{E445E980-4AB0-4012-8929-118B01392393}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracker.MySql.Test", "Samples\net45\Tracker.MySql.Test\Tracker.MySql.Test.csproj", "{D8F3C9EE-AFD3-4291-96F2-4DBEB842E5AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +53,14 @@ Global
 		{60743577-CDBD-4E89-AC63-F46CF914458D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60743577-CDBD-4E89-AC63-F46CF914458D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60743577-CDBD-4E89-AC63-F46CF914458D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E445E980-4AB0-4012-8929-118B01392393}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E445E980-4AB0-4012-8929-118B01392393}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E445E980-4AB0-4012-8929-118B01392393}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E445E980-4AB0-4012-8929-118B01392393}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8F3C9EE-AFD3-4291-96F2-4DBEB842E5AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8F3C9EE-AFD3-4291-96F2-4DBEB842E5AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8F3C9EE-AFD3-4291-96F2-4DBEB842E5AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8F3C9EE-AFD3-4291-96F2-4DBEB842E5AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +69,8 @@ Global
 		{FA68FB7C-D87E-497B-A300-F2A7827FE92C} = {14134A51-5696-4B7C-B257-40E06494C315}
 		{ACB6E31F-C2B8-48BF-97C5-22FED0F6D6AC} = {14134A51-5696-4B7C-B257-40E06494C315}
 		{60743577-CDBD-4E89-AC63-F46CF914458D} = {14134A51-5696-4B7C-B257-40E06494C315}
+		{E445E980-4AB0-4012-8929-118B01392393} = {4B39DF59-7C8C-419F-8DD5-464288EE8A0C}
+		{D8F3C9EE-AFD3-4291-96F2-4DBEB842E5AA} = {4B39DF59-7C8C-419F-8DD5-464288EE8A0C}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = EntityFramework.Extended.vsmdi

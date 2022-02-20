@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Text;
 using EntityFramework.Extensions;
 using Xunit;
 using Tracker.SqlServer.CodeFirst;
@@ -17,6 +14,7 @@ namespace Tracker.SqlServer.Test
         public void Delete()
         {
             var db = new TrackerContext();
+            db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
             string emailDomain = "@test.com";
             int count = db.Users
                 .Where(u => u.EmailAddress.EndsWith(emailDomain))
@@ -26,6 +24,7 @@ namespace Tracker.SqlServer.Test
         public void DeleteWhere()
         {
             var db = new TrackerContext();
+            db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
             string emailDomain = "@test.com";
 
             int count = db.Users
@@ -37,6 +36,7 @@ namespace Tracker.SqlServer.Test
         public async void DeleteAsync()
         {
             var db = new TrackerContext();
+            db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
             string emailDomain = "@test.com";
 
             int count = await db.Users
@@ -48,6 +48,7 @@ namespace Tracker.SqlServer.Test
         public void DeleteWhereWithExpressionContainingNullParameter()
         {
             var db = new TrackerContext();
+            db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
             string emailDomain = "@test.com";
             string optionalComparisonString = null;
 
@@ -61,6 +62,7 @@ namespace Tracker.SqlServer.Test
         public void Update()
         {
             var db = new TrackerContext();
+            db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
             string emailDomain = "@test.com";
             int count = db.Users
                 .Where(u => u.EmailAddress.EndsWith(emailDomain))
@@ -71,6 +73,7 @@ namespace Tracker.SqlServer.Test
         public async void UpdateAsync()
         {
             var db = new TrackerContext();
+            db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
             string emailDomain = "@test.com";
             int count = await db.Users
                 .Where(u => u.EmailAddress.EndsWith(emailDomain))
@@ -81,6 +84,7 @@ namespace Tracker.SqlServer.Test
         public void UpdateAppend()
         {
             var db = new TrackerContext();
+            db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
 
             string emailDomain = "@test.com";
             string newComment = " New Comment";
@@ -94,6 +98,7 @@ namespace Tracker.SqlServer.Test
         public void UpdateAppendAndNull()
         {
             var db = new TrackerContext();
+            db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
 
             string emailDomain = "@test.com";
             string newComment = " New Comment";
@@ -112,6 +117,7 @@ namespace Tracker.SqlServer.Test
         public void UpdateJoin()
         {
             var db = new TrackerContext();
+            db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
             string emailDomain = "@test.com";
             string space = " ";
 
@@ -124,6 +130,7 @@ namespace Tracker.SqlServer.Test
         public void UpdateCopy()
         {
             var db = new TrackerContext();
+            db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
             string emailDomain = "@test.com";
 
             int count = db.Users
@@ -136,6 +143,7 @@ namespace Tracker.SqlServer.Test
         {
             // This test verifies that the update is interpreted correctly when the where expression uses a parameter with a null parameter
             var db = new TrackerContext();
+            db.Database.Log = s => System.Diagnostics.Trace.WriteLine(s);
             string emailDomain = "@test.com";
             string optionalComparisonString = null;
 
