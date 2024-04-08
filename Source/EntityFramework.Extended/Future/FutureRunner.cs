@@ -5,6 +5,8 @@ using System.Data.Entity.Core.EntityClient;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure.Interception;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using EntityFramework.Reflection;
 
 namespace EntityFramework.Future
@@ -51,7 +53,54 @@ namespace EntityFramework.Future
                 // once all queries processed, clear from queue
                 futureQueries.Clear();
             }
+            }
+
+#if NET45
+        /// <summary>
+        /// Executes the future queries.
+        /// </summary>
+        /// <param name="context">The <see cref="ObjectContext" /> to run the queries against.</param>
+        /// <param name="futureQueries">The future queries list.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public async Task ExecuteFutureQueriesAsync(ObjectContext context, IList<IFutureQuery> futureQueries, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (context == null)
+                throw new ArgumentNullException("context");
+            if (futureQueries == null)
+                throw new ArgumentNullException("futureQueries");
+
+            // used to call internal methods
+            dynamic contextProxy = new DynamicProxy(context);
+            contextProxy.EnsureConnection(false);
+
+            //the (internal) InterceptionContext contains the registered loggers
+            DbInterceptionContext interceptionContext = contextProxy.InterceptionContext;
+
+            try
+            {
+                using (var command = CreateFutureCommand(context, futureQueries))
+                using (var reader = await DbInterception.Dispatch.Command.ReaderAsync(
+                            command, new DbCommandInterceptionContext(interceptionContext), cancellationToken
+                        )
+                        .ConfigureAwait(false)
+                )
+                {
+                    foreach (var futureQuery in futureQueries)
+                    {
+                        await futureQuery.SetResultAsync(context, reader, cancellationToken).ConfigureAwait(false);
+                        await reader.NextResultAsync(cancellationToken).ConfigureAwait(false);
+                    }
+                }
+            }
+            finally
+            {
+                contextProxy.ReleaseConnection();
+                // once all queries processed, clear from queue
+                futureQueries.Clear();
+            }
         }
+#endif
 
         private static DbCommand CreateFutureCommand(ObjectContext context, IEnumerable<IFutureQuery> futureQueries)
         {

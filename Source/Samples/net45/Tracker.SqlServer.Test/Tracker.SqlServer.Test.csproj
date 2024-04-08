@@ -88,6 +88,7 @@
     <Compile Include="CacheDbContext.cs" />
     <Compile Include="ExtensionTest.cs" />
     <Compile Include="FutureDbContext.cs" />
+    <Compile Include="FutureDbContextAsync.cs" />
     <Compile Include="FutureObjectContext.cs" />
     <Compile Include="MappingObjectContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
