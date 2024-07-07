@@ -79,6 +79,7 @@
     <Compile Include="Audit\AuditLogger.cs" />
     <Compile Include="Batch\IBatchRunner.cs" />
     <Compile Include="Batch\MySqlBatchRunner.cs" />
+    <Compile Include="Batch\OracleBatchRunner.cs" />
     <Compile Include="Batch\SqlServerBatchRunner.cs" />
     <Compile Include="Caching\CacheExpirationMode.cs" />
     <Compile Include="Caching\CacheKey.cs" />
