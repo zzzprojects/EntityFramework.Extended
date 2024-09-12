@@ -1,0 +1,832 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Models.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.5" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="audit">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Date" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="TaskId" Type="int" />
+          <Property Name="Content" Type="longtext" Nullable="false" />
+          <Property Name="Username" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedDate" Type="timestamp" Precision="0" Nullable="false" />
+          <Property Name="RowVersion" Type="binary" MaxLength="8" Nullable="false" />
+        </EntityType>
+        <EntityType Name="item">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="ProductId" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="ListPrice" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="UnitCost" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Supplier" Type="int" />
+          <Property Name="Status" Type="varchar" MaxLength="2" />
+          <Property Name="Attr1" Type="varchar" MaxLength="80" />
+          <Property Name="Attr2" Type="varchar" MaxLength="80" />
+          <Property Name="Attr3" Type="varchar" MaxLength="80" />
+          <Property Name="Attr4" Type="varchar" MaxLength="80" />
+          <Property Name="Attr5" Type="varchar" MaxLength="80" />
+        </EntityType>
+        <EntityType Name="item 2">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="ProductId" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="ListPrice" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="UnitCost" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Supplier" Type="int" />
+          <Property Name="Status" Type="varchar" MaxLength="2" />
+          <Property Name="Attr1" Type="varchar" MaxLength="80" />
+          <Property Name="Attr2" Type="varchar" MaxLength="80" />
+          <Property Name="Attr3" Type="varchar" MaxLength="80" />
+          <Property Name="Attr4" Type="varchar" MaxLength="80" />
+          <Property Name="Attr5" Type="varchar" MaxLength="80" />
+        </EntityType>
+        <EntityType Name="priority">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Order" Type="int" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="200" />
+          <Property Name="CreatedDate" Type="timestamp" Precision="0" Nullable="false" />
+          <Property Name="ModifiedDate" Type="timestamp" Precision="0" Nullable="false" />
+          <Property Name="RowVersion" Type="binary" MaxLength="8" Nullable="false" />
+        </EntityType>
+        <EntityType Name="product">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Category" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="80" />
+          <Property Name="Descn" Type="varchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="productsummary">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="80" />
+          <Property Name="AvgPrice" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Verified" Type="bool" Nullable="false" />
+        </EntityType>
+        <EntityType Name="role">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="150" />
+          <Property Name="CreatedDate" Type="timestamp" Precision="0" Nullable="false" />
+          <Property Name="ModifiedDate" Type="timestamp" Precision="0" Nullable="false" />
+          <Property Name="RowVersion" Type="binary" MaxLength="8" Nullable="false" />
+        </EntityType>
+        <EntityType Name="status">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="150" />
+          <Property Name="Order" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="timestamp" Precision="0" Nullable="false" />
+          <Property Name="ModifiedDate" Type="timestamp" Precision="0" Nullable="false" />
+          <Property Name="RowVersion" Type="binary" MaxLength="8" Nullable="false" />
+        </EntityType>
+        <EntityType Name="task">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StatusId" Type="int" Nullable="false" />
+          <Property Name="PriorityId" Type="int" />
+          <Property Name="CreatedId" Type="int" Nullable="false" />
+          <Property Name="Summary" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Details" Type="varchar" MaxLength="2000" />
+          <Property Name="StartDate" Type="datetime" Precision="0" />
+          <Property Name="DueDate" Type="datetime" Precision="0" />
+          <Property Name="CompleteDate" Type="datetime" Precision="0" />
+          <Property Name="AssignedId" Type="int" />
+          <Property Name="CreatedDate" Type="timestamp" Precision="0" Nullable="false" />
+          <Property Name="ModifiedDate" Type="timestamp" Precision="0" Nullable="false" />
+          <Property Name="RowVersion" Type="binary" MaxLength="8" Nullable="false" />
+          <Property Name="LastModifiedBy" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="taskextended">
+          <Key>
+            <PropertyRef Name="TaskId" />
+          </Key>
+          <Property Name="TaskId" Type="int" Nullable="false" />
+          <Property Name="Browser" Type="varchar" MaxLength="200" />
+          <Property Name="OS" Type="varchar" MaxLength="150" />
+          <Property Name="CreatedDate" Type="timestamp" Precision="0" Nullable="false" />
+          <Property Name="ModifiedDate" Type="timestamp" Precision="0" Nullable="false" />
+          <Property Name="RowVersion" Type="binary" MaxLength="8" Nullable="false" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmailAddress" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="200" />
+          <Property Name="LastName" Type="varchar" MaxLength="200" />
+          <Property Name="Avatar" Type="longblob" />
+          <Property Name="CreatedDate" Type="timestamp" Precision="0" Nullable="false" />
+          <Property Name="ModifiedDate" Type="timestamp" Precision="0" Nullable="false" />
+          <Property Name="RowVersion" Type="binary" MaxLength="8" Nullable="false" />
+          <Property Name="PasswordHash" Type="char" MaxLength="86" Nullable="false" />
+          <Property Name="PasswordSalt" Type="char" MaxLength="5" Nullable="false" />
+          <Property Name="Comment" Type="longtext" />
+          <Property Name="IsApproved" Type="bool" Nullable="false" />
+          <Property Name="LastLoginDate" Type="timestamp" Precision="0" />
+          <Property Name="LastActivityDate" Type="timestamp" Precision="0" Nullable="false" />
+          <Property Name="LastPasswordChangeDate" Type="datetime" Precision="0" />
+          <Property Name="AvatarType" Type="varchar" MaxLength="150" />
+        </EntityType>
+        <Association Name="FK__Item 2__ProductI__0A9D95DB">
+          <End Role="product" Type="Self.product" Multiplicity="1" />
+          <End Role="item 2" Type="Self.item 2" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="item 2">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Item__ProductId__04E4BC85">
+          <End Role="product" Type="Self.product" Multiplicity="1" />
+          <End Role="item" Type="Self.item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="item">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Audit_Task">
+          <End Role="task" Type="Self.task" Multiplicity="0..1" />
+          <End Role="audit" Type="Self.audit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="task">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="audit">
+              <PropertyRef Name="TaskId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Audit_User">
+          <End Role="user" Type="Self.user" Multiplicity="0..1" />
+          <End Role="audit" Type="Self.audit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="audit">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Task_Priority">
+          <End Role="priority" Type="Self.priority" Multiplicity="0..1" />
+          <End Role="task" Type="Self.task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="priority">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="task">
+              <PropertyRef Name="PriorityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Task_Status">
+          <End Role="status" Type="Self.status" Multiplicity="1" />
+          <End Role="task" Type="Self.task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="status">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="task">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Task_User_Assigned">
+          <End Role="user" Type="Self.user" Multiplicity="0..1" />
+          <End Role="task" Type="Self.task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="task">
+              <PropertyRef Name="AssignedId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Task_User_Created">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="task" Type="Self.task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="task">
+              <PropertyRef Name="CreatedId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TaskExtended_Task">
+          <End Role="task" Type="Self.task" Multiplicity="1" />
+          <End Role="taskextended" Type="Self.taskextended" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="task">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="taskextended">
+              <PropertyRef Name="TaskId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ModelsStoreContainer">
+          <EntitySet Name="audit" EntityType="Self.audit" Schema="tracker" store:Type="Tables" />
+          <EntitySet Name="item" EntityType="Self.item" Schema="tracker" store:Type="Tables" />
+          <EntitySet Name="item 2" EntityType="Self.item 2" Schema="tracker" store:Type="Tables" />
+          <EntitySet Name="priority" EntityType="Self.priority" Schema="tracker" store:Type="Tables" />
+          <EntitySet Name="product" EntityType="Self.product" Schema="tracker" store:Type="Tables" />
+          <EntitySet Name="productsummary" EntityType="Self.productsummary" Schema="tracker" store:Type="Tables" />
+          <EntitySet Name="role" EntityType="Self.role" Schema="tracker" store:Type="Tables" />
+          <EntitySet Name="status" EntityType="Self.status" Schema="tracker" store:Type="Tables" />
+          <EntitySet Name="task" EntityType="Self.task" Schema="tracker" store:Type="Tables" />
+          <EntitySet Name="taskextended" EntityType="Self.taskextended" Schema="tracker" store:Type="Tables" />
+          <EntitySet Name="user" EntityType="Self.user" Schema="tracker" store:Type="Tables" />
+          <AssociationSet Name="FK__Item 2__ProductI__0A9D95DB" Association="Self.FK__Item 2__ProductI__0A9D95DB">
+            <End Role="product" EntitySet="product" />
+            <End Role="item 2" EntitySet="item 2" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Item__ProductId__04E4BC85" Association="Self.FK__Item__ProductId__04E4BC85">
+            <End Role="product" EntitySet="product" />
+            <End Role="item" EntitySet="item" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Audit_Task" Association="Self.FK_Audit_Task">
+            <End Role="task" EntitySet="task" />
+            <End Role="audit" EntitySet="audit" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Audit_User" Association="Self.FK_Audit_User">
+            <End Role="user" EntitySet="user" />
+            <End Role="audit" EntitySet="audit" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_Priority" Association="Self.FK_Task_Priority">
+            <End Role="priority" EntitySet="priority" />
+            <End Role="task" EntitySet="task" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_Status" Association="Self.FK_Task_Status">
+            <End Role="status" EntitySet="status" />
+            <End Role="task" EntitySet="task" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_User_Assigned" Association="Self.FK_Task_User_Assigned">
+            <End Role="user" EntitySet="user" />
+            <End Role="task" EntitySet="task" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_User_Created" Association="Self.FK_Task_User_Created">
+            <End Role="user" EntitySet="user" />
+            <End Role="task" EntitySet="task" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TaskExtended_Task" Association="Self.FK_TaskExtended_Task">
+            <End Role="task" EntitySet="task" />
+            <End Role="taskextended" EntitySet="taskextended" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Models" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="audit">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Nullable="false" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="TaskId" Type="Int32" />
+          <Property Name="Content" Type="String" MaxLength="1073741823" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" />
+          <Property Name="RowVersion" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <NavigationProperty Name="task" Relationship="Self.FK_Audit_Task" FromRole="audit" ToRole="task" />
+          <NavigationProperty Name="user" Relationship="Self.FK_Audit_User" FromRole="audit" ToRole="user" />
+        </EntityType>
+        <EntityType Name="item">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProductId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ListPrice" Type="Decimal" />
+          <Property Name="UnitCost" Type="Decimal" />
+          <Property Name="Supplier" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="Attr1" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr2" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr3" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr4" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr5" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="product" Relationship="Self.FK__Item__ProductId__04E4BC85" FromRole="item" ToRole="product" />
+        </EntityType>
+        <EntityType Name="item_2">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProductId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ListPrice" Type="Decimal" />
+          <Property Name="UnitCost" Type="Decimal" />
+          <Property Name="Supplier" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="Attr1" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr2" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr3" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr4" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Attr5" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="product" Relationship="Self.FK__Item_2__ProductI__0A9D95DB" FromRole="item_2" ToRole="product" />
+        </EntityType>
+        <EntityType Name="priority">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Order" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" />
+          <Property Name="RowVersion" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <NavigationProperty Name="tasks" Relationship="Self.FK_Task_Priority" FromRole="priority" ToRole="task" />
+        </EntityType>
+        <EntityType Name="product">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Category" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="Descn" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="items" Relationship="Self.FK__Item__ProductId__04E4BC85" FromRole="product" ToRole="item" />
+          <NavigationProperty Name="item_2" Relationship="Self.FK__Item_2__ProductI__0A9D95DB" FromRole="product" ToRole="item_2" />
+        </EntityType>
+        <EntityType Name="productsummary">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="AvgPrice" Type="Decimal" Nullable="false" />
+          <Property Name="Verified" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="role">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" />
+          <Property Name="RowVersion" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="status">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="Order" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" />
+          <Property Name="RowVersion" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <NavigationProperty Name="tasks" Relationship="Self.FK_Task_Status" FromRole="status" ToRole="task" />
+        </EntityType>
+        <EntityType Name="task">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <Property Name="PriorityId" Type="Int32" />
+          <Property Name="CreatedId" Type="Int32" Nullable="false" />
+          <Property Name="Summary" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Details" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="StartDate" Type="DateTime" />
+          <Property Name="DueDate" Type="DateTime" />
+          <Property Name="CompleteDate" Type="DateTime" />
+          <Property Name="AssignedId" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" />
+          <Property Name="RowVersion" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <Property Name="LastModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="audits" Relationship="Self.FK_Audit_Task" FromRole="task" ToRole="audit" />
+          <NavigationProperty Name="priority" Relationship="Self.FK_Task_Priority" FromRole="task" ToRole="priority" />
+          <NavigationProperty Name="status" Relationship="Self.FK_Task_Status" FromRole="task" ToRole="status" />
+          <NavigationProperty Name="user" Relationship="Self.FK_Task_User_Assigned" FromRole="task" ToRole="user" />
+          <NavigationProperty Name="user1" Relationship="Self.FK_Task_User_Created" FromRole="task" ToRole="user" />
+          <NavigationProperty Name="taskextended" Relationship="Self.FK_TaskExtended_Task" FromRole="task" ToRole="taskextended" />
+        </EntityType>
+        <EntityType Name="taskextended">
+          <Key>
+            <PropertyRef Name="TaskId" />
+          </Key>
+          <Property Name="TaskId" Type="Int32" Nullable="false" />
+          <Property Name="Browser" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="OS" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" />
+          <Property Name="RowVersion" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <NavigationProperty Name="task" Relationship="Self.FK_TaskExtended_Task" FromRole="taskextended" ToRole="task" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmailAddress" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="FirstName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Avatar" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Nullable="false" />
+          <Property Name="RowVersion" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="86" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PasswordSalt" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Comment" Type="String" MaxLength="1073741823" FixedLength="false" Unicode="false" />
+          <Property Name="IsApproved" Type="Boolean" Nullable="false" />
+          <Property Name="LastLoginDate" Type="DateTime" />
+          <Property Name="LastActivityDate" Type="DateTime" Nullable="false" />
+          <Property Name="LastPasswordChangeDate" Type="DateTime" />
+          <Property Name="AvatarType" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="audits" Relationship="Self.FK_Audit_User" FromRole="user" ToRole="audit" />
+          <NavigationProperty Name="tasks" Relationship="Self.FK_Task_User_Assigned" FromRole="user" ToRole="task" />
+          <NavigationProperty Name="tasks1" Relationship="Self.FK_Task_User_Created" FromRole="user" ToRole="task" />
+        </EntityType>
+        <Association Name="FK_Audit_Task">
+          <End Role="task" Type="Self.task" Multiplicity="0..1" />
+          <End Role="audit" Type="Self.audit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="task">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="audit">
+              <PropertyRef Name="TaskId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Audit_User">
+          <End Role="user" Type="Self.user" Multiplicity="0..1" />
+          <End Role="audit" Type="Self.audit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="audit">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Item__ProductId__04E4BC85">
+          <End Role="product" Type="Self.product" Multiplicity="1" />
+          <End Role="item" Type="Self.item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="item">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Item_2__ProductI__0A9D95DB">
+          <End Role="product" Type="Self.product" Multiplicity="1" />
+          <End Role="item_2" Type="Self.item_2" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="item_2">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Task_Priority">
+          <End Role="priority" Type="Self.priority" Multiplicity="0..1" />
+          <End Role="task" Type="Self.task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="priority">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="task">
+              <PropertyRef Name="PriorityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Task_Status">
+          <End Role="status" Type="Self.status" Multiplicity="1" />
+          <End Role="task" Type="Self.task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="status">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="task">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Task_User_Assigned">
+          <End Role="user" Type="Self.user" Multiplicity="0..1" />
+          <End Role="task" Type="Self.task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="task">
+              <PropertyRef Name="AssignedId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Task_User_Created">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="task" Type="Self.task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="task">
+              <PropertyRef Name="CreatedId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TaskExtended_Task">
+          <End Role="task" Type="Self.task" Multiplicity="1" />
+          <End Role="taskextended" Type="Self.taskextended" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="task">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="taskextended">
+              <PropertyRef Name="TaskId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TrackerEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="audits" EntityType="Self.audit" />
+          <EntitySet Name="items" EntityType="Self.item" />
+          <EntitySet Name="item_2" EntityType="Self.item_2" />
+          <EntitySet Name="priorities" EntityType="Self.priority" />
+          <EntitySet Name="products" EntityType="Self.product" />
+          <EntitySet Name="productsummaries" EntityType="Self.productsummary" />
+          <EntitySet Name="roles" EntityType="Self.role" />
+          <EntitySet Name="status" EntityType="Self.status" />
+          <EntitySet Name="tasks" EntityType="Self.task" />
+          <EntitySet Name="taskextendeds" EntityType="Self.taskextended" />
+          <EntitySet Name="users" EntityType="Self.user" />
+          <AssociationSet Name="FK_Audit_Task" Association="Self.FK_Audit_Task">
+            <End Role="task" EntitySet="tasks" />
+            <End Role="audit" EntitySet="audits" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Audit_User" Association="Self.FK_Audit_User">
+            <End Role="user" EntitySet="users" />
+            <End Role="audit" EntitySet="audits" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Item__ProductId__04E4BC85" Association="Self.FK__Item__ProductId__04E4BC85">
+            <End Role="product" EntitySet="products" />
+            <End Role="item" EntitySet="items" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Item_2__ProductI__0A9D95DB" Association="Self.FK__Item_2__ProductI__0A9D95DB">
+            <End Role="product" EntitySet="products" />
+            <End Role="item_2" EntitySet="item_2" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_Priority" Association="Self.FK_Task_Priority">
+            <End Role="priority" EntitySet="priorities" />
+            <End Role="task" EntitySet="tasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_Status" Association="Self.FK_Task_Status">
+            <End Role="status" EntitySet="status" />
+            <End Role="task" EntitySet="tasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_User_Assigned" Association="Self.FK_Task_User_Assigned">
+            <End Role="user" EntitySet="users" />
+            <End Role="task" EntitySet="tasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_User_Created" Association="Self.FK_Task_User_Created">
+            <End Role="user" EntitySet="users" />
+            <End Role="task" EntitySet="tasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TaskExtended_Task" Association="Self.FK_TaskExtended_Task">
+            <End Role="task" EntitySet="tasks" />
+            <End Role="taskextended" EntitySet="taskextendeds" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ModelsStoreContainer" CdmEntityContainer="TrackerEntities">
+          <EntitySetMapping Name="audits">
+            <EntityTypeMapping TypeName="Models.audit">
+              <MappingFragment StoreEntitySet="audit">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="TaskId" ColumnName="TaskId" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="RowVersion" ColumnName="RowVersion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="items">
+            <EntityTypeMapping TypeName="Models.item">
+              <MappingFragment StoreEntitySet="item">
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="ListPrice" ColumnName="ListPrice" />
+                <ScalarProperty Name="UnitCost" ColumnName="UnitCost" />
+                <ScalarProperty Name="Supplier" ColumnName="Supplier" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Attr1" ColumnName="Attr1" />
+                <ScalarProperty Name="Attr2" ColumnName="Attr2" />
+                <ScalarProperty Name="Attr3" ColumnName="Attr3" />
+                <ScalarProperty Name="Attr4" ColumnName="Attr4" />
+                <ScalarProperty Name="Attr5" ColumnName="Attr5" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="item_2">
+            <EntityTypeMapping TypeName="Models.item_2">
+              <MappingFragment StoreEntitySet="item 2">
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="ListPrice" ColumnName="ListPrice" />
+                <ScalarProperty Name="UnitCost" ColumnName="UnitCost" />
+                <ScalarProperty Name="Supplier" ColumnName="Supplier" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Attr1" ColumnName="Attr1" />
+                <ScalarProperty Name="Attr2" ColumnName="Attr2" />
+                <ScalarProperty Name="Attr3" ColumnName="Attr3" />
+                <ScalarProperty Name="Attr4" ColumnName="Attr4" />
+                <ScalarProperty Name="Attr5" ColumnName="Attr5" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="priorities">
+            <EntityTypeMapping TypeName="Models.priority">
+              <MappingFragment StoreEntitySet="priority">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Order" ColumnName="Order" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="RowVersion" ColumnName="RowVersion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="products">
+            <EntityTypeMapping TypeName="Models.product">
+              <MappingFragment StoreEntitySet="product">
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Descn" ColumnName="Descn" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="productsummaries">
+            <EntityTypeMapping TypeName="Models.productsummary">
+              <MappingFragment StoreEntitySet="productsummary">
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="AvgPrice" ColumnName="AvgPrice" />
+                <ScalarProperty Name="Verified" ColumnName="Verified" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="roles">
+            <EntityTypeMapping TypeName="Models.role">
+              <MappingFragment StoreEntitySet="role">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="RowVersion" ColumnName="RowVersion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="status">
+            <EntityTypeMapping TypeName="Models.status">
+              <MappingFragment StoreEntitySet="status">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Order" ColumnName="Order" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="RowVersion" ColumnName="RowVersion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tasks">
+            <EntityTypeMapping TypeName="Models.task">
+              <MappingFragment StoreEntitySet="task">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="PriorityId" ColumnName="PriorityId" />
+                <ScalarProperty Name="CreatedId" ColumnName="CreatedId" />
+                <ScalarProperty Name="Summary" ColumnName="Summary" />
+                <ScalarProperty Name="Details" ColumnName="Details" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="DueDate" ColumnName="DueDate" />
+                <ScalarProperty Name="CompleteDate" ColumnName="CompleteDate" />
+                <ScalarProperty Name="AssignedId" ColumnName="AssignedId" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="RowVersion" ColumnName="RowVersion" />
+                <ScalarProperty Name="LastModifiedBy" ColumnName="LastModifiedBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="taskextendeds">
+            <EntityTypeMapping TypeName="Models.taskextended">
+              <MappingFragment StoreEntitySet="taskextended">
+                <ScalarProperty Name="TaskId" ColumnName="TaskId" />
+                <ScalarProperty Name="Browser" ColumnName="Browser" />
+                <ScalarProperty Name="OS" ColumnName="OS" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="RowVersion" ColumnName="RowVersion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="Models.user">
+              <MappingFragment StoreEntitySet="user">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Avatar" ColumnName="Avatar" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="RowVersion" ColumnName="RowVersion" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="IsApproved" ColumnName="IsApproved" />
+                <ScalarProperty Name="LastLoginDate" ColumnName="LastLoginDate" />
+                <ScalarProperty Name="LastActivityDate" ColumnName="LastActivityDate" />
+                <ScalarProperty Name="LastPasswordChangeDate" ColumnName="LastPasswordChangeDate" />
+                <ScalarProperty Name="AvatarType" ColumnName="AvatarType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
