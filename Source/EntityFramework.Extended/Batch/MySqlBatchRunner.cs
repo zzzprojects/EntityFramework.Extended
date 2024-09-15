@@ -310,11 +310,11 @@ namespace EntityFramework.Batch
                             parameter.Value = value;
                             updateCommand.Parameters.Add(parameter);
 
-                            sqlBuilder.AppendFormat("{0} = @{1}", columnName, parameterName);
+                            sqlBuilder.AppendFormat("j0.{0} = @{1}", columnName, parameterName);
                         }
                         else
                         {
-                            sqlBuilder.AppendFormat("{0} = NULL", columnName);
+                            sqlBuilder.AppendFormat("j0.{0} = NULL", columnName);
                         }
                     }
                     else
@@ -360,7 +360,7 @@ namespace EntityFramework.Batch
 
                             value = value.Replace(objectParameter.Name, parameterName);
                         }
-                        sqlBuilder.AppendFormat("{0} = {1}", columnName, value);
+                        sqlBuilder.AppendFormat("j0.{0} = {1}", columnName, value);
                     }
                     wroteSet = true;
                 }
