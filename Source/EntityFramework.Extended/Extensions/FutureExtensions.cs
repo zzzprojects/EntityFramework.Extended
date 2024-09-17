@@ -30,7 +30,13 @@ namespace EntityFramework.Extensions
 
             ObjectQuery<TEntity> sourceQuery = source.ToObjectQuery();
             if (sourceQuery == null)
+            {
+                // Early return for test scenarios, here so it only slows down the error path
+                if (source is IFutureTestQueryable<TEntity>)
+                    return new FutureQuery<TEntity>(source, null);
+
                 throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
+            }
 
             var futureContext = GetFutureContext(sourceQuery);
             var future = new FutureQuery<TEntity>(sourceQuery, futureContext.ExecuteFutureQueries);
@@ -54,7 +60,13 @@ namespace EntityFramework.Extensions
 
             ObjectQuery sourceQuery = source.ToObjectQuery();
             if (sourceQuery == null)
+            {
+                // Early return for test scenarios, here so it only slows down the error path
+                if (source is IFutureTestQueryable)
+                    return new FutureCount(source, null);
+
                 throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
+            }
 
             // create count expression
             var expression = Expression.Call(
@@ -65,8 +77,6 @@ namespace EntityFramework.Extensions
 
             // create query from expression using internal ObjectQueryProvider
             ObjectQuery countQuery = sourceQuery.CreateQuery(expression, typeof(int));
-            if (countQuery == null)
-                throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
 
             var futureContext = GetFutureContext(sourceQuery);
             var future = new FutureCount(countQuery, futureContext.ExecuteFutureQueries);
@@ -90,7 +100,13 @@ namespace EntityFramework.Extensions
 
             var sourceQuery = source.ToObjectQuery();
             if (sourceQuery == null)
+            {
+                // Early return for test scenarios, here so it only slows down the error path
+                if (source is IFutureTestQueryable<TEntity>)
+                    return new FutureValue<TResult>(source, null);
+
                 throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
+            }
 
             var methodExpr = selector.Body as MethodCallExpression;
             if (methodExpr == null || methodExpr.Arguments.Count == 0)
@@ -131,14 +147,18 @@ namespace EntityFramework.Extensions
 
             ObjectQuery sourceQuery = source.ToObjectQuery();
             if (sourceQuery == null)
+            {
+                // Early return for test scenarios, here so it only slows down the error path
+                if (source is IFutureTestQueryable<TEntity>)
+                    return new FutureValue<TEntity>(source, null);
+
                 throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
+            }
 
             // make sure to only get the first value
             IQueryable<TEntity> firstQuery = source.Take(1);
 
             ObjectQuery<TEntity> objectQuery = firstQuery.ToObjectQuery();
-            if (objectQuery == null)
-                throw new ArgumentException("The source query must be of type ObjectQuery or DbQuery.", "source");
 
             var futureContext = GetFutureContext(sourceQuery);
             var future = new FutureValue<TEntity>(objectQuery, futureContext.ExecuteFutureQueries);
