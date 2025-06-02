@@ -14,6 +14,9 @@ namespace EntityFramework.Future
     /// </summary>
     public class FutureRunner : IFutureRunner
     {
+		  private const string _beginTransaction = "BEGIN TRANSACTION;";
+		  private const string _rollbackTransaction = "ROLLBACK TRANSACTION;";
+
         /// <summary>
         /// Executes the future queries.
         /// </summary>
@@ -71,6 +74,9 @@ namespace EntityFramework.Future
             var futureSql = new StringBuilder();
             int queryCount = 0;
 
+				if (command.Transaction == null)
+					 futureSql.AppendLine(_beginTransaction);
+
             foreach (IFutureQuery futureQuery in futureQueries)
             {
                 var plan = futureQuery.GetPlan(context);
@@ -111,7 +117,13 @@ namespace EntityFramework.Future
                 futureSql.AppendLine(";");
 
                 queryCount++;
-            } // foreach query
+				} // foreach query
+
+				if (command.Transaction == null)
+				{
+					 futureSql.AppendLine();
+				    futureSql.AppendLine(_rollbackTransaction);
+				}
 
             command.CommandText = futureSql.ToString();
             if (context.CommandTimeout.HasValue)
