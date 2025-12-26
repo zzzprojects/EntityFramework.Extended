@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace EntityFramework.Future
 {
@@ -26,13 +28,14 @@ namespace EntityFramework.Future
     public class FutureQuery<T> : FutureQueryBase<T>, IEnumerable<T>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:EntityFramework.Future.FutureQuery`1"/> class.
+        /// Initializes a new instance of the <see cref="T:EntityFramework.Future.FutureQuery`1" /> class.
         /// </summary>
         /// <param name="query">The query source to use when materializing.</param>
-        /// <param name="loadAction">The action to execute when the query is accessed.</param>
-        internal FutureQuery(IQueryable query, Action loadAction)
-            : base(query, loadAction)
-        { }
+        /// <param name="futureContext">The future context.</param>
+        internal FutureQuery(IQueryable<T> query, IFutureContext futureContext)
+            : base(query, futureContext)
+        {
+        }
 
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
@@ -61,5 +64,25 @@ namespace EntityFramework.Future
         {
             return GetEnumerator();
         }
+
+#if NET45
+        /// <summary>
+        /// To the list asynchronous.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <exception cref="FutureException">An error occurred executing the future query.</exception>
+        public async Task<IList<T>> ToListAsync(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            // triggers loading future queries
+            var result =
+                await GetResultAsync(cancellationToken).ConfigureAwait(false) ?? new List<T>();
+
+            if (Exception != null)
+                throw new FutureException("An error occurred executing the future query.", Exception);
+
+            return result;
+        }
+#endif
     }
 }

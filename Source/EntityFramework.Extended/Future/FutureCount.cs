@@ -27,12 +27,12 @@ namespace EntityFramework.Future
     public class FutureCount : FutureValue<int>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FutureCount"/> class.
+        /// Initializes a new instance of the <see cref="FutureCount" /> class.
         /// </summary>
         /// <param name="query">The query source to use when materializing.</param>
-        /// <param name="loadAction">The action to execute when the query is accessed.</param>
-        internal FutureCount(IQueryable query, Action loadAction)
-            : base(query, loadAction)
+        /// <param name="futureContext">The future context.</param>
+        internal FutureCount(IQueryable<int> query, IFutureContext futureContext)
+            : base(query, futureContext)
         { }
 
         /// <summary>

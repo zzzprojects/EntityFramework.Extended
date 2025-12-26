@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Core.Objects;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace EntityFramework.Future
 {
@@ -84,6 +86,24 @@ namespace EntityFramework.Future
 
             runner.ExecuteFutureQueries(context, FutureQueries);
         }
+
+#if NET45
+        /// <summary>
+        /// Executes the future queries as a single batch.
+        /// </summary>
+        public async Task ExecuteFutureQueriesAsync(CancellationToken cancellationToken = default(CancellationToken))
+            {
+            ObjectContext context = ObjectContext;
+            if (context == null)
+                throw new ObjectDisposedException("ObjectContext", "The ObjectContext for the future queries has been disposed.");
+
+            var runner = Locator.Current.Resolve<IFutureRunner>();
+            if (runner == null)
+                throw new InvalidOperationException("Could not resolve the IFutureRunner. Make sure IFutureRunner is registered in the Locator.Current container.");
+
+            await runner.ExecuteFutureQueriesAsync(context, FutureQueries, cancellationToken).ConfigureAwait(false);
+            }
+#endif
 
         /// <summary>
         /// Adds the future query to the waiting queries list on this context.
