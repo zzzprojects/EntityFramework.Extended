@@ -78,5 +78,3 @@ PM> NuGet\Install-Package EntityFramework.Extended
 - and much more!
 
 To view all our free and paid projects, visit our website [ZZZ Projects](https://zzzprojects.com/).
-
-To view all our free and paid projects, visit our website [ZZZ Projects](https://zzzprojects.com/).
