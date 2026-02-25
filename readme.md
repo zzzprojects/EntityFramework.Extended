@@ -3,11 +3,11 @@
 This library has not been supported since 2015. 
 
 We highly recommend that you move to:
-- [Entity Framework Extensions](https://entityframework-extensions.net/?z=ef-extended) for pro features
-- [Entity Framework Plus](https://entityframework-plus.net/?z=ef-extended) for free features
+- [Entity Framework Extensions](https://entityframework-extensions.net/) for pro features
+- [Entity Framework Plus](https://entityframework-plus.net/) for free features
 
 ### Entity Framework Extensions
-Website: [https://entityframework-extensions.net/](https://entityframework-extensions.net/?z=ef-extended)
+Website: [https://entityframework-extensions.net/](https://entityframework-extensions.net/)
 
 Paid library to dramatically improve Entity Framework performance:
 
@@ -20,7 +20,7 @@ Paid library to dramatically improve Entity Framework performance:
 - [BulkSynchronize](https://entityframework-extensions.net/bulk-synchronize)
 
 ### Entity Framework Plus
-Website: [https://entityframework-plus.net/](https://entityframework-plus.net/?z=ef-extended)
+Website: [https://entityframework-plus.net/](https://entityframework-plus.net/)
 
 Free & Open source library that supports the  following features:
 
