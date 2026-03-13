@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="5151251138f84b50a3fa53b4e67d0de1" Name="Diagram1" ZoomLevel="91">
+        <EntityTypeShape EntityType="Models.audit" Width="1.5" PointX="3" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Models.item" Width="1.5" PointX="8" PointY="9.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Models.item_2" Width="1.5" PointX="8" PointY="13.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Models.priority" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Models.product" Width="1.5" PointX="5.75" PointY="12" IsExpanded="true" />
+        <EntityTypeShape EntityType="Models.productsummary" Width="1.5" PointX="8.75" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Models.role" Width="1.5" PointX="0.75" PointY="8.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Models.status" Width="1.5" PointX="3.75" PointY="8" IsExpanded="true" />
+        <EntityTypeShape EntityType="Models.task" Width="1.5" PointX="6" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Models.taskextended" Width="1.5" PointX="8.25" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Models.user" Width="1.5" PointX="0.75" PointY="3.375" IsExpanded="true" />
+        <AssociationConnector Association="Models.FK_Audit_Task" ManuallyRouted="false" />
+        <AssociationConnector Association="Models.FK_Audit_User" ManuallyRouted="false" />
+        <AssociationConnector Association="Models.FK__Item__ProductId__04E4BC85" ManuallyRouted="false" />
+        <AssociationConnector Association="Models.FK__Item_2__ProductI__0A9D95DB" ManuallyRouted="false" />
+        <AssociationConnector Association="Models.FK_Task_Priority" ManuallyRouted="false" />
+        <AssociationConnector Association="Models.FK_Task_Status" ManuallyRouted="false" />
+        <AssociationConnector Association="Models.FK_Task_User_Assigned" ManuallyRouted="false" />
+        <AssociationConnector Association="Models.FK_Task_User_Created" ManuallyRouted="false" />
+        <AssociationConnector Association="Models.FK_TaskExtended_Task" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -59,7 +59,19 @@
     <Compile Include="Audit.cs">
       <DependentUpon>Tracker.tt</DependentUpon>
     </Compile>
+    <Compile Include="Item.cs">
+      <DependentUpon>Tracker.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Item_2.cs">
+      <DependentUpon>Tracker.tt</DependentUpon>
+    </Compile>
     <Compile Include="Priority.cs">
+      <DependentUpon>Tracker.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Product.cs">
+      <DependentUpon>Tracker.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProductSummary.cs">
       <DependentUpon>Tracker.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
