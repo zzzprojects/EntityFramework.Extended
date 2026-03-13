@@ -425,6 +425,9 @@ namespace EntityFramework.Batch
                 if (selector.Length > 4)
                     selector.Append((", "));
 
+                if (propertyMap.PropertyName == "GUID")
+                    propertyMap.PropertyName = "@GUID";
+
                 selector.Append(propertyMap.PropertyName);
             }
             selector.Append(")");
